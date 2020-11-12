@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name="title_nearby">Поблизости</string>
+    <string name="title_home">Избранное</string>
+    <string name="title_favourite">Избранное</string>
+    <string name="title_search_by_name">Поиск по названию</string>
+    <string name="title_search_nearby">Поиск поблизости</string>
+    <string name="title_settings">Настройки</string>
+    <string name="add_location">Добавить местоположение</string>
+    <string name="need_location_permissions_message">Для этого приложения требуется доступ к геолокации</string>
+    <string name="location_search">Поиск местоположения</string>
+</resources>
