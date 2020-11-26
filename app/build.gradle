@@ -84,8 +84,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
 
-    //graph drawing
-    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT'
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
 }
 
 kapt {

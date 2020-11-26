@@ -47,6 +47,7 @@
             android:id="@+id/chart_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbarSize="1dp"
             app:layout_constraintBottom_toTopOf="@id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +58,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
-                    android:id="@+id/aa_chart_view"
+                <lecho.lib.hellocharts.view.LineChartView
+                    android:id="@+id/hello_chart_view"
                     android:layout_width="800dp"
-                    android:layout_height="70dp" />
+                    android:layout_height="70dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView_hourly_condition"

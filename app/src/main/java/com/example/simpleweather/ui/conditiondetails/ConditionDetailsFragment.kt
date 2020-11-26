@@ -1,5 +1,6 @@
 package com.example.simpleweather.ui.conditiondetails
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,106 +12,115 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
-import com.github.aachartmodel.aainfographics.aachartcreator.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
+import lecho.lib.hellocharts.model.Line
+import lecho.lib.hellocharts.model.LineChartData
+import lecho.lib.hellocharts.model.PointValue
+import lecho.lib.hellocharts.model.Viewport
 
 @AndroidEntryPoint
 class ConditionDetailsFragment : Fragment() {
 
     companion object {
         fun newInstance() = ConditionDetailsFragment()
+        private const val numberOfColumns = 5
     }
 
     private lateinit var viewModel: ConditionDetailsViewModel
-    private val hourlyAdapter = HourlyConditionalAdapter()
+    private lateinit var hourlyAdapter: HourlyConditionalAdapter
     private val navArgs: ConditionDetailsFragmentArgs by navArgs()
 
     private var fakeHourlyList = mutableListOf<HourlyWeatherCondition>()
-    private lateinit var aaChartModel: AAChartModel
+    private var widthOfItem = 0
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        widthOfItem = resources.displayMetrics.widthPixels / numberOfColumns
         return inflater.inflate(R.layout.condition_details_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         getNavGraphArgs()
-        initChartModel()
         initRecyclers()
         initViewModel()
         initListeners()
     }
 
-    private fun initChartModel() {
-        aaChartModel = AAChartModel()
-            .chartType(AAChartType.Spline)
-            .animationDuration(500)
-            .animationType(AAChartAnimationType.EaseInOutExpo)
-            .backgroundColor("#ffffff")
-            .tooltipCrosshairs(true) // выделение точки окружностью
-            .dataLabelsEnabled(true) //подписи к точкам
-            .tooltipEnabled(false) // зетенение всех линий кроме выделенной
-            .legendEnabled(false) // видимость легенды
-            .margin(arrayOf(7F, 40F, 7F, 40F)) // todo: instead 40F needs half of width of Rec_Item
-            .yAxisVisible(false) // видимость оси Х (и сетки)
-            .xAxisVisible(false) // видимость оси У (и сетки)
-            .markerSymbol(AAChartSymbolType.Circle) // тип Диаграммы
-            .markerSymbolStyle(AAChartSymbolStyleType.BorderBlank) // обводка точек
-            .series(
-                arrayOf(
-                    AASeriesElement()
-                        .name("temp")
-                        .data(arrayOf(0, 0))
-                )
-            )
-        aa_chart_view.aa_drawChartWithChartModel(aaChartModel)
-    }
-
-    private fun initListeners() {
-        button.setOnClickListener {
-            viewModel.initList()
-//            aa_chart_view.aa_onlyRefreshTheChartDataWithChartOptionsSeriesArray(
-//                arrayOf(
-//                    AASeriesElement()
-//                        .name("temp")
-//                        .data(arrayOf(1,5,1,5,1))
-//                )
-//            )
-        }
-    }
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
         viewModel.fakeListLiveData.observe(viewLifecycleOwner, Observer {
-            fakeHourlyList = it.toMutableList()
+            //fakeHourlyList = it.toMutableList()
             hourlyAdapter.submitList(it.toList())
+            initChart(it)
             calculateViewsSize(it.size)
-            transformToChartSeriesAndRefresh(it)
         })
     }
 
-    private fun transformToChartSeriesAndRefresh(hourlyList: List<HourlyWeatherCondition>) {
-        val seriesArray = arrayListOf<Float>()
-        for (i in hourlyList) {
-            i.temp?.let { seriesArray.add(it) }
-        }
+    private fun initChart(hourlyList: List<HourlyWeatherCondition>) {
+        val pointsList = transformToPointsList(hourlyList)
 
-        aa_chart_view.aa_onlyRefreshTheChartDataWithChartOptionsSeriesArray(
-            arrayOf(
-                AASeriesElement()
-                    .name("temp")
-                    .data(seriesArray.toArray())
-            ),
-            true
-        )
+        val line = Line(pointsList)
+            .setColor(Color.MAGENTA)
+            .setPointColor(Color.BLUE)
+            .setCubic(true)
+            .setFilled(false)    //закрашивание области под линией
+            .setStrokeWidth(4)  //ширина линии (непонятно в чем)
+            .setHasLabels(true) //подписи к точкам
+
+        val lineList = arrayListOf<Line>(line)
+        val lineChartData = LineChartData(lineList)
+
+        hello_chart_view.isZoomEnabled = false
+        hello_chart_view.isViewportCalculationEnabled = true
+        hello_chart_view.lineChartData = lineChartData
+    }
+
+    private fun transformToPointsList(hourlyList: List<HourlyWeatherCondition>): List<PointValue> {
+        val pointsList = mutableListOf<PointValue>()
+        for ((index, value) in hourlyList.withIndex()) {
+            pointsList.add(PointValue(index.toFloat(), value.temp!!.toFloat()))
+        }
+        return pointsList
+    }
+
+    private fun calculateViewsSize(arraySize: Int) {
+        val params = hello_chart_view.layoutParams
+
+        if (params.width != widthOfItem * arraySize) {
+            params.width = widthOfItem * arraySize
+            hello_chart_view.layoutParams = params
+
+            val vp = Viewport(hello_chart_view.maximumViewport)
+            val newVp = Viewport()
+            val vDeltaOffset = (vp.top - vp.bottom) * 0.1F
+            val hDeltaOffset = 0.38F
+
+            newVp.top = vp.top + vDeltaOffset
+            newVp.bottom = vp.bottom - vDeltaOffset
+            newVp.right = vp.right + hDeltaOffset
+            newVp.left = vp.left - hDeltaOffset
+
+            hello_chart_view.maximumViewport = newVp
+            hello_chart_view.currentViewport = newVp
+        }
+        hello_chart_view.invalidate()
+    }
+
+
+    private fun initListeners() {
+        button.setOnClickListener {
+            viewModel.initList()
+        }
     }
 
     private fun initRecyclers() {
+        hourlyAdapter = HourlyConditionalAdapter(widthOfItem)
         recyclerView_hourly_condition.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerView_hourly_condition.adapter = hourlyAdapter
@@ -119,15 +129,6 @@ class ConditionDetailsFragment : Fragment() {
     private fun getNavGraphArgs() {
         val tmp = "id:${navArgs.locationId} lat:${navArgs.latitude} lon: ${navArgs.longitude}"
         text_view_conditionDetails.text = tmp
-    }
-
-    private fun calculateViewsSize(arraySize: Int) {
-        val params = aa_chart_view.layoutParams
-        val screenWidthPx = resources.displayMetrics.widthPixels / 5
-        if (params.width != screenWidthPx * arraySize) {
-            params.width = screenWidthPx * arraySize
-            aa_chart_view.layoutParams = params
-        }
     }
 
 }

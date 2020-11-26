@@ -21,7 +21,8 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
 
     fun initList() {
         fakeHourlyConditionList.clear()
-        for (i in 1..7) {
+        val rand = Random.nextInt(48)
+        for (i in 1..rand) {
             val temp = HourlyWeatherCondition(
                 i,
                 Random.nextInt(-10..10).toFloat(),
