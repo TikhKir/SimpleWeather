@@ -24,7 +24,7 @@ class MainViewModel @ViewModelInject constructor(
 //        getDailyWeatherCondition(51.681603F, 108.714448F)
 //        getHourlyWeatherCondition(51.681603F, 108.714448F)
 //        getCurrentWeatherCondition(51.681603F, 108.714448F)
-//        getCoordsByCityName("новоильинск")
+        getCoordsByCityName("новоильинск")
     }
 
     private fun getDailyWeatherCondition(lat: Float, lon: Float) {
@@ -40,14 +40,14 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun getHourlyWeatherCondition(lat: Float, lon: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getHourlyCondition(lat, lon)
-                .map {
-                    Log.e("HOURLY", it.weatherDescription )
-                }
-        }
-    }
+//    private fun getHourlyWeatherCondition(lat: Float, lon: Float) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repository.getHourlyCondition(lat, lon)
+//                .map {
+//                    Log.e("HOURLY", it.weatherDescription )
+//                }
+//        }
+//    }
 
     private fun getCurrentWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {

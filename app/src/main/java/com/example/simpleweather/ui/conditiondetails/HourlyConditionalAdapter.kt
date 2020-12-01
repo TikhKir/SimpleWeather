@@ -31,6 +31,7 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
         fun bind(hourlyCondition: HourlyWeatherCondition) {
             itemView.text_view_condition_item_time.text = hourlyCondition.timeStamp.toString()
             itemView.text_view_condition_item_wind.text = hourlyCondition.windSpeed.toString()
+            itemView.image_view_condition_item.setImageResource(R.drawable.ic_condition_02d)
         }
     }
 

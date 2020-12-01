@@ -1,5 +1,6 @@
 package com.example.simpleweather.repository.model
 
+import com.example.simpleweather.local.model.HourlyWeatherConditionDB
 import com.example.simpleweather.utils.diffutil.Identified
 
 data class HourlyWeatherCondition(
@@ -23,4 +24,24 @@ data class HourlyWeatherCondition(
 ) : Identified
 {
     override val identifier: Any = timeStamp
+
+    fun toHourlyWeatherConditionDB(locationId: Long): HourlyWeatherConditionDB {
+        return HourlyWeatherConditionDB(
+            locationId.toInt(),
+            timeStamp,
+            temp,
+            tempFeelsLike,
+            pressure,
+            humidity,
+            windSpeed,
+            windDeg,
+            weatherId,
+            weatherName,
+            weatherDescription,
+            weatherIcon,
+            probabilityOfPrecipitation,
+            snowVolume,
+            rainVolume
+        )
+    }
 }

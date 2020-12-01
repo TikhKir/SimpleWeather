@@ -4,7 +4,7 @@ import com.example.simpleweather.local.model.LocationDB
 import com.example.simpleweather.utils.diffutil.Identified
 
 data class LocationWithCoords(
-    val locationId: Int = -1,
+    val locationId: Long = -1,
     val fullAddress: String,
     val longitude: Float,
     val latitude: Float,

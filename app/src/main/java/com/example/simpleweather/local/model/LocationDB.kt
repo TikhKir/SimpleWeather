@@ -19,7 +19,7 @@ data class LocationDB(
     val country: String?
 ) {
     @PrimaryKey(autoGenerate = true)
-    var locationId: Int? = null
+    var locationId: Long? = null
 
     fun toLocationWithCoords(): LocationWithCoords {
         return LocationWithCoords(

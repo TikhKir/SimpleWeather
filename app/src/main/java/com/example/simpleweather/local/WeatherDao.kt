@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.simpleweather.local.model.DailyWeatherConditionDB
+import com.example.simpleweather.local.model.HourlyWeatherConditionDB
 import com.example.simpleweather.local.model.LocationDB
 import kotlinx.coroutines.flow.Flow
 
@@ -17,6 +18,9 @@ interface WeatherDao {
     @Query("SELECT * FROM locations")
     fun getSavedLocations(): Flow<List<LocationDB>>
 
+    @Query("SELECT * FROM locations WHERE locationId = :locationId")
+    suspend fun getSavedLocationById(locationId: Long): LocationDB
+
     @Query("DELETE FROM locations WHERE locationId = :locationId")
     suspend fun deleteLocation(locationId: Long): Int
 
@@ -24,6 +28,14 @@ interface WeatherDao {
 
     @Insert(entity = DailyWeatherConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveDailyForecast(dailyForecastList: List<DailyWeatherConditionDB>)
+
+
+
+    @Insert(entity = HourlyWeatherConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveHourlyForecast(hourlyForecast: List<HourlyWeatherConditionDB>)
+
+    @Query("SELECT * FROM hourly_weather_conditions WHERE locationParentId = :locationId AND timeStamp >= :currentTimeStamp")
+    fun getHourlyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<HourlyWeatherConditionDB>>
 
 
 }

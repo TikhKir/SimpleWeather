@@ -12,7 +12,7 @@ import com.example.simpleweather.local.model.LocationDB
         HourlyWeatherConditionDB::class,
         DailyWeatherConditionDB::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class WeatherDataBase: RoomDatabase() {

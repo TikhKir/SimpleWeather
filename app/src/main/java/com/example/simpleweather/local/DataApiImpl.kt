@@ -3,21 +3,31 @@ package com.example.simpleweather.local
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
-import kotlinx.coroutines.Deferred
+import com.example.simpleweather.utils.datawrappers.Result
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DataApiImpl @Inject constructor(
     private val weatherDao: WeatherDao
 ): DataApi {
 
-    override suspend fun getDailyForecast(): Deferred<List<HourlyWeatherCondition>> {
+    override suspend fun getDailyForecast(locationId: Long): Flow<List<HourlyWeatherCondition>> {
         TODO("получать только свежие данные не раньше нужного таймстампа")
     }
 
-    override suspend fun getHourlyForecast(): Deferred<List<HourlyWeatherCondition>> {
-        TODO("получать только свежие данные не раньше нужного таймстампа")
+    override suspend fun getHourlyForecast(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>> {
+        val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
+        return weatherDao.getHourlyForecast(locationId, currentTime)
+            .map { listConditionDB ->
+                listConditionDB.map {
+                    it.toHourlyWeatherCondition()
+                }
+            }
+            .map { Result.success(it) }
+            .catch { e -> if (e is Exception) emit(Result.error(e)) }
     }
 
     override suspend fun saveDailyForecast(locationId: Long, listDaily: List<DailyWeatherCondition>) {
@@ -29,8 +39,10 @@ class DataApiImpl @Inject constructor(
 
 
 
-    override suspend fun saveHourlyForecast(listHourly: List<HourlyWeatherCondition>) {
-        TODO("Not yet implemented")
+    override suspend fun saveHourlyForecast(locationId: Long, listHourly: List<HourlyWeatherCondition>) {
+        val transformedList = listHourly
+            .map { it.toHourlyWeatherConditionDB(locationId) }
+        weatherDao.saveHourlyForecast(transformedList)
     }
 
 
@@ -43,10 +55,15 @@ class DataApiImpl @Inject constructor(
     override suspend fun getSavedLocations(): Flow<List<LocationWithCoords>> {
         return weatherDao.getSavedLocations()
             .map {
-            it.map {
-                it.toLocationWithCoords()
+            it.map { locationDB ->
+                locationDB.toLocationWithCoords()
             }
         }
+    }
+
+    override suspend fun getSavedLocationById(locationId: Long): LocationWithCoords {
+        return weatherDao.getSavedLocationById(locationId)
+            .toLocationWithCoords()
     }
 
     override suspend fun deleteLocation(locationId: Long): Int {
@@ -57,6 +74,8 @@ class DataApiImpl @Inject constructor(
 
 
     override suspend fun removeGarbage() {
+        val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
         TODO("здесь тоже нужно отправлять таймстамп")
     }
+
 }

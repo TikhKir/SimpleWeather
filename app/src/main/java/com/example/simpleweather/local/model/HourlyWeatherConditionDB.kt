@@ -37,8 +37,7 @@ data class HourlyWeatherConditionDB(
 
     val probabilityOfPrecipitation: Float?,
     val snowVolume: Float?,
-    val rainVolume: Float?,
-    val uvi: Float?
+    val rainVolume: Float?
 ) {
     @PrimaryKey(autoGenerate = true)
     var hourlyConditionId: Int? = null
