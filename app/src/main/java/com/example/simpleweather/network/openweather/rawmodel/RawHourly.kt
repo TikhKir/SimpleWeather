@@ -53,6 +53,7 @@ data class RawHourly (
     fun toHourlyWeatherCondition(): HourlyWeatherCondition {
         return HourlyWeatherCondition(
             dt,
+            0,
             temp,
             feelsLike,
             pressure,

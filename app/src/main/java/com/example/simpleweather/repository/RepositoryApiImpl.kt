@@ -33,8 +33,8 @@ class RepositoryApiImpl @Inject constructor(
         return openWeatherApi.getAllForecastByCoord(lat, lon)
     }
 
-    override suspend fun getHourlyCondition(lat: Float, lon: Float): Result<List<HourlyWeatherCondition>> {
-        return openWeatherApi.getHourlyCondition(lat, lon)
+    override suspend fun getHourlyCondition(lat: Float, lon: Float): Flow<Result<List<HourlyWeatherCondition>>> {
+        return flowOf(openWeatherApi.getHourlyCondition(lat, lon))
     }
 
     override suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>> {
@@ -49,10 +49,20 @@ class RepositoryApiImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCurrentCondition(lat: Float, lon: Float): CurrentWeatherCondition {
-        return openWeatherApi.getCurrentCondition(lat, lon)
+    override suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>> {
+        val location = dataApi.getSavedLocationById(locationId)
+        val netResponse = openWeatherApi.getCurrentCondition(location.latitude, location.longitude)
+
+        if (netResponse.resultType == ResultType.SUCCESS) {
+            return flowOf(netResponse)
+        } else {
+            return dataApi.getCurrentForecast(locationId)
+        }
     }
 
+    override suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>> {
+        return flowOf(openWeatherApi.getCurrentCondition(lat, lon))
+    }
 
     override suspend fun getSavedLocations(): Flow<List<LocationWithCoords>> {
         return dataApi.getSavedLocations()

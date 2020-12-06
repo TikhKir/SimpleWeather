@@ -1,5 +1,6 @@
 package com.example.simpleweather.local
 
+import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
@@ -11,6 +12,8 @@ interface DataApi {
     suspend fun getDailyForecast(locationId: Long): Flow<List<HourlyWeatherCondition>>
 
     suspend fun getHourlyForecast(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>>
+
+    suspend fun getCurrentForecast(locationId: Long): Flow<Result<CurrentWeatherCondition>>
 
 
     suspend fun saveDailyForecast(locationId: Long, listDaily: List<DailyWeatherCondition>)

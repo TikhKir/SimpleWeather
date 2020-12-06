@@ -13,5 +13,5 @@ interface OpenWeatherApi {
 
     suspend fun getHourlyCondition(lat: Float, lon: Float): Result<List<HourlyWeatherCondition>>
 
-    suspend fun getCurrentCondition(lat: Float, lon: Float): CurrentWeatherCondition
+    suspend fun getCurrentCondition(lat: Float, lon: Float): Result<CurrentWeatherCondition>
 }

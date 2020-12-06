@@ -10,12 +10,17 @@ import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 import kotlinx.android.synthetic.main.item_hourly_condition.view.*
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 class HourlyConditionalAdapter(private val itemWidth: Int) :
     ListAdapter<Identified, RecyclerView.ViewHolder>(IdentityDiffUtilCallback<Identified>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_hourly_condition, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_hourly_condition, parent, false)
         val tempParam = view.layoutParams
         tempParam.width = itemWidth
         view.layoutParams = tempParam
@@ -27,9 +32,21 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
         (holder as HourlyConditionalViewHolder).bind(hourlyCondition)
     }
 
-    inner class HourlyConditionalViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class HourlyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(hourlyCondition: HourlyWeatherCondition) {
-            itemView.text_view_condition_item_time.text = hourlyCondition.timeStamp.toString()
+            //todo преобразовать дату в человеческий с учетом часового пояса
+
+            val time = LocalDateTime.ofEpochSecond(
+                hourlyCondition.timeStamp.toLong(),
+                0,
+                ZoneOffset.ofTotalSeconds(hourlyCondition.timeZoneOffset)
+            )
+                .truncatedTo(ChronoUnit.HOURS)
+                .format(DateTimeFormatter.ofPattern("HH:mm"))
+
+
+
+            itemView.text_view_condition_item_time.text = time
             itemView.text_view_condition_item_wind.text = hourlyCondition.windSpeed.toString()
             itemView.image_view_condition_item.setImageResource(R.drawable.ic_condition_02d)
         }

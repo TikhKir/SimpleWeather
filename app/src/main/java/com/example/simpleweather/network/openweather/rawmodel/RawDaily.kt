@@ -59,6 +59,7 @@ data class RawDaily (
     fun toDailyWeatherCondition(): DailyWeatherCondition {
         return DailyWeatherCondition(
             dt,
+            0,
             sunrise,
             sunset,
             temp?.day,

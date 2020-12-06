@@ -16,11 +16,11 @@ interface RepositoryApi {
 
     suspend fun getDailyCondition(lat: Float, lon: Float): List<DailyWeatherCondition>
 
-    suspend fun getHourlyCondition(lat: Float, lon: Float): Result<List<HourlyWeatherCondition>>
+    suspend fun getHourlyCondition(lat: Float, lon: Float): Flow<Result<List<HourlyWeatherCondition>>>
     suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>>
 
-    suspend fun getCurrentCondition(lat: Float, lon: Float): CurrentWeatherCondition
-
+    suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>>
+    suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>>
 
     suspend fun getSavedLocations(): Flow<List<LocationWithCoords>>
 

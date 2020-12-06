@@ -26,7 +26,7 @@ interface OpenWeatherService {
         private const val UNITS_METRIC = "metric"
         private const val UNITS_IMPERIAL = "imperial"
 
- //       https://api.openweathermap.org/data/2.5/onecall?lat=51.686081&lon=108.705711&exclude=current&appid=b118ef7fa8a84776aba19e49ff5a8e46&lang=ru
+ //       https://api.openweathermap.org/data/2.5/onecall?lat=51.686081&lon=108.705711&&appid=b118ef7fa8a84776aba19e49ff5a8e46&lang=ru
     }
 
     @GET("onecall")

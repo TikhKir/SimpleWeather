@@ -25,7 +25,7 @@
             android:id="@+id/text_view_current_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,12 +36,22 @@
             android:id="@+id/text_view_current_conditional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_view_current_temperature"
-            tools:text="Ветренно, по ощущениям: +20°" />
+            tools:text="Ветренно, дует прямо в харю" />
+
+        <TextView
+            android:id="@+id/text_view_current_feelslike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_current_conditional"
+            tools:text="По ощущениям: +20°" />
 
         <HorizontalScrollView
             android:id="@+id/chart_wrapper"
@@ -51,7 +61,7 @@
             app:layout_constraintBottom_toTopOf="@id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_current_conditional">
+            app:layout_constraintTop_toBottomOf="@+id/text_view_current_feelslike">
 
             <LinearLayout
                 android:layout_width="wrap_content"

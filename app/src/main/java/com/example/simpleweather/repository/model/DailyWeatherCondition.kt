@@ -5,6 +5,7 @@ import com.example.simpleweather.utils.diffutil.Identified
 
 data class DailyWeatherCondition (
     val timeStamp: Int,
+    var timeZoneOffset: Int,
 
     val sunrise: Int?,
     val sunset: Int?,
@@ -45,6 +46,7 @@ data class DailyWeatherCondition (
         return DailyWeatherConditionDB(
             locationId,
             timeStamp,
+            timeZoneOffset,
             sunrise,
             sunset,
             tempDay,

@@ -5,6 +5,7 @@ import com.example.simpleweather.utils.diffutil.Identified
 
 data class HourlyWeatherCondition(
     val timeStamp: Int,
+    var timeZoneOffset: Int,
 
     val temp: Float?,
     val tempFeelsLike: Float?,
@@ -29,6 +30,7 @@ data class HourlyWeatherCondition(
         return HourlyWeatherConditionDB(
             locationId.toInt(),
             timeStamp,
+            timeZoneOffset,
             temp,
             tempFeelsLike,
             pressure,

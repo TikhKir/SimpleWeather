@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
+import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
@@ -18,6 +19,9 @@ import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
 import lecho.lib.hellocharts.model.PointValue
 import lecho.lib.hellocharts.model.Viewport
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class ConditionDetailsFragment : Fragment() {
@@ -54,12 +58,30 @@ class ConditionDetailsFragment : Fragment() {
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
-        viewModel.fakeListLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.currentLiveData.observe(viewLifecycleOwner, Observer {
+            initCurrentState(it)
+        })
+        viewModel.hourlyListLiveData.observe(viewLifecycleOwner, Observer {
             //fakeHourlyList = it.toMutableList()
             hourlyAdapter.submitList(it.toList())
             initChart(it)
             calculateViewsSize(it.size)
         })
+    }
+
+    private fun initCurrentState(currentCondition: CurrentWeatherCondition) {
+        val feelsLikeStr = getString(R.string.feels_like) + currentCondition.tempFL?.toInt().toString()
+        val time = LocalDateTime.ofEpochSecond(
+            currentCondition.timeStamp.toLong(),
+            0,
+            ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
+        )
+            .format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
+
+        text_view_current_datetime.text = time
+        text_view_current_temperature.text = currentCondition.temp?.toInt().toString()
+        text_view_current_conditional.text = currentCondition.weatherDescription
+        text_view_current_feelslike.text = feelsLikeStr
     }
 
     private fun initChart(hourlyList: List<HourlyWeatherCondition>) {

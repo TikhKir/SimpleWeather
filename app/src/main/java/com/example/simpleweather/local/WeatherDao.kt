@@ -38,4 +38,8 @@ interface WeatherDao {
     fun getHourlyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<HourlyWeatherConditionDB>>
 
 
+    @Query("SELECT * FROM hourly_weather_conditions WHERE locationParentId = :locationId AND timeStamp = :currentTimeStamp")
+    fun getCurrentForecast(locationId: Long, currentTimeStamp: Long) : Flow<HourlyWeatherConditionDB>
+
+
 }

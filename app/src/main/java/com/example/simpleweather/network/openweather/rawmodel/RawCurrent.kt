@@ -57,6 +57,7 @@ data class RawCurrent (
     fun toCurrentWeatherCondition(): CurrentWeatherCondition {
         return CurrentWeatherCondition(
             dt!!,
+            0,
             sunrise,
             sunset,
             temp,

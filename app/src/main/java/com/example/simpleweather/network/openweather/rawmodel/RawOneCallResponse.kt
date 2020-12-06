@@ -15,7 +15,7 @@ data class RawOneCallResponse (
     val timezone: String? = null,
 
     @SerializedName("timezone_offset")
-    val timezoneOffset: Int? = null,
+    var timezoneOffset: Int = 0,
 
     @SerializedName("current")
     val current: RawCurrent = RawCurrent(),

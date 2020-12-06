@@ -13,7 +13,8 @@ class OpenWeatherApiImpl @Inject constructor(
 ) : OpenWeatherApi {
 
 
-    override suspend fun getAllForecastByCoord(lat: Float, lon: Float
+    override suspend fun getAllForecastByCoord(
+        lat: Float, lon: Float
     ): List<DailyWeatherCondition> {
         return openWeatherService.getAllForecastByCoord(lat, lon)
             .daily
@@ -27,22 +28,26 @@ class OpenWeatherApiImpl @Inject constructor(
     }
 
     override suspend fun getHourlyCondition(lat: Float, lon: Float): Result<List<HourlyWeatherCondition>> {
-        return handleResponse {
-            openWeatherService.getHourlyForecastByCoord(lat, lon)
-                .hourly
+        return wrapResponse {
+            val rawResponse = openWeatherService.getHourlyForecastByCoord(lat, lon)
+            val offset = rawResponse.timezoneOffset
+            rawResponse.hourly
                 .map { it.toHourlyWeatherCondition() }
+                .onEach { it.timeZoneOffset = offset }
         }
     }
 
-    override suspend fun getCurrentCondition(lat: Float, lon: Float): CurrentWeatherCondition {
-        return openWeatherService.getCurrentlyForecastByCoord(lat, lon)
-            .current
-            .toCurrentWeatherCondition()
-
+    override suspend fun getCurrentCondition(lat: Float, lon: Float): Result<CurrentWeatherCondition> {
+        return wrapResponse {
+            val rawResponse = openWeatherService.getCurrentlyForecastByCoord(lat, lon)
+            val offset = rawResponse.timezoneOffset
+            rawResponse.current.toCurrentWeatherCondition()
+                .also { it.timeZoneOffset = offset }
+        }
     }
 
-    private suspend fun <T> handleResponse(coroutine: suspend () -> T): Result<T> {
-        return  withContext(Dispatchers.IO) {
+    private suspend fun <T> wrapResponse(coroutine: suspend () -> T): Result<T> {
+        return withContext(Dispatchers.IO) {
             try {
                 Result.success(coroutine.invoke())
             } catch (e: Exception) {

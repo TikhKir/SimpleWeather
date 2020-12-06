@@ -4,6 +4,7 @@ import com.example.simpleweather.utils.diffutil.Identified
 
 data class CurrentWeatherCondition (
     val timeStamp: Int,
+    var timeZoneOffset: Int,
 
     val sunrise: Int?,
     val sunset: Int?,

@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simpleweather.repository.RepositoryApi
+import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.utils.datawrappers.ResultType
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -18,21 +20,28 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     private val repository: RepositoryApi
 ) : ViewModel() {
 
-    val fakeListLiveData = MutableLiveData<List<HourlyWeatherCondition>>()
-    private var fakeHourlyConditionList = mutableListOf<HourlyWeatherCondition>()
+    val currentLiveData = MutableLiveData<CurrentWeatherCondition>()
+    val hourlyListLiveData = MutableLiveData<List<HourlyWeatherCondition>>()
+
+    private var hourlyConditionList = mutableListOf<HourlyWeatherCondition>()
+
+
+
 
     init {
         //initList()
         //getHourlyWeatherCondition(51.681603F, 108.714448F)
         getHourlyWeatherCondition(1)
+        getCurrentWeatherCondition(1)
     }
 
     fun initList() {
-        fakeHourlyConditionList.clear()
+        hourlyConditionList.clear()
         val rand = Random.nextInt(48)
         for (i in 1..rand) {
             val temp = HourlyWeatherCondition(
                 i,
+                0,
                 Random.nextInt(-10..10).toFloat(),
                 0F,
                 0,
@@ -47,37 +56,50 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                 Random.nextInt(10).toFloat(),
                 Random.nextInt(10).toFloat()
             )
-            fakeHourlyConditionList.add(temp)
+            hourlyConditionList.add(temp)
         }
-        fakeListLiveData.postValue(fakeHourlyConditionList)
+        hourlyListLiveData.postValue(hourlyConditionList)
     }
 
-    fun getHourlyWeatherCondition(lat: Float, lon: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getHourlyCondition(lat, lon)
-            if (response.resultType == ResultType.SUCCESS) {
-                fakeHourlyConditionList = response.data?.toMutableList()!!
-                fakeListLiveData.postValue(fakeHourlyConditionList)
-            } else {
-                Log.e("HOURLY_RESPONSE", response.error?.message.toString())
-            }
+//    fun getHourlyWeatherCondition(lat: Float, lon: Float) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val response = repository.getHourlyCondition(lat, lon)
+//            if (response.resultType == ResultType.SUCCESS) {
+//                hourlyConditionList = response.data?.toMutableList()!!
+//                hourlyListLiveData.postValue(hourlyConditionList)
+//            } else {
+//                Log.e("HOURLY_RESPONSE", response.error?.message.toString())
+//            }
+//
+//        }
+//    }
 
-        }
-    }
-
-    fun getHourlyWeatherCondition(location: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getHourlyCondition(location)
+    fun getHourlyWeatherCondition(locationId: Long) {
+        viewModelScope.launch(Dispatchers.IO + CoroutineName("GET_HOURLY_COR")) {
+            repository.getHourlyCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        fakeHourlyConditionList = response.data?.toMutableList()!!
-                        fakeListLiveData.postValue(fakeHourlyConditionList)
+                        hourlyConditionList = response.data?.toMutableList()!!
+                        hourlyListLiveData.postValue(hourlyConditionList)
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
                     }
                 }
 
 
+        }
+    }
+
+    fun getCurrentWeatherCondition(locationId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getCurrentCondition(locationId)
+                .collect { response ->
+                    if (response.resultType == ResultType.SUCCESS) {
+                        currentLiveData.postValue(response.data)
+                    } else {
+                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+                    }
+                }
         }
     }
 }

@@ -23,6 +23,7 @@ data class DailyWeatherConditionDB(
 
     val locationParentId: Long,
     val timeStamp: Int,
+    val timeZoneOffset: Int,
 
     val sunrise: Int?,
     val sunset: Int?,
@@ -62,6 +63,7 @@ data class DailyWeatherConditionDB(
     fun toDailyWeatherCondition(): DailyWeatherCondition {
         return DailyWeatherCondition(
             timeStamp,
+            timeZoneOffset,
             sunrise,
             sunset,
             tempDay,
