@@ -13,18 +13,20 @@ class OpenWeatherApiImpl @Inject constructor(
 ) : OpenWeatherApi {
 
 
-    override suspend fun getAllForecastByCoord(
-        lat: Float, lon: Float
-    ): List<DailyWeatherCondition> {
+    override suspend fun getAllForecastByCoord(lat: Float, lon: Float): List<DailyWeatherCondition> {
         return openWeatherService.getAllForecastByCoord(lat, lon)
             .daily
             .map { it.toDailyWeatherCondition() }
     }
 
-    override suspend fun getDailyCondition(lat: Float, lon: Float): List<DailyWeatherCondition> {
-        return openWeatherService.getDailyForecastByCoord(lat, lon)
-            .daily
-            .map { it.toDailyWeatherCondition() }
+    override suspend fun getDailyCondition(lat: Float, lon: Float): Result<List<DailyWeatherCondition>> {
+        return wrapResponse {
+            val rawResponse = openWeatherService.getDailyForecastByCoord(lat, lon)
+            val offset = rawResponse.timezoneOffset
+            rawResponse.daily
+                .map { it.toDailyWeatherCondition() }
+                .onEach { it.timeZoneOffset = offset }
+        }
     }
 
     override suspend fun getHourlyCondition(lat: Float, lon: Float): Result<List<HourlyWeatherCondition>> {

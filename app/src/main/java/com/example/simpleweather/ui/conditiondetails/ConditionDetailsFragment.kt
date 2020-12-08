@@ -33,6 +33,7 @@ class ConditionDetailsFragment : Fragment() {
 
     private lateinit var viewModel: ConditionDetailsViewModel
     private lateinit var hourlyAdapter: HourlyConditionalAdapter
+    private lateinit var dailyAdapter: DailyConditionalAdapter
     private val navArgs: ConditionDetailsFragmentArgs by navArgs()
 
     private var fakeHourlyList = mutableListOf<HourlyWeatherCondition>()
@@ -66,6 +67,9 @@ class ConditionDetailsFragment : Fragment() {
             hourlyAdapter.submitList(it.toList())
             initChart(it)
             calculateViewsSize(it.size)
+        })
+        viewModel.dailyListLiveData.observe(viewLifecycleOwner, Observer {
+            dailyAdapter.submitList(it.toList())
         })
     }
 
@@ -135,22 +139,22 @@ class ConditionDetailsFragment : Fragment() {
     }
 
 
-    private fun initListeners() {
-        button.setOnClickListener {
-            viewModel.initList()
-        }
-    }
+    private fun initListeners() { }
 
     private fun initRecyclers() {
         hourlyAdapter = HourlyConditionalAdapter(widthOfItem)
         recyclerView_hourly_condition.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerView_hourly_condition.adapter = hourlyAdapter
+
+        dailyAdapter = DailyConditionalAdapter()
+        recyclerView_daily_conditions.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView_daily_conditions.adapter = dailyAdapter
     }
 
     private fun getNavGraphArgs() {
         val tmp = "id:${navArgs.locationId} lat:${navArgs.latitude} lon: ${navArgs.longitude}"
-        text_view_conditionDetails.text = tmp
     }
 
 }

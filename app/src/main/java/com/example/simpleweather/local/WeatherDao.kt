@@ -29,6 +29,9 @@ interface WeatherDao {
     @Insert(entity = DailyWeatherConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveDailyForecast(dailyForecastList: List<DailyWeatherConditionDB>)
 
+    @Query("SELECT * FROM daily_weather_conditions WHERE locationParentId = :locationId AND timeStamp >= :currentTimeStamp")
+    fun getDailyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<DailyWeatherConditionDB>>
+
 
 
     @Insert(entity = HourlyWeatherConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
@@ -36,6 +39,7 @@ interface WeatherDao {
 
     @Query("SELECT * FROM hourly_weather_conditions WHERE locationParentId = :locationId AND timeStamp >= :currentTimeStamp")
     fun getHourlyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<HourlyWeatherConditionDB>>
+
 
 
     @Query("SELECT * FROM hourly_weather_conditions WHERE locationParentId = :locationId AND timeStamp = :currentTimeStamp")

@@ -9,11 +9,11 @@ import com.example.simpleweather.R
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
+import com.example.simpleweather.utils.iconconverter.IconConverter
 import kotlinx.android.synthetic.main.item_hourly_condition.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.temporal.ChronoUnit
 
 class HourlyConditionalAdapter(private val itemWidth: Int) :
     ListAdapter<Identified, RecyclerView.ViewHolder>(IdentityDiffUtilCallback<Identified>()) {
@@ -34,21 +34,21 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
 
     inner class HourlyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(hourlyCondition: HourlyWeatherCondition) {
-            //todo преобразовать дату в человеческий с учетом часового пояса
+            val iconId = hourlyCondition.weatherId?.let { IconConverter.idToIcon(it, false) }
 
             val time = LocalDateTime.ofEpochSecond(
                 hourlyCondition.timeStamp.toLong(),
                 0,
                 ZoneOffset.ofTotalSeconds(hourlyCondition.timeZoneOffset)
             )
-                .truncatedTo(ChronoUnit.HOURS)
                 .format(DateTimeFormatter.ofPattern("HH:mm"))
 
 
 
             itemView.text_view_condition_item_time.text = time
             itemView.text_view_condition_item_wind.text = hourlyCondition.windSpeed.toString()
-            itemView.image_view_condition_item.setImageResource(R.drawable.ic_condition_02d)
+            iconId?.let { itemView.image_view_condition_item.setImageResource(it) }
+
         }
     }
 

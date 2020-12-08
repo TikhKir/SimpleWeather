@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataApi {
 
-    suspend fun getDailyForecast(locationId: Long): Flow<List<HourlyWeatherCondition>>
+    suspend fun getDailyForecast(locationId: Long): Flow<Result<List<DailyWeatherCondition>>>
 
     suspend fun getHourlyForecast(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>>
 

@@ -1,5 +1,6 @@
 package com.example.simpleweather.repository
 
+import android.util.Log
 import com.example.simpleweather.local.DataApi
 import com.example.simpleweather.network.locationiq.LocationIqApi
 import com.example.simpleweather.network.openweather.OpenWeatherApi
@@ -20,17 +21,24 @@ class RepositoryApiImpl @Inject constructor(
 ) : RepositoryApi {
 
 
-    override suspend fun getCoordByCityName(cityName: String): List<LocationWithCoords> {
-        return locationIqApi.getCoordsByCityName(cityName)
+
+
+
+    override suspend fun getDailyCondition(lat: Float, lon: Float): Flow<Result<List<DailyWeatherCondition>>> {
+        return flowOf(openWeatherApi.getDailyCondition(lat, lon))
     }
 
-    override suspend fun getCityNameByCoords(lat: Float, lon: Float): List<LocationWithCoords> {
-        return locationIqApi.getCityNameByCoords(lat, lon)
-    }
+    override suspend fun getDailyCondition(locationId: Long): Flow<Result<List<DailyWeatherCondition>>> {
+        val location = dataApi.getSavedLocationById(locationId)
+        val netResponse = openWeatherApi.getDailyCondition(location.latitude, location.longitude)
 
-
-    override suspend fun getDailyCondition(lat: Float, lon: Float): List<DailyWeatherCondition> {
-        return openWeatherApi.getAllForecastByCoord(lat, lon)
+        if (netResponse.resultType == ResultType.SUCCESS) {
+            netResponse.data?.let { saveDailyForecast(locationId, it) }
+            return flowOf(netResponse)
+        } else {
+            Log.e("NET_DAILY_UPDATE_FAIL",  netResponse.error?.message.toString())
+            return dataApi.getDailyForecast(locationId)
+        }
     }
 
     override suspend fun getHourlyCondition(lat: Float, lon: Float): Flow<Result<List<HourlyWeatherCondition>>> {
@@ -45,8 +53,13 @@ class RepositoryApiImpl @Inject constructor(
             netResponse.data?.let { saveHourlyForecast(locationId, it) }
             return flowOf(netResponse)
         } else {
+            Log.e("NET_HOURLY_UPDATE_FAIL",  netResponse.error?.message.toString())
             return dataApi.getHourlyForecast(locationId)
         }
+    }
+
+    override suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>> {
+        return flowOf(openWeatherApi.getCurrentCondition(lat, lon))
     }
 
     override suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>> {
@@ -56,13 +69,12 @@ class RepositoryApiImpl @Inject constructor(
         if (netResponse.resultType == ResultType.SUCCESS) {
             return flowOf(netResponse)
         } else {
+            Log.e("NET_CURRENT_UPDATE_FAIL",  netResponse.error?.message.toString())
             return dataApi.getCurrentForecast(locationId)
         }
     }
 
-    override suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>> {
-        return flowOf(openWeatherApi.getCurrentCondition(lat, lon))
-    }
+
 
     override suspend fun getSavedLocations(): Flow<List<LocationWithCoords>> {
         return dataApi.getSavedLocations()
@@ -89,6 +101,14 @@ class RepositoryApiImpl @Inject constructor(
         listHourly: List<HourlyWeatherCondition>
     ) {
         dataApi.saveHourlyForecast(locationId, listHourly)
+    }
+
+    override suspend fun getCoordByCityName(cityName: String): List<LocationWithCoords> {
+        return locationIqApi.getCoordsByCityName(cityName)
+    }
+
+    override suspend fun getCityNameByCoords(lat: Float, lon: Float): List<LocationWithCoords> {
+        return locationIqApi.getCityNameByCoords(lat, lon)
     }
 
 

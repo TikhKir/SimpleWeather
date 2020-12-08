@@ -9,7 +9,7 @@ interface OpenWeatherApi {
 
     suspend fun getAllForecastByCoord(lat: Float, lon: Float): List<DailyWeatherCondition>
 
-    suspend fun getDailyCondition(lat: Float, lon: Float): List<DailyWeatherCondition>
+    suspend fun getDailyCondition(lat: Float, lon: Float): Result<List<DailyWeatherCondition>>
 
     suspend fun getHourlyCondition(lat: Float, lon: Float): Result<List<HourlyWeatherCondition>>
 

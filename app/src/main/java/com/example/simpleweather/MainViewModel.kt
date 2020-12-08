@@ -10,7 +10,6 @@ import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
@@ -27,18 +26,18 @@ class MainViewModel @ViewModelInject constructor(
 //        getCoordsByCityName("новоильинск")
     }
 
-    private fun getDailyWeatherCondition(lat: Float, lon: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val dailyList = repository.getDailyCondition(lat, lon)
-                .onEach {
-                    Log.e("DAILY", it.weatherDescription )
-                }
-            delay(10000)
-            //saveDailyForecast(1, dailyList)
-            delay(10000)
-            //deleteLocation(1)
-        }
-    }
+//    private fun getDailyWeatherCondition(lat: Float, lon: Float) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val dailyList = repository.getDailyCondition(lat, lon)
+//                .onEach {
+//                    Log.e("DAILY", it.weatherDescription )
+//                }
+//            delay(10000)
+//            //saveDailyForecast(1, dailyList)
+//            delay(10000)
+//            //deleteLocation(1)
+//        }
+//    }
 
 //    private fun getHourlyWeatherCondition(lat: Float, lon: Float) {
 //        viewModelScope.launch(Dispatchers.IO) {

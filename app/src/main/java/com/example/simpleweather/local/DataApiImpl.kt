@@ -18,8 +18,16 @@ class DataApiImpl @Inject constructor(
     private val weatherDao: WeatherDao
 ): DataApi {
 
-    override suspend fun getDailyForecast(locationId: Long): Flow<List<HourlyWeatherCondition>> {
-        TODO("получать только свежие данные не раньше нужного таймстампа")
+    override suspend fun getDailyForecast(locationId: Long): Flow<Result<List<DailyWeatherCondition>>> {
+        val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
+        return weatherDao.getDailyForecast(locationId, currentTime)
+            .map { listOfConditionDB ->
+                listOfConditionDB.map {
+                    it.toDailyWeatherCondition()
+                }
+            }
+            .map { Result.success(it) }
+            .catch { e -> if (e is Exception) emit(Result.error(e)) }
     }
 
     override suspend fun getHourlyForecast(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>> {
@@ -38,6 +46,7 @@ class DataApiImpl @Inject constructor(
         val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
         val truncatedToHours = Instant.now().truncatedTo(HOURS).epochSecond
         Log.e("TIMES", "$currentTime  $truncatedToHours")
+        //todo: разобраться с +-1 часом
 
         return weatherDao.getCurrentForecast(locationId, truncatedToHours)
             .map { it.toCurrentWeatherCondition() }

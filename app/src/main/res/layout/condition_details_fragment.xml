@@ -57,8 +57,9 @@
             android:id="@+id/chart_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:scrollbarSize="1dp"
-            app:layout_constraintBottom_toTopOf="@id/button"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView_daily_conditions"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_view_current_feelslike">
@@ -81,29 +82,19 @@
                     tools:listitem="@layout/item_hourly_condition" />
 
             </LinearLayout>
-
         </HorizontalScrollView>
 
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_daily_conditions"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/chart_wrapper" />
+            app:layout_constraintTop_toBottomOf="@+id/chart_wrapper"
+            tools:listitem="@layout/item_daily_condition"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/text_view_conditionDetails"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="CONDITION DETAILS"
-        android:visibility="gone" />
-
 
 </FrameLayout>
