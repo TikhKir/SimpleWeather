@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface RepositoryApi {
 
-    suspend fun getCoordByCityName(cityName: String): List<LocationWithCoords>
+    suspend fun getCoordByCityName(cityName: String): Result<List<LocationWithCoords>>
 
-    suspend fun getCityNameByCoords(lat: Float, lon: Float): List<LocationWithCoords>
+    suspend fun getCityNameByCoords(lat: Float, lon: Float): Result<List<LocationWithCoords>>
 
 
     suspend fun getDailyCondition(lat: Float, lon: Float): Flow<Result<List<DailyWeatherCondition>>>

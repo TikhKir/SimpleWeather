@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
@@ -55,16 +54,16 @@ class MainViewModel @ViewModelInject constructor(
 //        }
 //    }
 
-    private fun getCoordsByCityName(cityName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getCoordByCityName(cityName)
-                .map {
-                    Log.e("COORDS", it.fullAddress)
-
-                    saveNewLocation(it)
-                }
-        }
-    }
+//    private fun getCoordsByCityName(cityName: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repository.getCoordByCityName(cityName)
+//                .map {
+//                    Log.e("COORDS", it.fullAddress)
+//
+//                    saveNewLocation(it)
+//                }
+//        }
+//    }
 
     private fun saveNewLocation(location: LocationWithCoords) {
         viewModelScope.launch {

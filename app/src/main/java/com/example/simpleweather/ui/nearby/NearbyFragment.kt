@@ -71,6 +71,8 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
 
 
+
+
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
         if (isTracking) {
@@ -99,7 +101,7 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             if (isTracking.value!!) {
                 result?.locations?.let { locations ->
                     for (location in locations) {
-                        Log.e("LOCATION CHECK", "${location.latitude}, ${location.longitude}")
+                        Log.e("LOCATION CHECK GPS", "${location.latitude}, ${location.longitude}")
                         viewModel.loadLocationsByCoords(location.latitude.toFloat(), location.longitude.toFloat())
                         isTracking.postValue(false)
                     }

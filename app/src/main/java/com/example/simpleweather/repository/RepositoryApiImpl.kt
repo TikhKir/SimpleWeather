@@ -103,11 +103,11 @@ class RepositoryApiImpl @Inject constructor(
         dataApi.saveHourlyForecast(locationId, listHourly)
     }
 
-    override suspend fun getCoordByCityName(cityName: String): List<LocationWithCoords> {
+    override suspend fun getCoordByCityName(cityName: String): Result<List<LocationWithCoords>> {
         return locationIqApi.getCoordsByCityName(cityName)
     }
 
-    override suspend fun getCityNameByCoords(lat: Float, lon: Float): List<LocationWithCoords> {
+    override suspend fun getCityNameByCoords(lat: Float, lon: Float): Result<List<LocationWithCoords>> {
         return locationIqApi.getCityNameByCoords(lat, lon)
     }
 
