@@ -6,95 +6,201 @@
     android:layout_height="match_parent"
     tools:context=".ui.conditiondetails.ConditionDetailsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_view_current_datetime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Ср, 11 ноября, 12:08" />
-
-        <TextView
-            android:id="@+id/text_view_current_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_current_datetime"
-            tools:text="+28°" />
-
-        <TextView
-            android:id="@+id/text_view_current_conditional"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_current_temperature"
-            tools:text="Ветренно, дует прямо в харю" />
-
-        <TextView
-            android:id="@+id/text_view_current_feelslike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_current_conditional"
-            tools:text="По ощущениям: +20°" />
-
-        <HorizontalScrollView
-            android:id="@+id/chart_wrapper"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:scrollbarSize="1dp"
-            app:layout_constraintBottom_toTopOf="@id/recyclerView_daily_conditions"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_current_feelslike">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/text_view_current_datetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Ср, 11 ноября, 12:08" />
 
-                <lecho.lib.hellocharts.view.LineChartView
-                    android:id="@+id/hello_chart_view"
-                    android:layout_width="800dp"
-                    android:layout_height="70dp" />
+            <TextView
+                android:id="@+id/text_view_current_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_current_datetime"
+                tools:text="+28°" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView_hourly_condition"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:nestedScrollingEnabled="true"
-                    tools:listitem="@layout/item_hourly_condition" />
+            <TextView
+                android:id="@+id/text_view_current_conditional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_current_temperature"
+                tools:text="Ветренно, дует прямо в харю" />
 
-            </LinearLayout>
-        </HorizontalScrollView>
+            <TextView
+                android:id="@+id/text_view_current_feelslike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_current_conditional"
+                tools:text="По ощущениям: +20°" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_daily_conditions"
-            android:layout_width="match_parent"
-            android:layout_height="280dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart_wrapper"
-            tools:listitem="@layout/item_daily_condition"/>
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:columnCount="4"
+                android:orientation="vertical"
+                android:rowCount="3"
+                app:layout_constraintBottom_toTopOf="@+id/chart_wrapper"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_current_feelslike">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_rowSpan="1"
+                    android:layout_columnSpan="1"
+                    android:layout_gravity="fill"
+                    android:src="@drawable/ic_hudimity" />
+
+                <TextView
+                    android:id="@+id/text_view_hudimity_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_rowSpan="1"
+                    android:layout_columnSpan="1"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    tools:text="68%" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowSpan="1"
+                    android:layout_columnSpan="1"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    android:text="Влажность" />
 
 
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="fill"
+                    android:src="@drawable/ic_pressure" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/text_view_pressure_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    tools:text="1034 мм р\с" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    android:text="Давление" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="fill"
+                    android:src="@drawable/ic_wind" />
+
+                <TextView
+                    android:id="@+id/text_view_wind_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    tools:text="10 м\с" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    android:text="Ветер" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="fill"
+                    android:src="@drawable/ic_volume_prec" />
+
+                <TextView
+                    android:id="@+id/text_view_volume_prec_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    tools:text="4.2 мм" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill"
+                    android:gravity="center_horizontal"
+                    android:text="Обьем осадков" />
+
+            </GridLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/chart_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbarSize="1dp"
+                app:layout_constraintBottom_toTopOf="@id/recyclerView_daily_conditions"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <lecho.lib.hellocharts.view.LineChartView
+                        android:id="@+id/hello_chart_view"
+                        android:layout_width="400dp"
+                        android:layout_height="70dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_hourly_condition"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:nestedScrollingEnabled="true"
+                        tools:listitem="@layout/item_hourly_condition" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_daily_conditions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chart_wrapper"
+                tools:listitem="@layout/item_daily_condition" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </FrameLayout>

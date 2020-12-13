@@ -71,7 +71,7 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         lifecycleScope.launch {
             searchView.searchWatcherFlow()
                 .filter { it.length > 2 }
-                .debounce(500)
+                .debounce(1000)
                 .buffer(CONFLATED)
                 .collect {
                     viewModel.searchLocations(it)

@@ -10,7 +10,7 @@ import com.example.simpleweather.repository.model.HourlyWeatherCondition
 
 @Entity(
     tableName = "hourly_weather_conditions",
-    indices = [Index(value = ["timeStamp"], unique = true)],
+    indices = [Index(value = ["timeStamp", "locationParentId"], unique = true)],
     foreignKeys = [
         ForeignKey(
             entity = LocationDB::class,

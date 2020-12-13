@@ -50,10 +50,10 @@ class ConditionDetailsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        getNavGraphArgs()
         initRecyclers()
         initViewModel()
         initListeners()
+        if (savedInstanceState == null) getNavGraphArgs()
     }
 
 
@@ -74,7 +74,12 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun initCurrentState(currentCondition: CurrentWeatherCondition) {
-        val feelsLikeStr = getString(R.string.feels_like) + currentCondition.tempFL?.toInt().toString()
+        //todo: нужн сделать класс для преобразования единиц измерения,
+        // в который при передаче значения будет возвращаться рассчитанная
+        // строка с приконкатенированными единицами
+
+        val feelsLikeStr =
+            getString(R.string.feels_like) + currentCondition.tempFL?.toInt().toString()
         val time = LocalDateTime.ofEpochSecond(
             currentCondition.timeStamp.toLong(),
             0,
@@ -86,6 +91,12 @@ class ConditionDetailsFragment : Fragment() {
         text_view_current_temperature.text = currentCondition.temp?.toInt().toString()
         text_view_current_conditional.text = currentCondition.weatherDescription
         text_view_current_feelslike.text = feelsLikeStr
+
+        text_view_hudimity_count.text = currentCondition.humidity.toString()
+        text_view_pressure_count.text = currentCondition.pressure.toString()
+        text_view_wind_count.text = currentCondition.windSpeed.toString()
+        val allVolume = currentCondition.rainVolumeLastHour ?: 0
+        text_view_volume_prec_count.text = allVolume.toString()
     }
 
     private fun initChart(hourlyList: List<HourlyWeatherCondition>) {
@@ -95,7 +106,7 @@ class ConditionDetailsFragment : Fragment() {
             .setColor(Color.MAGENTA)
             .setPointColor(Color.BLUE)
             .setCubic(true)
-            .setFilled(false)    //закрашивание области под линией
+            .setFilled(false)   //закрашивание области под линией
             .setStrokeWidth(4)  //ширина линии (непонятно в чем)
             .setHasLabels(true) //подписи к точкам
 
@@ -139,7 +150,7 @@ class ConditionDetailsFragment : Fragment() {
     }
 
 
-    private fun initListeners() { }
+    private fun initListeners() {}
 
     private fun initRecyclers() {
         hourlyAdapter = HourlyConditionalAdapter(widthOfItem)
@@ -154,7 +165,16 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun getNavGraphArgs() {
-        val tmp = "id:${navArgs.locationId} lat:${navArgs.latitude} lon: ${navArgs.longitude}"
+        if (navArgs.locationId != -1L) { //location already exist in db
+            viewModel.getCurrentWeatherCondition(navArgs.locationId)
+            viewModel.getHourlyWeatherCondition(navArgs.locationId)
+            viewModel.getDailyWeatherCondition(navArgs.locationId)
+        } else {
+            viewModel.getCurrentWeatherCondition(navArgs.latitude, navArgs.longitude)
+            viewModel.getHourlyWeatherCondition(navArgs.latitude, navArgs.longitude)
+            viewModel.getDailyWeatherCondition(navArgs.latitude, navArgs.longitude)
+        }
     }
+
 
 }

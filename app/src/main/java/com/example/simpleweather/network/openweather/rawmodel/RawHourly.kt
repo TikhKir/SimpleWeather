@@ -42,10 +42,10 @@ data class RawHourly (
     val pop: Float? = null,
 
     @SerializedName("snow")
-    val snow: Float? = null,
+    val snow: RawSnow? = null,
 
     @SerializedName("rain")
-    val rain: Float? = null
+    val rain: RawRain? = null
 )
 
 {
@@ -65,8 +65,8 @@ data class RawHourly (
             weather[0].description,
             weather[0].icon,
             pop,
-            snow,
-            rain
+            snow?.last_hour,
+            rain?.last_hour
         )
     }
 

@@ -39,7 +39,7 @@ interface LocationIqService {
     ) : List<RawLocation>
 
 
-    @GET("reverse.php") //this method must return a list with nearby locations, but API not support this feature =(
+    @GET("reverse.php") //this method must return a list with nearby locations, but API still not support this feature =(
     suspend fun getCityListByCoords(
         @Query(PARAMS_LATITUDE) latitude: Float,
         @Query(PARAMS_LONGITUDE) longitude: Float,

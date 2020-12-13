@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.utils.datawrappers.ResultType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
@@ -22,7 +24,7 @@ class MainViewModel @ViewModelInject constructor(
 //        getDailyWeatherCondition(51.681603F, 108.714448F)
 //        getHourlyWeatherCondition(51.681603F, 108.714448F)
 //        getCurrentWeatherCondition(51.681603F, 108.714448F)
-//        getCoordsByCityName("новоильинск")
+          getCoordsByCityName("новоильинск")
     }
 
 //    private fun getDailyWeatherCondition(lat: Float, lon: Float) {
@@ -54,16 +56,18 @@ class MainViewModel @ViewModelInject constructor(
 //        }
 //    }
 
-//    private fun getCoordsByCityName(cityName: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.getCoordByCityName(cityName)
-//                .map {
-//                    Log.e("COORDS", it.fullAddress)
-//
-//                    saveNewLocation(it)
-//                }
-//        }
-//    }
+    private fun getCoordsByCityName(cityName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = repository.getCoordByCityName(cityName)
+                if (response.resultType == ResultType.SUCCESS) {
+                    response.data?.map {
+                        saveNewLocation(it)
+                    }
+                } else {
+                    Log.e("GEOCODING", response.error?.message.toString() )
+                }
+        }
+    }
 
     private fun saveNewLocation(location: LocationWithCoords) {
         viewModelScope.launch {
