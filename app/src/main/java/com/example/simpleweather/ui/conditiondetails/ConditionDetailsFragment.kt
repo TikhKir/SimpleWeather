@@ -2,9 +2,9 @@ package com.example.simpleweather.ui.conditiondetails
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -29,14 +29,15 @@ class ConditionDetailsFragment : Fragment() {
     companion object {
         fun newInstance() = ConditionDetailsFragment()
         private const val numberOfColumns = 5
+        private const val FAVOURITE_KEY = "FAVOURITE_KEY"
     }
 
     private lateinit var viewModel: ConditionDetailsViewModel
     private lateinit var hourlyAdapter: HourlyConditionalAdapter
     private lateinit var dailyAdapter: DailyConditionalAdapter
+    private lateinit var changeMenu: Menu
     private val navArgs: ConditionDetailsFragmentArgs by navArgs()
-
-    private var fakeHourlyList = mutableListOf<HourlyWeatherCondition>()
+    private var isFavourite = false
     private var widthOfItem = 0
 
 
@@ -48,22 +49,32 @@ class ConditionDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.condition_details_fragment, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
+
+        if (savedInstanceState == null) {
+            getNavGraphArgs()
+            initFavouriteState()
+        } else {
+            isFavourite = savedInstanceState.getBoolean(FAVOURITE_KEY)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
         initRecyclers()
-        initViewModel()
+        observeViewModel()
         initListeners()
-        if (savedInstanceState == null) getNavGraphArgs()
     }
 
 
-    private fun initViewModel() {
-        viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
+    private fun observeViewModel() {
         viewModel.currentLiveData.observe(viewLifecycleOwner, Observer {
             initCurrentState(it)
         })
         viewModel.hourlyListLiveData.observe(viewLifecycleOwner, Observer {
-            //fakeHourlyList = it.toMutableList()
             hourlyAdapter.submitList(it.toList())
             initChart(it)
             calculateViewsSize(it.size)
@@ -165,16 +176,82 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun getNavGraphArgs() {
-        if (navArgs.locationId != -1L) { //location already exist in db
-            viewModel.getCurrentWeatherCondition(navArgs.locationId)
-            viewModel.getHourlyWeatherCondition(navArgs.locationId)
-            viewModel.getDailyWeatherCondition(navArgs.locationId)
+        val location = navArgs.location
+        if (location.locationId != -1L) { //location already exist in db
+            viewModel.getCurrentWeatherCondition(location.locationId)
+            viewModel.getHourlyWeatherCondition(location.locationId)
+            viewModel.getDailyWeatherCondition(location.locationId)
         } else {
-            viewModel.getCurrentWeatherCondition(navArgs.latitude, navArgs.longitude)
-            viewModel.getHourlyWeatherCondition(navArgs.latitude, navArgs.longitude)
-            viewModel.getDailyWeatherCondition(navArgs.latitude, navArgs.longitude)
+            viewModel.getCurrentWeatherCondition(location.latitude, location.longitude)
+            viewModel.getHourlyWeatherCondition(location.latitude, location.longitude)
+            viewModel.getDailyWeatherCondition(location.latitude, location.longitude)
         }
     }
 
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        changeMenu = menu
+        inflater.inflate(R.menu.conditional_favourite_menu, menu)
+
+        if (isFavourite) {
+            changeMenu.findItem(R.id.action_save).isVisible = false
+            changeMenu.findItem(R.id.action_delete).isVisible = true
+        } else {
+            changeMenu.findItem(R.id.action_save).isVisible = true
+            changeMenu.findItem(R.id.action_delete).isVisible = false
+        }
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_save -> {
+                setAsFavourite()
+            }
+            R.id.action_delete -> {
+                unsetAsFavourite()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setAsFavourite() {
+        isFavourite = true
+        changeMenu.findItem(R.id.action_save).isVisible = false
+        changeMenu.findItem(R.id.action_delete).isVisible = true
+        Toast.makeText(requireContext(), "Добавлено в избранное!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun unsetAsFavourite() {
+        isFavourite = false
+        changeMenu.findItem(R.id.action_save).isVisible = true
+        changeMenu.findItem(R.id.action_delete).isVisible = false
+        Toast.makeText(requireContext(), "Удалено из избранного!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun initFavouriteState() {
+        if (navArgs.location.locationId == -1L) {
+            isFavourite = false
+        } else {
+            isFavourite = true
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(FAVOURITE_KEY, isFavourite)
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("DESTROY", "_________________" )
+        if (isFavourite) {
+            viewModel.saveLocation(navArgs.location)
+        } else {
+            viewModel.deleteLocation(navArgs.location.locationId)
+        }
+    }
 
 }

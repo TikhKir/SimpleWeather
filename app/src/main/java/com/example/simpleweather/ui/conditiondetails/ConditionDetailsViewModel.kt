@@ -9,6 +9,7 @@ import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
+import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.ResultType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -21,15 +22,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     val currentLiveData = MutableLiveData<CurrentWeatherCondition>()
     val hourlyListLiveData = MutableLiveData<List<HourlyWeatherCondition>>()
     val dailyListLiveData = MutableLiveData<List<DailyWeatherCondition>>()
-
-
-    init {
-        //initList()
-        //getHourlyWeatherCondition(51.681603F, 108.714448F)
-//        getHourlyWeatherCondition(1)
-//        getCurrentWeatherCondition(1)
-//        getDailyWeatherCondition(1)
-    }
+    var isFavourite = false
 
 
     fun getHourlyWeatherCondition(locationId: Long) {
@@ -46,7 +39,6 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     }
 
 
-
     fun getCurrentWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getCurrentCondition(locationId)
@@ -59,7 +51,6 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                 }
         }
     }
-
 
 
     fun getDailyWeatherCondition(locationId: Long) {
@@ -112,5 +103,26 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                     }
                 }
         }
+    }
+
+    fun saveLocation(location: LocationWithCoords): Long {
+        var id = -10L
+        viewModelScope.launch(Dispatchers.IO) {
+            id = repository.saveNewLocation(location)
+        }
+        return id
+    }
+
+    fun deleteLocation(locationId: Long): Int {
+        var id = -10
+        viewModelScope.launch(Dispatchers.IO) {
+            id = repository.deleteLocation(locationId)
+        }
+        return id
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.e("VM", "onCleared")
     }
 }

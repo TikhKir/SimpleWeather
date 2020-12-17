@@ -4,12 +4,5 @@ import androidx.lifecycle.ViewModel
 
 class SettingsViewModel : ViewModel() {
 
-    init {
-        initFakData()
-    }
-
-    private fun initFakData() {
-
-    }
 
 }

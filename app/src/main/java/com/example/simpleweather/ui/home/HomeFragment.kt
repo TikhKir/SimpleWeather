@@ -69,8 +69,9 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
 
     override fun onItemClicked(location: LocationWithCoords) {
         val action = HomeFragmentDirections
-            .actionHomeFragmentToConditionDetailsFragment(location.locationId, location.latitude, location.longitude)
+            .actionHomeFragmentToConditionDetailsFragment(location)
         findNavController().navigate(action) //if use R.id.* for navigate it will not runtime safety
+
         //requireActivity().fragment_container.findNavController().navigate(R.id.action_homeFragment_to_conditionDetailsFragment)
         //Toast.makeText(requireContext(), location.addressCity, Toast.LENGTH_SHORT).show()
     }

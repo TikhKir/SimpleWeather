@@ -38,12 +38,7 @@
         android:label="condition_details_fragment"
         tools:layout="@layout/condition_details_fragment" >
         <argument
-            android:name="locationId"
-            app:argType="long" />
-        <argument
-            android:name="latitude"
-            app:argType="float" />
-        <argument android:name="longitude"
-            app:argType="float" />
+            android:name="location"
+            app:argType="com.example.simpleweather.repository.model.LocationWithCoords" />
     </fragment>
 </navigation>

@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
 //        if(intent?.action == ACTION_SHOW_NEARBY_FRAGMENT) {
 //            //currentNavController?.value?.navigate(R.id.action_global_nearby_fragment)
 //            fragment_container.findNavController().navigate(R.id.action_global_nearby_fragment)
-//            //todo: разобраться как работать с навигацией с йоба-расширением
 //        }
 //    }
 

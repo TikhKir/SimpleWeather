@@ -22,8 +22,6 @@ class RepositoryApiImpl @Inject constructor(
 
 
 
-
-
     override suspend fun getDailyCondition(lat: Float, lon: Float): Flow<Result<List<DailyWeatherCondition>>> {
         return flowOf(openWeatherApi.getDailyCondition(lat, lon))
     }

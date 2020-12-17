@@ -98,7 +98,7 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
 
     override fun onItemClick(location: LocationWithCoords) {
         val action = SearchFragmentDirections
-            .actionSearchFragmentToConditionDetailsFragment(location.locationId, location.latitude, location.longitude)
+            .actionSearchFragmentToConditionDetailsFragment(location)
         findNavController().navigate(action)
     }
 
