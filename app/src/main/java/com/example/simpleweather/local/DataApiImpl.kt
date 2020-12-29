@@ -1,6 +1,5 @@
 package com.example.simpleweather.local
 
-import android.util.Log
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
@@ -43,9 +42,7 @@ class DataApiImpl @Inject constructor(
     }
 
     override suspend fun getCurrentForecast(locationId: Long): Flow<Result<CurrentWeatherCondition>> {
-        val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
         val truncatedToHours = Instant.now().truncatedTo(HOURS).epochSecond
-        Log.e("TIMES", "$currentTime  $truncatedToHours")
         //todo: разобраться с +-1 часом
 
         return weatherDao.getCurrentForecast(locationId, truncatedToHours)

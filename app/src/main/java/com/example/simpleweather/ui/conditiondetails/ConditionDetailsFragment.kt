@@ -2,7 +2,6 @@ package com.example.simpleweather.ui.conditiondetails
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -228,14 +227,11 @@ class ConditionDetailsFragment : Fragment() {
         changeMenu.findItem(R.id.action_save).isVisible = true
         changeMenu.findItem(R.id.action_delete).isVisible = false
         Toast.makeText(requireContext(), "Удалено из избранного!", Toast.LENGTH_SHORT).show()
+        if (navArgs.location.locationId != -1L) requireActivity().onBackPressed()
     }
 
     private fun initFavouriteState() {
-        if (navArgs.location.locationId == -1L) {
-            isFavourite = false
-        } else {
-            isFavourite = true
-        }
+        isFavourite = (navArgs.location.locationId != -1L)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -244,9 +240,8 @@ class ConditionDetailsFragment : Fragment() {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e("DESTROY", "_________________" )
+    override fun onStop() {
+        super.onStop()
         if (isFavourite) {
             viewModel.saveLocation(navArgs.location)
         } else {

@@ -22,7 +22,6 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     val currentLiveData = MutableLiveData<CurrentWeatherCondition>()
     val hourlyListLiveData = MutableLiveData<List<HourlyWeatherCondition>>()
     val dailyListLiveData = MutableLiveData<List<DailyWeatherCondition>>()
-    var isFavourite = false
 
 
     fun getHourlyWeatherCondition(locationId: Long) {
