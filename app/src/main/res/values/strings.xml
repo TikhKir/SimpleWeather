@@ -12,4 +12,5 @@
     <string name="feels_like">"по ощущениям: "</string>
     <string name="add_to_favourite">Добавить в избранное</string>
     <string name="delete_from_favourite">Удалить из избранного</string>
+    <string name="something_wrong">что-то пошло не так...</string>
 </resources>

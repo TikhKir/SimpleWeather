@@ -1,9 +1,7 @@
 package com.example.simpleweather
 
 import android.util.Log
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simpleweather.repository.RepositoryApi
@@ -14,13 +12,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
     private val repository: RepositoryApi,
-    @Assisted private val state: SavedStateHandle
 ) : ViewModel() {
-
-
-    init {
-//          getCoordsByCityName("новоильинск")
-    }
 
 
     private fun getCoordsByCityName(cityName: String) {

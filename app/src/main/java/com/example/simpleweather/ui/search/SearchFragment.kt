@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.reactview.ReactiveViewUtil.Companion.searchWatcherFlow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.search_fragment.*
@@ -58,6 +60,9 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         viewModel.locationsLiveData.observe(viewLifecycleOwner, Observer {
             searchAdapter.submitList(it.toList())
         })
+        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
+            setState(it)
+        })
     }
 
     private fun initRecycler() {
@@ -79,6 +84,35 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         }
     }
 
+    private fun setState(state: State) {
+        when (state) {
+            is State.Default -> {
+                setLoadingState(false)
+            }
+
+            is State.Loading -> {
+                setLoadingState(true)
+                setErrorVisibility(false)
+            }
+
+            is State.Error -> {
+                setLoadingState(false)
+                setErrorVisibility(true)
+            }
+
+            is State.Success -> {
+                setLoadingState(false)
+            }
+        }
+    }
+
+    private fun setLoadingState(isLoading: Boolean) {
+        search_progress_bar.isVisible = isLoading
+    }
+
+    private fun setErrorVisibility(isVisible: Boolean) {
+        text_view_search_error.isVisible = isVisible
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_menu, menu)

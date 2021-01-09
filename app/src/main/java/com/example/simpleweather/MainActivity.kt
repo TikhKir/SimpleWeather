@@ -63,15 +63,4 @@ class MainActivity : AppCompatActivity() {
         return currentNavController?.value?.navigateUp() ?: false
     }
 
-//    private fun navigateToNearbyFragmentIfNeeded(intent: Intent?) {
-//        if(intent?.action == ACTION_SHOW_NEARBY_FRAGMENT) {
-//            //currentNavController?.value?.navigate(R.id.action_global_nearby_fragment)
-//            fragment_container.findNavController().navigate(R.id.action_global_nearby_fragment)
-//        }
-//    }
-
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//        navigateToNearbyFragmentIfNeeded(intent)
-//    }
 }

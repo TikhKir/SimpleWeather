@@ -164,10 +164,4 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         isTracking.postValue(false)
     }
 
-//    private fun sendCommandToService(action: String) {
-//        Intent(requireContext(), LocationService::class.java).also {
-//            it.action = action
-//            requireContext().startService(it)
-//        }
-//    }
 }
