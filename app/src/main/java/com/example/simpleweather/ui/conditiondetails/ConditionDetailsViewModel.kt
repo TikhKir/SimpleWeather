@@ -24,33 +24,16 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     private val stateCurrent: MutableLiveData<State> = MutableLiveData(State.Default())
     private val stateHourly: MutableLiveData<State> = MutableLiveData(State.Default())
     private val stateDaily: MutableLiveData<State> = MutableLiveData(State.Default())
+    private val unionStates = MediatorLiveData<State>()
 
     val currentLiveData: LiveData<CurrentWeatherCondition> get() = currentCondition
     val hourlyLiveData: LiveData<List<HourlyWeatherCondition>> get() = hourlyCondition
     val dailyLivaData: LiveData<List<DailyWeatherCondition>> get() = dailyCondition
-    val stateMerger = MediatorLiveData<State>()
+    val stateLiveData: LiveData<State> get() = unionStates
 
 
     init {
-        stateMerger.addSource(stateCurrent) { stateMerger.postValue(handleStates()) }
-        stateMerger.addSource(stateHourly) { stateMerger.postValue(handleStates()) }
-        stateMerger.addSource(stateDaily) { stateMerger.postValue(handleStates()) }
-    }
-
-    private fun handleStates(): State {
-        Log.e("STATES", "${stateCurrent.value} ${stateHourly.value} ${stateDaily.value} \n")
-
-        if ((stateCurrent.value is State.Error) ||
-            (stateHourly.value is State.Error) ||
-            (stateDaily.value is State.Error)
-        ) return State.Error()
-
-        return if ((stateCurrent.value is State.Success) &&
-            (stateHourly.value is State.Success) &&
-            (stateDaily.value is State.Success)
-        ) State.Success()
-        else State.Loading()
-
+        mergeStates()
     }
 
 
@@ -86,7 +69,6 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
         }
     }
 
-
     fun getDailyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             stateDaily.postValue(State.Loading())
@@ -102,6 +84,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                 }
         }
     }
+
 
     fun getHourlyWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -121,12 +104,15 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
 
     fun getCurrentWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {
+            stateCurrent.postValue(State.Loading())
             repository.getCurrentCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
                         currentCondition.postValue(response.data)
+                        stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+                        stateCurrent.postValue(State.Error())
                     }
                 }
         }
@@ -134,16 +120,20 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
 
     fun getDailyWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {
+            stateDaily.postValue(State.Loading())
             repository.getDailyCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
                         dailyCondition.postValue(response.data)
+                        stateDaily.postValue(State.Success())
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
+                        stateDaily.postValue(State.Error())
                     }
                 }
         }
     }
+
 
     fun saveLocation(location: LocationWithCoords): Long {
         var id = -10L
@@ -161,4 +151,23 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
         return id
     }
 
+
+    private fun mergeStates() {
+        unionStates.addSource(stateCurrent) { unionStates.postValue(handleStates()) }
+        unionStates.addSource(stateHourly) { unionStates.postValue(handleStates()) }
+        unionStates.addSource(stateDaily) { unionStates.postValue(handleStates()) }
+    }
+
+    private fun handleStates(): State {
+        if ((stateCurrent.value is State.Error) ||
+            (stateHourly.value is State.Error) ||
+            (stateDaily.value is State.Error)
+        ) return State.Error()
+
+        return if ((stateCurrent.value is State.Success) &&
+            (stateHourly.value is State.Success) &&
+            (stateDaily.value is State.Success)
+        ) State.Success()
+        else State.Loading()
+    }
 }

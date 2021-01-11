@@ -82,7 +82,7 @@ class ConditionDetailsFragment : Fragment() {
         viewModel.dailyLivaData.observe(viewLifecycleOwner, Observer {
             dailyAdapter.submitList(it.toList())
         })
-        viewModel.stateMerger.observe(viewLifecycleOwner, Observer {
+        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
             setLoadingState(it)
         })
     }
