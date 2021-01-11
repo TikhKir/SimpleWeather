@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
+import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
 import lecho.lib.hellocharts.model.Line
@@ -53,7 +55,7 @@ class ConditionDetailsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
 
         if (savedInstanceState == null) {
-            getNavGraphArgs()
+            startRequestFromNavGraphArgs()
             initFavouriteState()
         } else {
             isFavourite = savedInstanceState.getBoolean(FAVOURITE_KEY)
@@ -65,7 +67,6 @@ class ConditionDetailsFragment : Fragment() {
         setHasOptionsMenu(true)
         initRecyclers()
         observeViewModel()
-        initListeners()
     }
 
 
@@ -73,13 +74,16 @@ class ConditionDetailsFragment : Fragment() {
         viewModel.currentLiveData.observe(viewLifecycleOwner, Observer {
             initCurrentState(it)
         })
-        viewModel.hourlyListLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.hourlyLiveData.observe(viewLifecycleOwner, Observer {
             hourlyAdapter.submitList(it.toList())
             initChart(it)
             calculateViewsSize(it.size)
         })
-        viewModel.dailyListLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.dailyLivaData.observe(viewLifecycleOwner, Observer {
             dailyAdapter.submitList(it.toList())
+        })
+        viewModel.stateMerger.observe(viewLifecycleOwner, Observer {
+            setLoadingState(it)
         })
     }
 
@@ -137,6 +141,7 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun calculateViewsSize(arraySize: Int) {
+        //matching the size of graph to the size of recycler to fit in one scrollview
         val params = hello_chart_view.layoutParams
 
         if (params.width != widthOfItem * arraySize) {
@@ -159,8 +164,15 @@ class ConditionDetailsFragment : Fragment() {
         hello_chart_view.invalidate()
     }
 
+    private fun setLoadingState(state: State) {
+        when (state) {
+            is State.Default -> setLoading(true)
+            is State.Loading -> setLoading(true)
+            is State.Error -> showErrorMessage("Что-то пошло не так...") //todo: сделать нормальную доставку ошибок
+            is State.Success -> setLoading(false)
+        }
+    }
 
-    private fun initListeners() {}
 
     private fun initRecyclers() {
         hourlyAdapter = HourlyConditionalAdapter(widthOfItem)
@@ -174,7 +186,7 @@ class ConditionDetailsFragment : Fragment() {
         recyclerView_daily_conditions.adapter = dailyAdapter
     }
 
-    private fun getNavGraphArgs() {
+    private fun startRequestFromNavGraphArgs() {
         val location = navArgs.location
         if (location.locationId != -1L) { //location already exist in db
             viewModel.getCurrentWeatherCondition(location.locationId)
@@ -187,6 +199,42 @@ class ConditionDetailsFragment : Fragment() {
         }
     }
 
+
+    private fun setAsFavourite() {
+        isFavourite = true
+        changeMenu.findItem(R.id.action_save).isVisible = false
+        changeMenu.findItem(R.id.action_delete).isVisible = true
+        Toast.makeText(requireContext(), getString(R.string.added_to_favourite), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun unsetAsFavourite() {
+        isFavourite = false
+        changeMenu.findItem(R.id.action_save).isVisible = true
+        changeMenu.findItem(R.id.action_delete).isVisible = false
+        Toast.makeText(requireContext(), getString(R.string.deleted_from_favourite), Toast.LENGTH_SHORT).show()
+        if (navArgs.location.locationId != -1L) requireActivity().onBackPressed()
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        condition_progress_bar.isVisible = isLoading
+        condition_fragment_root.isVisible = !isLoading
+        condition_error_message.isVisible = false
+    }
+
+    private fun showErrorMessage(message: String) {
+        condition_error_message.text = message
+        condition_error_message.isVisible = true
+    }
+
+    private fun initFavouriteState() {
+        isFavourite = (navArgs.location.locationId != -1L)
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(FAVOURITE_KEY, isFavourite)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         changeMenu = menu
@@ -214,31 +262,6 @@ class ConditionDetailsFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun setAsFavourite() {
-        isFavourite = true
-        changeMenu.findItem(R.id.action_save).isVisible = false
-        changeMenu.findItem(R.id.action_delete).isVisible = true
-        Toast.makeText(requireContext(), "Добавлено в избранное!", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun unsetAsFavourite() {
-        isFavourite = false
-        changeMenu.findItem(R.id.action_save).isVisible = true
-        changeMenu.findItem(R.id.action_delete).isVisible = false
-        Toast.makeText(requireContext(), "Удалено из избранного!", Toast.LENGTH_SHORT).show()
-        if (navArgs.location.locationId != -1L) requireActivity().onBackPressed()
-    }
-
-    private fun initFavouriteState() {
-        isFavourite = (navArgs.location.locationId != -1L)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(FAVOURITE_KEY, isFavourite)
-    }
-
 
     override fun onStop() {
         super.onStop()

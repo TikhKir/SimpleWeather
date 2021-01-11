@@ -71,7 +71,6 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         recyclerView_search.adapter = searchAdapter
     }
 
-
     private fun initReactiveViews() {
         lifecycleScope.launch {
             searchView.searchWatcherFlow()

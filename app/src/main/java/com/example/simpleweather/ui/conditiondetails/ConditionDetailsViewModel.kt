@@ -2,15 +2,14 @@ package com.example.simpleweather.ui.conditiondetails
 
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.ResultType
+import com.example.simpleweather.utils.datawrappers.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,33 +18,69 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     private val repository: RepositoryApi
 ) : ViewModel() {
 
-    val currentLiveData = MutableLiveData<CurrentWeatherCondition>()
-    val hourlyListLiveData = MutableLiveData<List<HourlyWeatherCondition>>()
-    val dailyListLiveData = MutableLiveData<List<DailyWeatherCondition>>()
+    private val currentCondition = MutableLiveData<CurrentWeatherCondition>()
+    private val hourlyCondition = MutableLiveData<List<HourlyWeatherCondition>>()
+    private val dailyCondition = MutableLiveData<List<DailyWeatherCondition>>()
+    private val stateCurrent: MutableLiveData<State> = MutableLiveData(State.Default())
+    private val stateHourly: MutableLiveData<State> = MutableLiveData(State.Default())
+    private val stateDaily: MutableLiveData<State> = MutableLiveData(State.Default())
+
+    val currentLiveData: LiveData<CurrentWeatherCondition> get() = currentCondition
+    val hourlyLiveData: LiveData<List<HourlyWeatherCondition>> get() = hourlyCondition
+    val dailyLivaData: LiveData<List<DailyWeatherCondition>> get() = dailyCondition
+    val stateMerger = MediatorLiveData<State>()
+
+
+    init {
+        stateMerger.addSource(stateCurrent) { stateMerger.postValue(handleStates()) }
+        stateMerger.addSource(stateHourly) { stateMerger.postValue(handleStates()) }
+        stateMerger.addSource(stateDaily) { stateMerger.postValue(handleStates()) }
+    }
+
+    private fun handleStates(): State {
+        Log.e("STATES", "${stateCurrent.value} ${stateHourly.value} ${stateDaily.value} \n")
+
+        if ((stateCurrent.value is State.Error) ||
+            (stateHourly.value is State.Error) ||
+            (stateDaily.value is State.Error)
+        ) return State.Error()
+
+        return if ((stateCurrent.value is State.Success) &&
+            (stateHourly.value is State.Success) &&
+            (stateDaily.value is State.Success)
+        ) State.Success()
+        else State.Loading()
+
+    }
 
 
     fun getHourlyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            stateHourly.postValue(State.Loading())
             repository.getHourlyCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        hourlyListLiveData.postValue(response.data)
+                        hourlyCondition.postValue(response.data)
+                        stateHourly.postValue(State.Success())
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
+                        stateHourly.postValue(State.Error())
                     }
                 }
         }
     }
 
-
     fun getCurrentWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            stateCurrent.postValue(State.Loading())
             repository.getCurrentCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        currentLiveData.postValue(response.data)
+                        currentCondition.postValue(response.data)
+                        stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+                        stateCurrent.postValue(State.Error())
                     }
                 }
         }
@@ -54,12 +89,15 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
 
     fun getDailyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
+            stateDaily.postValue(State.Loading())
             repository.getDailyCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        dailyListLiveData.postValue(response.data)
+                        dailyCondition.postValue(response.data)
+                        stateDaily.postValue(State.Success())
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
+                        stateDaily.postValue(State.Error())
                     }
                 }
         }
@@ -67,12 +105,15 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
 
     fun getHourlyWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {
+            stateHourly.postValue(State.Loading())
             repository.getHourlyCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        hourlyListLiveData.postValue(response.data)
+                        hourlyCondition.postValue(response.data)
+                        stateHourly.postValue(State.Success())
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
+                        stateHourly.postValue(State.Error())
                     }
                 }
         }
@@ -83,7 +124,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getCurrentCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        currentLiveData.postValue(response.data)
+                        currentCondition.postValue(response.data)
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
                     }
@@ -96,7 +137,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getDailyCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        dailyListLiveData.postValue(response.data)
+                        dailyCondition.postValue(response.data)
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
                     }
@@ -120,8 +161,4 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
         return id
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.e("VM", "onCleared")
-    }
 }
