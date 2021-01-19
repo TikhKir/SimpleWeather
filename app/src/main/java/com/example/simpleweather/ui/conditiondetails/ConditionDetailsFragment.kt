@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
@@ -30,7 +31,6 @@ class ConditionDetailsFragment : Fragment() {
     companion object {
         fun newInstance() = ConditionDetailsFragment()
         private const val numberOfColumns = 5
-        private const val FAVOURITE_KEY = "FAVOURITE_KEY"
     }
 
     private lateinit var viewModel: ConditionDetailsViewModel
@@ -38,7 +38,6 @@ class ConditionDetailsFragment : Fragment() {
     private lateinit var dailyAdapter: DailyConditionalAdapter
     private lateinit var changeMenu: Menu
     private val navArgs: ConditionDetailsFragmentArgs by navArgs()
-    private var isFavourite = false
     private var widthOfItem = 0
 
 
@@ -55,10 +54,8 @@ class ConditionDetailsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
 
         if (savedInstanceState == null) {
-            startRequestFromNavGraphArgs()
+            startRequestWithNavGraphArgs()
             initFavouriteState()
-        } else {
-            isFavourite = savedInstanceState.getBoolean(FAVOURITE_KEY)
         }
     }
 
@@ -164,15 +161,6 @@ class ConditionDetailsFragment : Fragment() {
         hello_chart_view.invalidate()
     }
 
-    private fun setLoadingState(state: State) {
-        when (state) {
-            is State.Default -> setLoading(true)
-            is State.Loading -> setLoading(true)
-            is State.Error -> showErrorMessage("Что-то пошло не так...") //todo: сделать нормальную доставку ошибок
-            is State.Success -> setLoading(false)
-        }
-    }
-
 
     private fun initRecyclers() {
         hourlyAdapter = HourlyConditionalAdapter(widthOfItem)
@@ -186,7 +174,7 @@ class ConditionDetailsFragment : Fragment() {
         recyclerView_daily_conditions.adapter = dailyAdapter
     }
 
-    private fun startRequestFromNavGraphArgs() {
+    private fun startRequestWithNavGraphArgs() {
         val location = navArgs.location
         if (location.locationId != -1L) { //location already exist in db
             viewModel.getCurrentWeatherCondition(location.locationId)
@@ -201,18 +189,26 @@ class ConditionDetailsFragment : Fragment() {
 
 
     private fun setAsFavourite() {
-        isFavourite = true
+        viewModel.isFavourite = true
         changeMenu.findItem(R.id.action_save).isVisible = false
         changeMenu.findItem(R.id.action_delete).isVisible = true
         Toast.makeText(requireContext(), getString(R.string.added_to_favourite), Toast.LENGTH_SHORT).show()
     }
 
     private fun unsetAsFavourite() {
-        isFavourite = false
+        viewModel.isFavourite = false
         changeMenu.findItem(R.id.action_save).isVisible = true
         changeMenu.findItem(R.id.action_delete).isVisible = false
         Toast.makeText(requireContext(), getString(R.string.deleted_from_favourite), Toast.LENGTH_SHORT).show()
-        if (navArgs.location.locationId != -1L) requireActivity().onBackPressed()
+    }
+
+    private fun setLoadingState(state: State) {
+        when (state) {
+            is State.Default -> setLoading(true)
+            is State.Loading -> setLoading(true)
+            is State.Error -> showErrorMessage("Что-то пошло не так...") //todo: сделать нормальную доставку ошибок
+            is State.Success -> setLoading(false)
+        }
     }
 
     private fun setLoading(isLoading: Boolean) {
@@ -222,25 +218,22 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun showErrorMessage(message: String) {
+        condition_progress_bar.isVisible = false
+        condition_fragment_root.isVisible = false
         condition_error_message.text = message
         condition_error_message.isVisible = true
     }
 
     private fun initFavouriteState() {
-        isFavourite = (navArgs.location.locationId != -1L)
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(FAVOURITE_KEY, isFavourite)
+        viewModel.isFavourite = (navArgs.location.locationId != -1L)
+        viewModel.favouriteLocation = navArgs.location
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         changeMenu = menu
         inflater.inflate(R.menu.conditional_favourite_menu, menu)
 
-        if (isFavourite) {
+        if (viewModel.isFavourite) {
             changeMenu.findItem(R.id.action_save).isVisible = false
             changeMenu.findItem(R.id.action_delete).isVisible = true
         } else {
@@ -263,13 +256,10 @@ class ConditionDetailsFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (isFavourite) {
-            viewModel.saveLocation(navArgs.location)
-        } else {
-            viewModel.deleteLocation(navArgs.location.locationId)
-        }
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as MainActivity).setActionBarTitle(navArgs.location.addressCity)
     }
+
 
 }

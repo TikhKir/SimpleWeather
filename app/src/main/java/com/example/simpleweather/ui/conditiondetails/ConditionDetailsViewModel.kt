@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.simpleweather.repository.RepositoryApi
+import com.example.simpleweather.repository.favswitcher.DeferredFavouriteSwitcher
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ConditionDetailsViewModel @ViewModelInject constructor(
-    private val repository: RepositoryApi
+    private val repository: RepositoryApi,
+    private val deferredFavouriteSwitcher: DeferredFavouriteSwitcher
 ) : ViewModel() {
 
     private val currentCondition = MutableLiveData<CurrentWeatherCondition>()
@@ -30,6 +32,9 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     val hourlyLiveData: LiveData<List<HourlyWeatherCondition>> get() = hourlyCondition
     val dailyLivaData: LiveData<List<DailyWeatherCondition>> get() = dailyCondition
     val stateLiveData: LiveData<State> get() = unionStates
+
+    var favouriteLocation : LocationWithCoords? = null
+    var isFavourite: Boolean = false
 
 
     init {
@@ -135,27 +140,18 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     }
 
 
-    fun saveLocation(location: LocationWithCoords): Long {
-        var id = -10L
-        viewModelScope.launch(Dispatchers.IO) {
-            id = repository.saveNewLocation(location)
-        }
-        return id
+    private fun saveLocation(location: LocationWithCoords) {
+        deferredFavouriteSwitcher.addToFavourite(location)
     }
 
-    fun deleteLocation(locationId: Long): Int {
-        var id = -10
-        viewModelScope.launch(Dispatchers.IO) {
-            id = repository.deleteLocation(locationId)
-        }
-        return id
+    private fun deleteLocation(locationId: Long) {
+        deferredFavouriteSwitcher.deleteFromFavourite(locationId)
     }
-
 
     private fun mergeStates() {
-        unionStates.addSource(stateCurrent) { unionStates.postValue(handleStates()) }
-        unionStates.addSource(stateHourly) { unionStates.postValue(handleStates()) }
-        unionStates.addSource(stateDaily) { unionStates.postValue(handleStates()) }
+        unionStates.addSource(stateCurrent) { unionStates.value = handleStates() }
+        unionStates.addSource(stateHourly) { unionStates.value = handleStates() }
+        unionStates.addSource(stateDaily) { unionStates.value = handleStates() }
     }
 
     private fun handleStates(): State {
@@ -169,5 +165,14 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             (stateDaily.value is State.Success)
         ) State.Success()
         else State.Loading()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (favouriteLocation != null && isFavourite) {
+            saveLocation(favouriteLocation!!)
+        } else {
+            deleteLocation(favouriteLocation!!.locationId)
+        }
     }
 }
