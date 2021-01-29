@@ -106,7 +106,8 @@ class ConditionDetailsFragment : Fragment() {
         text_view_hudimity_count.text = currentCondition.humidity.toString()
         text_view_pressure_count.text = currentCondition.pressure.toString()
         text_view_wind_count.text = currentCondition.windSpeed.toString()
-        val allVolume = currentCondition.rainVolumeLastHour ?: 0
+        val allVolume = (currentCondition.rainVolumeLastHour ?: 0F) +
+                (currentCondition.snowVolumeLastHour ?: 0F)
         text_view_volume_prec_count.text = allVolume.toString()
     }
 
@@ -192,14 +193,19 @@ class ConditionDetailsFragment : Fragment() {
         viewModel.isFavourite = true
         changeMenu.findItem(R.id.action_save).isVisible = false
         changeMenu.findItem(R.id.action_delete).isVisible = true
-        Toast.makeText(requireContext(), getString(R.string.added_to_favourite), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.added_to_favourite), Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun unsetAsFavourite() {
         viewModel.isFavourite = false
         changeMenu.findItem(R.id.action_save).isVisible = true
         changeMenu.findItem(R.id.action_delete).isVisible = false
-        Toast.makeText(requireContext(), getString(R.string.deleted_from_favourite), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.deleted_from_favourite),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun setLoadingState(state: State) {

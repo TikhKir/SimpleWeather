@@ -33,7 +33,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     val dailyLivaData: LiveData<List<DailyWeatherCondition>> get() = dailyCondition
     val stateLiveData: LiveData<State> get() = unionStates
 
-    var favouriteLocation : LocationWithCoords? = null
+    var favouriteLocation: LocationWithCoords? = null
     var isFavourite: Boolean = false
 
 
@@ -140,14 +140,6 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
     }
 
 
-    private fun saveLocation(location: LocationWithCoords) {
-        deferredFavouriteSwitcher.addToFavourite(location)
-    }
-
-    private fun deleteLocation(locationId: Long) {
-        deferredFavouriteSwitcher.deleteFromFavourite(locationId)
-    }
-
     private fun mergeStates() {
         unionStates.addSource(stateCurrent) { unionStates.value = handleStates() }
         unionStates.addSource(stateHourly) { unionStates.value = handleStates() }
@@ -165,6 +157,14 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             (stateDaily.value is State.Success)
         ) State.Success()
         else State.Loading()
+    }
+
+    private fun saveLocation(location: LocationWithCoords) {
+        deferredFavouriteSwitcher.addToFavourite(location)
+    }
+
+    private fun deleteLocation(locationId: Long) {
+        deferredFavouriteSwitcher.deleteFromFavourite(locationId)
     }
 
     override fun onCleared() {

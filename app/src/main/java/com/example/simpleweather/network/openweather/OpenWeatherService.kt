@@ -1,5 +1,6 @@
 package com.example.simpleweather.network.openweather
 
+import com.example.simpleweather.BuildConfig
 import com.example.simpleweather.network.openweather.rawmodel.RawOneCallResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,7 +18,7 @@ interface OpenWeatherService {
         private const val PARAM_UNITS = "units"
 
         private const val LANGUAGE_RU = "ru"
-        private const val API_KEY = "b118ef7fa8a84776aba19e49ff5a8e46"
+        private const val API_KEY = BuildConfig.API_KEY_OPENWEATHER
         private const val EXCLUDE_HOURLY = "hourly"
         private const val EXCLUDE_DAILY = "daily"
         private const val EXCLUDE_ALERTS = "alerts"
@@ -26,7 +27,6 @@ interface OpenWeatherService {
         private const val UNITS_METRIC = "metric"
         private const val UNITS_IMPERIAL = "imperial"
 
- //       https://api.openweathermap.org/data/2.5/onecall?lat=51.686081&lon=108.705711&&appid=b118ef7fa8a84776aba19e49ff5a8e46&lang=ru
     }
 
     @GET("onecall")

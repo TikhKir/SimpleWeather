@@ -1,5 +1,6 @@
 package com.example.simpleweather.network.locationiq
 
+import com.example.simpleweather.BuildConfig
 import com.example.simpleweather.network.locationiq.rawmodel.RawLocation
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -19,9 +20,9 @@ interface LocationIqService {
         private const val PARAMS_NORMALIZED_CITY = "normalizecity"
         private const val PARAMS_ADDRESS_DETAILS = "addressdetails"
 
-        private const val API_KEY = "03a8b218ce9f80"
+        private const val API_KEY = BuildConfig.API_KEY_LOCATIONIQ
         private const val LANGUAGE_RU = "ru"
-        private const val TRUE = 1 //todo: возможно поменять на boolean
+        private const val TRUE = 1
         private const val DEF_LIMIT_RESPONSES = 20
         private const val FORMAT_JSON = "json"
     }
@@ -39,7 +40,7 @@ interface LocationIqService {
     ) : List<RawLocation>
 
 
-    @GET("reverse.php") //this method must return a list with nearby locations, but API still not support this feature =(
+    @GET("reverse.php") //this method must return a list with nearby locations, but locationIQ still not support this feature =(
     suspend fun getCityListByCoords(
         @Query(PARAMS_LATITUDE) latitude: Float,
         @Query(PARAMS_LONGITUDE) longitude: Float,
