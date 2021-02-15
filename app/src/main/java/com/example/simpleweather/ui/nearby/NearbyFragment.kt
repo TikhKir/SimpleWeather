@@ -92,6 +92,7 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun updateLocationTracking(isTracking: Boolean) {
         if (isTracking) {
             if (LocationUtility.hasLocationPermissions(requireContext())) {
+                setLoadingState(State.Loading())
                 val request = LocationRequest().apply {
                     interval = 5000
                     fastestInterval = 2000
@@ -103,7 +104,7 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     Looper.getMainLooper()
                 )
             } else {
-                Log.e("PERMISSION", "DENIED")
+                setLoadingState(State.Error(getString(R.string.need_location_permissions_message)))
             }
         } else {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
@@ -120,7 +121,6 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                         Log.e("LOCATION CHECK GPS", "${location.latitude}, ${location.longitude}")
                         viewModel.loadLocationsByCoords(location.latitude.toFloat(), location.longitude.toFloat())
                         isTracking.postValue(false)
-                        setLoadingState(State.Success())
                     }
                 }
             }
