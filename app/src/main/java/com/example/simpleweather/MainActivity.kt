@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.simpleweather.utils.setupWithNavController
@@ -14,7 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
     private var currentNavController: LiveData<NavController>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) setupBottomNavigationBar()
         // Else, need to wait for onRestoreInstanceState
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {

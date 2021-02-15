@@ -95,10 +95,16 @@ class ConditionDetailsFragment : Fragment() {
             currentCondition.timeStamp.toLong(),
             0,
             ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
-        )
-            .format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
+        ).format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
+
+        val refreshTime = LocalDateTime.ofEpochSecond(
+            navArgs.location.refreshTimeCurrent,
+            0,
+            ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
+        ).format(DateTimeFormatter.ofPattern("d MMMM, HH:mm"))
 
         text_view_current_datetime.text = time
+        text_view_refresh_time.text = refreshTime
         text_view_current_temperature.text = currentCondition.temp?.toInt().toString()
         text_view_current_conditional.text = currentCondition.weatherDescription
         text_view_current_feelslike.text = feelsLikeStr
@@ -212,7 +218,7 @@ class ConditionDetailsFragment : Fragment() {
         when (state) {
             is State.Default -> setLoading(true)
             is State.Loading -> setLoading(true)
-            is State.Error -> showErrorMessage("Что-то пошло не так...") //todo: сделать нормальную доставку ошибок
+            is State.Error -> showErrorMessage(state.errorMessage)
             is State.Success -> setLoading(false)
         }
     }

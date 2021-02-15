@@ -33,7 +33,7 @@ class SearchViewModel @ViewModelInject constructor(
                 state.postValue(State.Success())
             } else {
                 Log.e("SEARCH LOCATION", locationList.error?.message.toString())
-                state.postValue(State.Error())
+                state.postValue(State.Error(locationList.error?.message.toString()))
             }
         }
     }

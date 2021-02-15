@@ -32,9 +32,10 @@
 
         <TextView
             android:id="@+id/text_view_search_error"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="@string/something_wrong"
+            android:textAlignment="center"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

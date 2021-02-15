@@ -9,6 +9,7 @@
     <ScrollView
         android:id="@+id/condition_fragment_root"
         android:visibility="invisible"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -28,6 +29,16 @@
                 tools:text="Ср, 11 ноября, 12:08" />
 
             <TextView
+                android:id="@+id/text_view_refresh_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_current_datetime"
+                tools:text="(обновлено: 10 ноября, 13:30)" />
+
+            <TextView
                 android:id="@+id/text_view_current_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -35,7 +46,7 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_view_current_datetime"
+                app:layout_constraintTop_toBottomOf="@+id/text_view_refresh_time"
                 tools:text="+28°" />
 
             <TextView
@@ -214,9 +225,10 @@
 
     <TextView
         android:id="@+id/condition_error_message"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         tools:text="Что-то пошло не так..."
+        android:textAlignment="center"
         android:visibility="invisible"
         android:layout_gravity="center"/>
 

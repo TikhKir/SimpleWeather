@@ -2,13 +2,17 @@ package com.example.simpleweather.ui.nearby
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -16,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.utils.Constants.REQUEST_CODE_LOCATION_PERMISSIONS
+import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.easypermissions.LocationUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -51,8 +56,15 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         initViewModel()
         requestPermissions()
-        initLocationChecker()
         initRecycler()
+
+        if (checkIsLocationAvailable()) {
+            initLocationChecker()
+        } else {
+            setLoadingState(State.Error("Включите геолокацию"))
+        }
+
+
     }
 
     private fun initViewModel() {
@@ -71,7 +83,27 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
 
 
+    private fun checkIsLocationAvailable() : Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val locationManager =
+                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager.isLocationEnabled
+        } else {
+            val mode = Settings.Secure.getInt(
+                requireContext().contentResolver,
+                Settings.Secure.LOCATION_MODE,
+                Settings.Secure.LOCATION_MODE_OFF
+            )
+            mode != Settings.Secure.LOCATION_MODE_OFF
+        }
+    }
 
+    private fun initLocationChecker() {
+        fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
+        isTracking.observe(viewLifecycleOwner, Observer {
+            updateLocationTracking(it)
+        })
+    }
 
     @SuppressLint("MissingPermission")
     private fun updateLocationTracking(isTracking: Boolean) {
@@ -99,23 +131,44 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
             if (isTracking.value!!) {
+                setLoadingState(State.Loading())
                 result?.locations?.let { locations ->
                     for (location in locations) {
                         Log.e("LOCATION CHECK GPS", "${location.latitude}, ${location.longitude}")
                         viewModel.loadLocationsByCoords(location.latitude.toFloat(), location.longitude.toFloat())
                         isTracking.postValue(false)
+                        setLoadingState(State.Success())
                     }
                 }
             }
         }
     }
 
-    private fun initLocationChecker() {
-        fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
-        isTracking.observe(viewLifecycleOwner, Observer {
-            updateLocationTracking(it)
-        })
+
+    private fun setLoadingState(state: State) {
+        when (state) {
+            is State.Default -> setLoading(true)
+            is State.Loading -> setLoading(true)
+            is State.Error -> showErrorMessage(state.errorMessage) //todo: сделать нормальную доставку ошибок
+            is State.Success -> setLoading(false)
+        }
     }
+
+    private fun setLoading(isLoading: Boolean) {
+        progress_bar_nearby.isVisible = isLoading
+        text_view_nearby_message.isVisible = false
+    }
+
+    private fun showErrorMessage(message: String) {
+        progress_bar_nearby.isVisible = false
+        text_view_nearby_message.text = message
+        text_view_nearby_message.isVisible = true
+    }
+
+
+
+
+
 
     private fun requestPermissions() {
         if (LocationUtility.hasLocationPermissions(requireContext())) return

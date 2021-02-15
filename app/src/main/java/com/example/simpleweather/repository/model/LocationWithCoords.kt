@@ -15,6 +15,9 @@ data class LocationWithCoords(
     val addressCounty: String?,
     val addressState: String?,
     val addressCountry: String?,
+    val refreshTimeDaily: Long,
+    val refreshTimeHourly: Long,
+    val refreshTimeCurrent: Long
 
 ) : Identified, Parcelable
 {
@@ -28,7 +31,10 @@ data class LocationWithCoords(
             addressCity,
             addressCounty,
             addressState,
-            addressCountry
+            addressCountry,
+            refreshTimeDaily,
+            refreshTimeHourly,
+            refreshTimeCurrent
         )
     }
 

@@ -8,10 +8,13 @@ import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.utils.Constants.REFRESH_INTERVAL
+import com.example.simpleweather.utils.Constants.REFRESH_INTERVAL_CURRENT
 import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import org.threeten.bp.Instant
 import javax.inject.Inject
 
 class RepositoryApiImpl @Inject constructor(
@@ -20,56 +23,94 @@ class RepositoryApiImpl @Inject constructor(
     private val dataApi: DataApi
 ) : RepositoryApi {
 
-    override suspend fun getDailyCondition(lat: Float, lon: Float): Flow<Result<List<DailyWeatherCondition>>> {
+    override suspend fun getDailyCondition(
+        lat: Float,
+        lon: Float
+    ): Flow<Result<List<DailyWeatherCondition>>> {
         return flowOf(openWeatherApi.getDailyCondition(lat, lon))
     }
 
     override suspend fun getDailyCondition(locationId: Long): Flow<Result<List<DailyWeatherCondition>>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val netResponse = openWeatherApi.getDailyCondition(location.latitude, location.longitude)
+        val currentTime = Instant.now().epochSecond
+        val timeDifference = currentTime - location.refreshTimeDaily
 
-        if (netResponse.resultType == ResultType.SUCCESS) {
-            netResponse.data?.let { saveDailyForecast(locationId, it) }
-            return flowOf(netResponse)
+        return if (timeDifference > REFRESH_INTERVAL) {
+            val netResponse =
+                openWeatherApi.getDailyCondition(location.latitude, location.longitude)
+            if (netResponse.resultType == ResultType.SUCCESS) {
+                netResponse.data?.let {
+                    saveDailyForecast(locationId, it)
+                    dataApi.updateDailyRefreshTime(currentTime, locationId)
+                }
+                flowOf(netResponse)
+            } else {
+                Log.e("NET_DAILY_UPDATE_FAIL", netResponse.error?.message.toString())
+                dataApi.getDailyForecast(locationId)
+            }
         } else {
-            Log.e("NET_DAILY_UPDATE_FAIL",  netResponse.error?.message.toString())
-            return dataApi.getDailyForecast(locationId)
+            Log.e("NET_DAILY_UPDATE_FAIL", "Refresh interval is not over")
+            dataApi.getDailyForecast(locationId)
         }
     }
 
-    override suspend fun getHourlyCondition(lat: Float, lon: Float): Flow<Result<List<HourlyWeatherCondition>>> {
+    override suspend fun getHourlyCondition(
+        lat: Float,
+        lon: Float
+    ): Flow<Result<List<HourlyWeatherCondition>>> {
         return flowOf(openWeatherApi.getHourlyCondition(lat, lon))
     }
 
     override suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val netResponse = openWeatherApi.getHourlyCondition(location.latitude, location.longitude)
+        val currentTime = Instant.now().epochSecond
+        val timeDifference = currentTime - location.refreshTimeHourly
 
-        if (netResponse.resultType == ResultType.SUCCESS) {
-            netResponse.data?.let { saveHourlyForecast(locationId, it) }
-            return flowOf(netResponse)
+        return if (timeDifference > REFRESH_INTERVAL) {
+            val netResponse =
+                openWeatherApi.getHourlyCondition(location.latitude, location.longitude)
+            if (netResponse.resultType == ResultType.SUCCESS) {
+                netResponse.data?.let {
+                    saveHourlyForecast(locationId, it)
+                    dataApi.updateHourlyRefreshTime(currentTime, locationId)
+                }
+                flowOf(netResponse)
+            } else {
+                Log.e("NET_HOURLY_UPDATE_FAIL", netResponse.error?.message.toString())
+                dataApi.getHourlyForecast(locationId)
+            }
         } else {
-            Log.e("NET_HOURLY_UPDATE_FAIL",  netResponse.error?.message.toString())
-            return dataApi.getHourlyForecast(locationId)
+            Log.e("NET_HOURLY_UPDATE_FAIL", "Refresh interval is not over")
+            dataApi.getHourlyForecast(locationId)
         }
     }
 
-    override suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>> {
+    override suspend fun getCurrentCondition(
+        lat: Float,
+        lon: Float
+    ): Flow<Result<CurrentWeatherCondition>> {
         return flowOf(openWeatherApi.getCurrentCondition(lat, lon))
     }
 
     override suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val netResponse = openWeatherApi.getCurrentCondition(location.latitude, location.longitude)
+        val currentTime = Instant.now().epochSecond
+        val timeDifference = currentTime - location.refreshTimeHourly
 
-        if (netResponse.resultType == ResultType.SUCCESS) {
-            return flowOf(netResponse)
+        return if (timeDifference > REFRESH_INTERVAL_CURRENT) {
+            val netResponse = openWeatherApi.getCurrentCondition(location.latitude, location.longitude)
+            if (netResponse.resultType == ResultType.SUCCESS) {
+                dataApi.updateCurrentRefreshTime(currentTime, locationId)
+                flowOf(netResponse)
+            } else {
+                Log.e("NET_CURRENT_UPDATE_FAIL", netResponse.error?.message.toString())
+                dataApi.getCurrentForecast(locationId)
+            }
         } else {
-            Log.e("NET_CURRENT_UPDATE_FAIL",  netResponse.error?.message.toString())
-            return dataApi.getCurrentForecast(locationId)
+            Log.e("NET_CURRENT_UPDATE_FAIL", "Refresh interval is not over")
+            dataApi.getCurrentForecast(locationId)
         }
     }
-
 
 
     override suspend fun getSavedLocations(): Flow<List<LocationWithCoords>> {
@@ -103,10 +144,12 @@ class RepositoryApiImpl @Inject constructor(
         return locationIqApi.getCoordsByCityName(cityName)
     }
 
-    override suspend fun getCityNameByCoords(lat: Float, lon: Float): Result<List<LocationWithCoords>> {
+    override suspend fun getCityNameByCoords(
+        lat: Float,
+        lon: Float
+    ): Result<List<LocationWithCoords>> {
         return locationIqApi.getCityNameByCoords(lat, lon)
     }
-
 
 
 }

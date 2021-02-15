@@ -18,6 +18,12 @@ interface DataApi {
 
     suspend fun saveDailyForecast(locationId: Long, listDaily: List<DailyWeatherCondition>)
 
+    suspend fun updateDailyRefreshTime(lastUpdateTime: Long, locationId: Long)
+
+    suspend fun updateHourlyRefreshTime(lastUpdateTime: Long, locationId: Long)
+
+    suspend fun updateCurrentRefreshTime(lastUpdateTime: Long, locationId: Long)
+
     suspend fun saveHourlyForecast(locationId: Long, listHourly: List<HourlyWeatherCondition>)
 
 

@@ -61,7 +61,7 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
             searchAdapter.submitList(it.toList())
         })
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
-            setState(it)
+            setLoadingState(it)
         })
     }
 
@@ -83,34 +83,24 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         }
     }
 
-    private fun setState(state: State) {
+    private fun setLoadingState(state: State) {
         when (state) {
-            is State.Default -> {
-                setLoadingState(false)
-            }
-
-            is State.Loading -> {
-                setLoadingState(true)
-                setErrorVisibility(false)
-            }
-
-            is State.Error -> {
-                setLoadingState(false)
-                setErrorVisibility(true)
-            }
-
-            is State.Success -> {
-                setLoadingState(false)
-            }
+            is State.Default -> setLoading(false)
+            is State.Loading -> setLoading(true)
+            is State.Error -> showErrorMessage(state.errorMessage)
+            is State.Success -> setLoading(false)
         }
     }
 
-    private fun setLoadingState(isLoading: Boolean) {
+    private fun setLoading(isLoading: Boolean) {
         search_progress_bar.isVisible = isLoading
+        text_view_search_error.isVisible = false
     }
 
-    private fun setErrorVisibility(isVisible: Boolean) {
-        text_view_search_error.isVisible = isVisible
+    private fun showErrorMessage(message: String) {
+        search_progress_bar.isVisible = false
+        text_view_search_error.text = message
+        text_view_search_error.isVisible = true
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -121,8 +111,6 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         searchView = menu.findItem(R.id.action_search)?.actionView as SearchView
         searchView.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
         searchView.maxWidth = Int.MAX_VALUE
-
-//        if (searchQuery != null) searchView.setQuery(searchQuery, true)
         searchView.isIconified = false
 
         initReactiveViews()

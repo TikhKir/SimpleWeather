@@ -73,6 +73,18 @@ class DataApiImpl @Inject constructor(
         return weatherDao.saveNewLocation(location.toLocationDB())
     }
 
+    override suspend fun updateDailyRefreshTime(lastUpdateTime: Long, locationId: Long) {
+        weatherDao.updateDailyRefreshTime(lastUpdateTime, locationId)
+    }
+
+    override suspend fun updateHourlyRefreshTime(lastUpdateTime: Long, locationId: Long) {
+        weatherDao.updateHourlyRefreshTime(lastUpdateTime, locationId)
+    }
+
+    override suspend fun updateCurrentRefreshTime(lastUpdateTime: Long, locationId: Long) {
+        weatherDao.updateCurrentRefreshTime(lastUpdateTime, locationId)
+    }
+
     override suspend fun getSavedLocations(): Flow<List<LocationWithCoords>> {
         return weatherDao.getSavedLocations()
             .map {

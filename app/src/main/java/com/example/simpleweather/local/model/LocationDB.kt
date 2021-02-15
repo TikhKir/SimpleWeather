@@ -16,7 +16,10 @@ data class LocationDB(
     val city: String,
     val county: String?,
     val state: String?,
-    val country: String?
+    val country: String?,
+    val refreshTimeDaily: Long,
+    val refreshTimeHourly: Long,
+    val refreshTimeCurrent: Long
 ) {
     @PrimaryKey(autoGenerate = true)
     var locationId: Long? = null
@@ -30,7 +33,10 @@ data class LocationDB(
             city,
             county,
             state,
-            country
+            country,
+            refreshTimeDaily,
+            refreshTimeHourly,
+            refreshTimeCurrent
             )
     }
 }

@@ -15,6 +15,15 @@ interface WeatherDao {
     @Insert(entity = LocationDB::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun saveNewLocation(location: LocationDB): Long
 
+    @Query("UPDATE locations SET refreshTimeDaily = :lastUpdateTime WHERE locationId = :locationId")
+    suspend fun updateDailyRefreshTime(lastUpdateTime: Long, locationId: Long)
+
+    @Query("UPDATE locations SET refreshTimeHourly = :lastUpdateTime WHERE locationId = :locationId")
+    suspend fun updateHourlyRefreshTime(lastUpdateTime: Long, locationId: Long)
+
+    @Query("UPDATE locations SET refreshTimeCurrent = :lastUpdateTime WHERE locationId = :locationId")
+    suspend fun updateCurrentRefreshTime(lastUpdateTime: Long, locationId: Long)
+
     @Query("SELECT * FROM locations")
     fun getSavedLocations(): Flow<List<LocationDB>>
 

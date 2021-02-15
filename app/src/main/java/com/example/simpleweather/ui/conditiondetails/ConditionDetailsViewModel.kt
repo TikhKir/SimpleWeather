@@ -52,7 +52,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                         stateHourly.postValue(State.Success())
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
-                        stateHourly.postValue(State.Error())
+                        stateHourly.postValue(State.Error(response.error?.message.toString()))
                     }
                 }
         }
@@ -68,7 +68,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                         stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
-                        stateCurrent.postValue(State.Error())
+                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
                     }
                 }
         }
@@ -84,7 +84,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                         stateDaily.postValue(State.Success())
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
-                        stateDaily.postValue(State.Error())
+                        stateDaily.postValue(State.Error(response.error?.message.toString()))
                     }
                 }
         }
@@ -101,7 +101,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                         stateHourly.postValue(State.Success())
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
-                        stateHourly.postValue(State.Error())
+                        stateHourly.postValue(State.Error(response.error?.message.toString()))
                     }
                 }
         }
@@ -117,7 +117,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                         stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
-                        stateCurrent.postValue(State.Error())
+                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
                     }
                 }
         }
@@ -133,7 +133,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
                         stateDaily.postValue(State.Success())
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
-                        stateDaily.postValue(State.Error())
+                        stateDaily.postValue(State.Error(response.error?.message.toString()))
                     }
                 }
         }
@@ -150,7 +150,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
         if ((stateCurrent.value is State.Error) ||
             (stateHourly.value is State.Error) ||
             (stateDaily.value is State.Error)
-        ) return State.Error()
+        ) return State.Error("Что-то пошло не так...")
 
         return if ((stateCurrent.value is State.Success) &&
             (stateHourly.value is State.Success) &&
