@@ -2,12 +2,9 @@ package com.example.simpleweather.ui.nearby
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -54,22 +51,21 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        initViewModel()
+        observeViewModel()
         requestPermissions()
         initRecycler()
 
-        if (checkIsLocationAvailable()) {
+        if (LocationUtility.isLocationAvailable(requireContext())) {
             initLocationChecker()
         } else {
-            setLoadingState(State.Error("Включите геолокацию"))
+            setLoadingState(State.Error(getString(R.string.turn_on_geolocation)))
         }
-
-
     }
 
-    private fun initViewModel() {
+    private fun observeViewModel() {
         viewModel = ViewModelProvider(this).get(NearbyViewModel::class.java)
-        viewModel.locationsLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.state.observe(viewLifecycleOwner, Observer { setLoadingState(it) })
+        viewModel.locations.observe(viewLifecycleOwner, Observer {
             nearbyLocationsAdapter.submitList(it.toList())
         })
     }
@@ -83,20 +79,7 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
 
 
-    private fun checkIsLocationAvailable() : Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val locationManager =
-                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            locationManager.isLocationEnabled
-        } else {
-            val mode = Settings.Secure.getInt(
-                requireContext().contentResolver,
-                Settings.Secure.LOCATION_MODE,
-                Settings.Secure.LOCATION_MODE_OFF
-            )
-            mode != Settings.Secure.LOCATION_MODE_OFF
-        }
-    }
+
 
     private fun initLocationChecker() {
         fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
@@ -149,7 +132,7 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         when (state) {
             is State.Default -> setLoading(true)
             is State.Loading -> setLoading(true)
-            is State.Error -> showErrorMessage(state.errorMessage) //todo: сделать нормальную доставку ошибок
+            is State.Error -> showErrorMessage(state.errorMessage)
             is State.Success -> setLoading(false)
         }
     }

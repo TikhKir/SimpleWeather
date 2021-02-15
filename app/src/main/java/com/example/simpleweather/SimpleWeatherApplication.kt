@@ -32,7 +32,7 @@ class SimpleWeatherApplication: Application() {
             .build()
 
         workManager.enqueueUniquePeriodicWork(
-            "REFRESH WORK", //hardcode
+            "REFRESH WORK", //todo: hardcode
             ExistingPeriodicWorkPolicy.KEEP,
             periodicRequest
         )

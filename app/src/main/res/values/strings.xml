@@ -15,4 +15,5 @@
     <string name="something_wrong">что-то пошло не так...</string>
     <string name="deleted_from_favourite">Удалено из избранного!</string>
     <string name="added_to_favourite">Добавлено в избранное!</string>
+    <string name="turn_on_geolocation">Включите геолокацию</string>
 </resources>

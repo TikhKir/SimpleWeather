@@ -23,6 +23,7 @@ interface RepositoryApi {
     suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>>
     suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>>
 
+
     suspend fun getSavedLocations(): Flow<List<LocationWithCoords>>
 
     suspend fun saveNewLocation(location: LocationWithCoords): Long

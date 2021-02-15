@@ -97,6 +97,7 @@ class ConditionDetailsFragment : Fragment() {
             ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
         ).format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
 
+        //todo: подтягивать информацию о локации из репозитория через flow
         val refreshTime = LocalDateTime.ofEpochSecond(
             navArgs.location.refreshTimeCurrent,
             0,

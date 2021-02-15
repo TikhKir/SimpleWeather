@@ -63,7 +63,10 @@ class WeatherDaoTest {
             "Big City",
             "county of Big City",
             "Big State",
-            "AwesomeLand"
+            "AwesomeLand",
+            123L,
+            234L,
+            345L
         )
 
         dao.saveNewLocation(location)
