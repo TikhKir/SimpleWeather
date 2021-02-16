@@ -21,7 +21,7 @@ class NearbyViewModel @ViewModelInject constructor(
     val state : LiveData<State> get() =  stateLiveData
 
     private val locationsLiveData = MutableLiveData<List<LocationWithCoords>>()
-    private val stateLiveData = MutableLiveData<State>()
+    private val stateLiveData = MutableLiveData<State>(State.Default())
 
     fun loadLocationsByCoords(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {

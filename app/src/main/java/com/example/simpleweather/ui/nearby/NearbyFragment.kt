@@ -51,40 +51,25 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        doIfGpsAvailableOrShowErrorMessage {
+            fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
+        }
+
         observeViewModel()
         requestPermissions()
         initRecycler()
-
-        if (LocationUtility.isLocationAvailable(requireContext())) {
-            initLocationChecker()
-        } else {
-            setLoadingState(State.Error(getString(R.string.turn_on_geolocation)))
-        }
     }
 
     private fun observeViewModel() {
         viewModel = ViewModelProvider(this).get(NearbyViewModel::class.java)
-        viewModel.state.observe(viewLifecycleOwner, Observer { setLoadingState(it) })
+        viewModel.state.observe(viewLifecycleOwner, Observer { state ->
+            setLoadingState(state)
+            doIfGpsAvailableOrShowErrorMessage {
+                updateLocationTracking(state is State.Loading || state is State.Default)
+            }
+        })
         viewModel.locations.observe(viewLifecycleOwner, Observer {
             nearbyLocationsAdapter.submitList(it.toList())
-        })
-    }
-
-    private fun initRecycler() {
-        recycleView_nearby.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recycleView_nearby.adapter = nearbyLocationsAdapter
-    }
-
-
-
-
-
-
-    private fun initLocationChecker() {
-        fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
-        isTracking.observe(viewLifecycleOwner, Observer {
-            updateLocationTracking(it)
         })
     }
 
@@ -114,23 +99,21 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult?) {
             super.onLocationResult(result)
-            if (isTracking.value!!) {
-                setLoadingState(State.Loading())
                 result?.locations?.let { locations ->
                     for (location in locations) {
-                        Log.e("LOCATION CHECK GPS", "${location.latitude}, ${location.longitude}")
+                        Log.e("COORDS RECEIVED:", "${location.latitude}, ${location.longitude}")
                         viewModel.loadLocationsByCoords(location.latitude.toFloat(), location.longitude.toFloat())
                         isTracking.postValue(false)
                     }
                 }
-            }
         }
     }
 
 
+
     private fun setLoadingState(state: State) {
         when (state) {
-            is State.Default -> setLoading(true)
+            is State.Default -> setLoading(false)
             is State.Loading -> setLoading(true)
             is State.Error -> showErrorMessage(state.errorMessage)
             is State.Success -> setLoading(false)
@@ -148,8 +131,13 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         text_view_nearby_message.isVisible = true
     }
 
-
-
+    private fun doIfGpsAvailableOrShowErrorMessage(doWork: () -> Unit) {
+        if (LocationUtility.isLocationAvailable(requireContext())) {
+            doWork()
+        } else {
+            setLoadingState(State.Error(getString(R.string.turn_on_geolocation)))
+        }
+    }
 
 
 
@@ -182,7 +170,8 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        //not need implement
+        //start tracking manually if permissions granted just now
+        doIfGpsAvailableOrShowErrorMessage { updateLocationTracking(true) }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -190,14 +179,11 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        isTracking.postValue(true)
-    }
 
-    override fun onPause() {
-        super.onPause()
-        isTracking.postValue(false)
-    }
 
+    private fun initRecycler() {
+        recycleView_nearby.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recycleView_nearby.adapter = nearbyLocationsAdapter
+    }
 }
