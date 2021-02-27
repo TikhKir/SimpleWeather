@@ -94,6 +94,11 @@ class DataApiImpl @Inject constructor(
         }
     }
 
+    override suspend fun getSavedLocationsSync(): List<LocationWithCoords> {
+        return weatherDao.getSavedLocationsSync()
+            .map { it.toLocationWithCoords() }
+    }
+
     override suspend fun getSavedLocationById(locationId: Long): LocationWithCoords {
         return weatherDao.getSavedLocationById(locationId)
             .toLocationWithCoords()

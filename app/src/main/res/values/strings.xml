@@ -16,4 +16,6 @@
     <string name="deleted_from_favourite">Удалено из избранного!</string>
     <string name="added_to_favourite">Добавлено в избранное!</string>
     <string name="turn_on_geolocation">Включите геолокацию</string>
+    <string name="updated">"обновлено: "</string>
+    <string name="data_for">"данные на: "</string>
 </resources>

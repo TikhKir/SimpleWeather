@@ -1,7 +1,6 @@
 package com.example.simpleweather.ui.search
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,10 +9,13 @@ import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SearchViewModel @Inject constructor(
     private val repository: RepositoryApi
 ) : ViewModel() {
 
@@ -29,7 +31,7 @@ class SearchViewModel @ViewModelInject constructor(
             state.postValue(State.Loading())
             val locationList = repository.getCoordByCityName(query)
             if (locationList.resultType == ResultType.SUCCESS) {
-                locations.postValue(locationList.data)
+                locations.postValue(locationList.data!!)
                 state.postValue(State.Success())
             } else {
                 Log.e("SEARCH LOCATION", locationList.error?.message.toString())

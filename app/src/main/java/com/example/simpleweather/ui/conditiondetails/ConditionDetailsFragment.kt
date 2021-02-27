@@ -98,8 +98,12 @@ class ConditionDetailsFragment : Fragment() {
         ).format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
 
         //todo: подтягивать информацию о локации из репозитория через flow
-        val refreshTime = LocalDateTime.ofEpochSecond(
+        val maxRefresh = maxOf(
             navArgs.location.refreshTimeCurrent,
+            navArgs.location.refreshTimeHourly
+        )
+        val refreshTime = getString(R.string.updated) + LocalDateTime.ofEpochSecond(
+            maxRefresh,
             0,
             ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
         ).format(DateTimeFormatter.ofPattern("d MMMM, HH:mm"))

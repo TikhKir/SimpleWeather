@@ -6,22 +6,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.work.*
+import com.example.simpleweather.utils.Constants
 import com.example.simpleweather.utils.setupWithNavController
+import com.example.simpleweather.utils.worker.BackgroundUpdateWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
+    private lateinit var workManager : WorkManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) setupBottomNavigationBar()
+        if (savedInstanceState == null) {
+            setupBottomNavigationBar()
+            workManager = WorkManager.getInstance(applicationContext)
+            doBackgroundRefresh()
+        }
         // Else, need to wait for onRestoreInstanceState
-
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
@@ -62,6 +70,24 @@ class MainActivity : AppCompatActivity() {
 
     fun setActionBarTitle(title: String) {
         supportActionBar?.title = title
+    }
+
+    private fun doBackgroundRefresh() {
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val periodicRequest = PeriodicWorkRequest
+            .Builder(BackgroundUpdateWorker::class.java, 1, TimeUnit.DAYS)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            Constants.REFRESH_CONDITIONS_WORK,
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicRequest
+        )
     }
 
 }

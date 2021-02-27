@@ -31,6 +31,8 @@ interface DataApi {
 
     suspend fun getSavedLocations(): Flow<List<LocationWithCoords>>
 
+    suspend fun getSavedLocationsSync(): List<LocationWithCoords>
+
     suspend fun getSavedLocationById(locationId: Long): LocationWithCoords
 
     suspend fun deleteLocation(locationId: Long): Int

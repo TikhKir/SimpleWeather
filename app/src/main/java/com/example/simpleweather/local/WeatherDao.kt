@@ -27,6 +27,9 @@ interface WeatherDao {
     @Query("SELECT * FROM locations")
     fun getSavedLocations(): Flow<List<LocationDB>>
 
+    @Query("SELECT * FROM locations")
+    fun getSavedLocationsSync(): List<LocationDB>
+
     @Query("SELECT * FROM locations WHERE locationId = :locationId")
     suspend fun getSavedLocationById(locationId: Long): LocationDB
 

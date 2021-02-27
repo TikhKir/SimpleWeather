@@ -1,40 +1,24 @@
 package com.example.simpleweather
 
 import android.app.Application
-import androidx.work.*
-import com.example.simpleweather.utils.worker.BackgroundUpdateWorker
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
-import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @HiltAndroidApp
-class SimpleWeatherApplication: Application() {
+class SimpleWeatherApplication: Application(), Configuration.Provider {
 
-    private lateinit var workManager : WorkManager
+    @Inject lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
         AndroidThreeTen.init(this)
-
-        workManager = WorkManager.getInstance(this)
-        doBackgroundRefresh()
     }
 
-        private fun doBackgroundRefresh() {
-        val constraints = Constraints.Builder()
-            .setRequiresBatteryNotLow(true)
-            .setRequiredNetworkType(NetworkType.CONNECTED)
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
             .build()
-
-        val periodicRequest = PeriodicWorkRequest
-            .Builder(BackgroundUpdateWorker::class.java, 16, TimeUnit.MINUTES)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            "REFRESH WORK", //todo: hardcode
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicRequest
-        )
-    }
 }

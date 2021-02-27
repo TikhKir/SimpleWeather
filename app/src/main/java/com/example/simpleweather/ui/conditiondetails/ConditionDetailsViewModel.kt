@@ -1,7 +1,6 @@
 package com.example.simpleweather.ui.conditiondetails
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.favswitcher.DeferredFavouriteSwitcher
@@ -11,11 +10,14 @@ import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ConditionDetailsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ConditionDetailsViewModel @Inject constructor(
     private val repository: RepositoryApi,
     private val deferredFavouriteSwitcher: DeferredFavouriteSwitcher
 ) : ViewModel() {
@@ -48,7 +50,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getHourlyCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        hourlyCondition.postValue(response.data)
+                        hourlyCondition.postValue(response.data!!)
                         stateHourly.postValue(State.Success())
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
@@ -64,7 +66,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getCurrentCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        currentCondition.postValue(response.data)
+                        currentCondition.postValue(response.data!!)
                         stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
@@ -80,7 +82,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getDailyCondition(locationId)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        dailyCondition.postValue(response.data)
+                        dailyCondition.postValue(response.data!!)
                         stateDaily.postValue(State.Success())
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
@@ -97,7 +99,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getHourlyCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        hourlyCondition.postValue(response.data)
+                        hourlyCondition.postValue(response.data!!)
                         stateHourly.postValue(State.Success())
                     } else {
                         Log.e("HOURLY_RESPONSE", response.error?.message.toString())
@@ -113,7 +115,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getCurrentCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        currentCondition.postValue(response.data)
+                        currentCondition.postValue(response.data!!)
                         stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())
@@ -129,7 +131,7 @@ class ConditionDetailsViewModel @ViewModelInject constructor(
             repository.getDailyCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        dailyCondition.postValue(response.data)
+                        dailyCondition.postValue(response.data!!)
                         stateDaily.postValue(State.Success())
                     } else {
                         Log.e("DAILY_RESPONSE", response.error?.message.toString())
