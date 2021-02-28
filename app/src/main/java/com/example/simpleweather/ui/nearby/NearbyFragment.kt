@@ -14,8 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
+import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.Constants.REQUEST_CODE_LOCATION_PERMISSIONS
 import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.easypermissions.LocationUtility
@@ -30,14 +32,14 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
 @AndroidEntryPoint
-class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLocationsAdapter.OnItemClickListener {
 
     companion object {
         fun newInstance() = NearbyFragment()
     }
 
     private var isTracking = MutableLiveData<Boolean>()
-    private val nearbyLocationsAdapter = NearbyLocationsAdapter()
+    private val nearbyLocationsAdapter = NearbyLocationsAdapter(this)
     private lateinit var viewModel: NearbyViewModel
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -185,5 +187,11 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         recycleView_nearby.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recycleView_nearby.adapter = nearbyLocationsAdapter
+    }
+
+    override fun onItemClick(location: LocationWithCoords) {
+        val action = NearbyFragmentDirections
+            .actionNearbyFragmentToConditionDetailsFragment(location)
+        findNavController().navigate(action)
     }
 }

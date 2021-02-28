@@ -16,12 +16,16 @@
         android:label="@string/title_search_nearby"
         tools:layout="@layout/nearby_fragment" >
         <action
-            android:id="@+id/action_nearbyFragment_to_conditionDetailsFragment2"
-            app:destination="@id/conditionDetailsFragment2" />
+            android:id="@+id/action_nearbyFragment_to_conditionDetailsFragment"
+            app:destination="@id/conditionDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/conditionDetailsFragment2"
+        android:id="@+id/conditionDetailsFragment"
         android:name="com.example.simpleweather.ui.conditiondetails.ConditionDetailsFragment"
         android:label="condition_details_fragment"
-        tools:layout="@layout/condition_details_fragment" />
+        tools:layout="@layout/condition_details_fragment" >
+        <argument
+            android:name="location"
+            app:argType="com.example.simpleweather.repository.model.LocationWithCoords" />
+    </fragment>
 </navigation>

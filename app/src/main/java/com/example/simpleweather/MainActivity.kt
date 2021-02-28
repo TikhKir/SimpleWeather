@@ -18,16 +18,18 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
+    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var workManager : WorkManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
-            workManager = WorkManager.getInstance(applicationContext)
-            doBackgroundRefresh()
+            bottomNavigationView.selectedItemId = R.id.nav_graph_home //set default fragment at start
+            startBackgroundRefreshWorker()
         }
         // Else, need to wait for onRestoreInstanceState
     }
@@ -41,8 +43,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigationBar() {
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-
         val navGraphIds = listOf(
             R.navigation.nav_graph_nearby,
             R.navigation.nav_graph_home,
@@ -72,7 +72,9 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = title
     }
 
-    private fun doBackgroundRefresh() {
+    private fun startBackgroundRefreshWorker() {
+        workManager = WorkManager.getInstance(applicationContext)
+
         val constraints = Constraints.Builder()
             .setRequiresBatteryNotLow(true)
             .setRequiredNetworkType(NetworkType.CONNECTED)
