@@ -8,10 +8,10 @@
 
     <ScrollView
         android:id="@+id/condition_fragment_root"
-        android:visibility="invisible"
-        tools:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -71,40 +71,39 @@
                 tools:text="По ощущениям: +20°" />
 
             <GridLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:columnCount="4"
                 android:orientation="vertical"
                 android:rowCount="3"
                 app:layout_constraintBottom_toTopOf="@+id/chart_wrapper"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_view_current_feelslike">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_rowSpan="1"
-                    android:layout_columnSpan="1"
                     android:layout_gravity="fill"
+                    android:layout_columnWeight="1"
                     android:src="@drawable/ic_hudimity" />
 
                 <TextView
                     android:id="@+id/text_view_hudimity_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_rowSpan="1"
-                    android:layout_columnSpan="1"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
+                    android:layout_columnWeight="1"
                     tools:text="68%" />
 
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_rowSpan="1"
-                    android:layout_columnSpan="1"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
+                    android:layout_columnWeight="1"
                     android:text="Влажность" />
 
 
@@ -112,6 +111,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="fill"
+                    android:layout_columnWeight="1"
                     android:src="@drawable/ic_pressure" />
 
                 <TextView
@@ -120,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
+                    android:layout_columnWeight="1"
                     tools:text="1034 мм р\с" />
 
                 <TextView
@@ -127,12 +128,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
+                    android:layout_columnWeight="1"
                     android:text="Давление" />
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="fill"
+                    android:layout_columnWeight="1"
                     android:src="@drawable/ic_wind" />
 
                 <TextView
@@ -141,6 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
+                    android:layout_columnWeight="1"
                     tools:text="10 м\с" />
 
                 <TextView
@@ -148,11 +152,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
+                    android:layout_columnWeight="1"
                     android:text="Ветер" />
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_columnWeight="1"
                     android:layout_gravity="fill"
                     android:src="@drawable/ic_volume_prec" />
 
@@ -160,6 +166,7 @@
                     android:id="@+id/text_view_volume_prec_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
                     tools:text="4.2 мм" />
@@ -167,9 +174,10 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
                     android:layout_gravity="fill"
                     android:gravity="center_horizontal"
-                    android:text="Обьем осадков" />
+                    android:text="Осадки" />
 
             </GridLayout>
 
@@ -195,7 +203,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView_hourly_condition"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="110dp"
                         android:nestedScrollingEnabled="true"
                         tools:listitem="@layout/item_hourly_condition" />
 

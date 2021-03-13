@@ -18,4 +18,6 @@
     <string name="turn_on_geolocation">Включите геолокацию</string>
     <string name="updated">"обновлено: "</string>
     <string name="data_for">"данные на: "</string>
+
+
 </resources>

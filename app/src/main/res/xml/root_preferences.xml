@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Единицы измерения">
+
+        <ListPreference
+            app:defaultValue="units_celsius"
+            app:entries="@array/units_degree_entries"
+            app:entryValues="@array/units_degree_values"
+            app:key="units_degree"
+            app:title="Температура"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="units_meters_per_second"
+            app:entries="@array/units_wind_entries"
+            app:entryValues="@array/units_wind_values"
+            app:key="units_wind_speed"
+            app:title="Скорость ветра"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="units_gpa"
+            app:entries="@array/units_pressure_entries"
+            app:entryValues="@array/units_pressure_values"
+            app:key="units_pressure"
+            app:title="Давление"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Обновления в фоне">
+
+        <ListPreference
+            app:defaultValue="update_24_hours"
+            app:entries="@array/update_interval_entries"
+            app:entryValues="@array/update_interval_values"
+            app:key="update_interval"
+            app:title="Частота обновления"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -2,7 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="80dp"
-    android:layout_height="100dp">
+    android:layout_height="110dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
@@ -12,8 +13,8 @@
         <TextView
             android:id="@+id/text_view_condition_item_time"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:text="12:00"
+            android:layout_height="wrap_content"
+            tools:text="12:00"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toTopOf="@+id/image_view_condition_item"
             app:layout_constraintEnd_toEndOf="parent"
@@ -24,21 +25,48 @@
             android:id="@+id/image_view_condition_item"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_settings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_condition_item_time" />
+            app:layout_constraintTop_toBottomOf="@+id/text_view_condition_item_time"
+            tools:src="@drawable/ic_settings" />
+
+        <ImageView
+            android:id="@+id/image_view_condition_item_wind_icon"
+            android:layout_width="15dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_wind"
+            app:layout_constraintBottom_toTopOf="@+id/image_view_condition_item_volume_icon"
+            app:layout_constraintEnd_toStartOf="@id/text_view_condition_item_wind"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/text_view_condition_item_wind"
             android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            app:layout_constraintBottom_toTopOf="@+id/text_view_condition_item_volume"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_view_condition_item_wind_icon"
+            tools:text="18 СВ" />
+
+        <ImageView
+            android:id="@+id/image_view_condition_item_volume_icon"
+            android:layout_width="15dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_volume_prec"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/text_view_condition_item_volume"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_condition_item_volume"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="18 СВ"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_view_condition_item" />
+            app:layout_constraintStart_toEndOf="@+id/image_view_condition_item_volume_icon"
+            tools:text="0.5 мм" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

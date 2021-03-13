@@ -38,10 +38,10 @@ class ConditionDetailsViewModel @Inject constructor(
     var favouriteLocation: LocationWithCoords? = null
     var isFavourite: Boolean = false
 
-
     init {
         mergeStates()
     }
+
 
 
     fun getHourlyWeatherCondition(locationId: Long) {

@@ -35,7 +35,7 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
     inner class HourlyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(hourlyCondition: HourlyWeatherCondition) {
             val iconId = hourlyCondition.weatherId?.let { IconConverter.idToIcon(it, false) }
-
+            val allVolume = (hourlyCondition.rainVolume ?: 0F) + (hourlyCondition.snowVolume ?: 0F)
             val time = LocalDateTime.ofEpochSecond(
                 hourlyCondition.timeStamp.toLong(),
                 0,
@@ -43,12 +43,10 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
             )
                 .format(DateTimeFormatter.ofPattern("HH:mm"))
 
-
-
             itemView.text_view_condition_item_time.text = time
             itemView.text_view_condition_item_wind.text = hourlyCondition.windSpeed.toString()
+            itemView.text_view_condition_item_volume.text = allVolume.toString()
             iconId?.let { itemView.image_view_condition_item.setImageResource(it) }
-
         }
     }
 

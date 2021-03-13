@@ -1,0 +1,53 @@
+<resources>
+    <!-- Degrees -->
+    <string-array name="units_degree_entries">
+        <item>Цельсий С°</item>
+        <item>Фаренгейт F°</item>
+    </string-array>
+
+    <string-array name="units_degree_values">
+        <item>units_celsius</item>
+        <item>units_fahrenheit</item>
+    </string-array>
+
+    <!-- Wind speed -->
+    <string-array name="units_wind_entries">
+        <item>М/с</item>
+        <item>Км/ч</item>
+    </string-array>
+
+    <string-array name="units_wind_values">
+        <item>units_meters_per_second</item>
+        <item>units_kilometers_per_hour</item>
+    </string-array>
+
+    <!-- Atmosphere pressure -->
+    <string-array name="units_pressure_entries">
+        <item>гПа</item>
+        <item>мБар</item>
+        <item>мм</item>
+    </string-array>
+
+    <string-array name="units_pressure_values">
+        <item>units_gpa</item>
+        <item>units_mbar</item>
+        <item>units_millimeter</item>
+    </string-array>
+
+    <!-- Update background -->
+    <string-array name="update_interval_entries">
+        <item>раз в 24 часа</item>
+        <item>раз в 12 часов</item>
+        <item>раз в 6 часов</item>
+        <item>раз в 3 часа</item>
+    </string-array>
+
+    <string-array name="update_interval_values">
+        <item>update_24_hours</item>
+        <item>update_12_hours</item>
+        <item>update_6_hours</item>
+        <item>update_3_hours</item>
+    </string-array>
+
+
+</resources>

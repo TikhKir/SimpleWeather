@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
     private fun getSavedLocations(): LiveData<List<LocationWithCoords>> {
         val livedata = MutableLiveData<List<LocationWithCoords>>()
         viewModelScope.launch(Dispatchers.IO) {
-            val locations = repository.getSavedLocations()
+            repository.getSavedLocations()
                 .collect {
                     livedata.postValue(it)
                     it.map { Log.e("LOCATION", it.fullAddress) }
