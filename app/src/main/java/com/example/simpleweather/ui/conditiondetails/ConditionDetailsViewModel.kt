@@ -2,6 +2,7 @@ package com.example.simpleweather.ui.conditiondetails
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.simpleweather.AsyncPreferencesUnitChanger
 import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.favswitcher.DeferredFavouriteSwitcher
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
@@ -12,13 +13,16 @@ import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ConditionDetailsViewModel @Inject constructor(
     private val repository: RepositoryApi,
+    private val asyncUnitChanger: AsyncPreferencesUnitChanger,
     private val deferredFavouriteSwitcher: DeferredFavouriteSwitcher
 ) : ViewModel() {
 
@@ -43,7 +47,6 @@ class ConditionDetailsViewModel @Inject constructor(
     }
 
 
-
     fun getHourlyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             stateHourly.postValue(State.Loading())
@@ -60,6 +63,41 @@ class ConditionDetailsViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
+    fun test(locationId: Long) {
+        viewModelScope.launch {
+            val currentFlow = repository.getCurrentCondition(locationId)
+            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+
+            currentFlow.combine(sharedPrefFLow) { currentResult,
+                                                  sharedPref ->
+                asyncUnitChanger.transformBySharedPrefUnits(currentResult, sharedPref)
+            }
+                .collect { response ->
+                    if (response.resultType == ResultType.SUCCESS) {
+                        currentCondition.postValue(response.data!!)
+                        stateCurrent.postValue(State.Success())
+                    } else {
+                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
+                    }
+                }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @ExperimentalCoroutinesApi
     fun getCurrentWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             stateCurrent.postValue(State.Loading())

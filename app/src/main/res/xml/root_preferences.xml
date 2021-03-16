@@ -19,7 +19,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="units_gpa"
+            app:defaultValue="units_hPa"
             app:entries="@array/units_pressure_entries"
             app:entryValues="@array/units_pressure_values"
             app:key="units_pressure"

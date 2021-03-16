@@ -17,6 +17,7 @@ import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
 import lecho.lib.hellocharts.model.PointValue
@@ -186,10 +187,11 @@ class ConditionDetailsFragment : Fragment() {
         recyclerView_daily_conditions.adapter = dailyAdapter
     }
 
+    @ExperimentalCoroutinesApi
     private fun startRequestWithNavGraphArgs() {
         val location = navArgs.location
         if (location.locationId != -1L) { //location already exist in db
-            viewModel.getCurrentWeatherCondition(location.locationId)
+            viewModel.test(location.locationId)
             viewModel.getHourlyWeatherCondition(location.locationId)
             viewModel.getDailyWeatherCondition(location.locationId)
         } else {

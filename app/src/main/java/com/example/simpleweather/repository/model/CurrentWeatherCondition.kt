@@ -1,6 +1,8 @@
 package com.example.simpleweather.repository.model
 
+import com.example.simpleweather.ui.model.CurrentConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
+import kotlin.math.roundToInt
 
 data class CurrentWeatherCondition (
     val timeStamp: Int,
@@ -9,14 +11,14 @@ data class CurrentWeatherCondition (
     val sunrise: Int?,
     val sunset: Int?,
 
-    val temp: Float?,
+    var temp: Float?,
     val tempFL: Float?,
 
-    val pressure: Int?,
+    var pressure: Int?,
     val humidity: Int?,
     val dewPoint: Float?,
     val clouds: Int?,
-    val windSpeed: Float?,
+    var windSpeed: Float?,
     val windDeg: Int?,
 
     val weatherId: Int?,
@@ -30,4 +32,29 @@ data class CurrentWeatherCondition (
 ) : Identified
 {
     override val identifier: Any = timeStamp
+
+    fun toCurrentConditionUI(): CurrentConditionUI {
+        return CurrentConditionUI(
+            timeStamp,
+            timeZoneOffset,
+            sunrise,
+            sunset,
+            temp = temp?.roundToInt().toString(),
+            tempFL = tempFL?.roundToInt().toString(),
+            pressure = pressure.toString(),
+            humidity = humidity.toString(),
+            dewPoint = dewPoint.toString(),
+            clouds = clouds.toString(),
+            windSpeed = windSpeed.toString(),
+            windDeg = windDeg.toString(),
+            weatherId = weatherId,
+            weatherName = weatherName ?: "",
+            weatherDescription = weatherDescription.toString(),
+            weatherIcon = weatherIcon ?: "",
+            snowVolumeLastHour = snowVolumeLastHour.toString(),
+            rainVolumeLastHour = rainVolumeLastHour.toString(),
+            allVolumeLastHour = ((snowVolumeLastHour ?: 0F) + (rainVolumeLastHour ?: 0F)).toString(),
+            uvi = uvi.toString()
+        )
+    }
 }
