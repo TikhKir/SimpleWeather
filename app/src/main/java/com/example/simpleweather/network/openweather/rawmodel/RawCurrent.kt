@@ -7,46 +7,46 @@ import com.google.gson.annotations.SerializedName
 
 data class RawCurrent (
     @SerializedName("dt")
-    val dt: Int? = null,
+    val dt: Int,
 
     @SerializedName("sunrise")
-    val sunrise: Int? = null,
+    val sunrise: Int,
 
     @SerializedName("sunset")
-    val sunset: Int? = null,
+    val sunset: Int,
 
     @SerializedName("temp")
-    val temp: Float? = null,
+    val temp: Float,
 
     @SerializedName("feels_like")
-    val feelsLike: Float? = null,
+    val feelsLike: Float,
 
     @SerializedName("pressure")
-    val pressure: Int? = null,
+    val pressure: Int,
 
     @SerializedName("humidity")
-    val humidity: Int? = null,
+    val humidity: Int,
 
     @SerializedName("dew_point")
-    val dewPoint: Float? = null,
+    val dewPoint: Float,
 
     @SerializedName("wind_speed")
-    val windSpeed: Float? = null,
+    val windSpeed: Float,
 
     @SerializedName("wind_deg")
-    val windDeg: Int? = null,
+    val windDeg: Int,
 
     @SerializedName("weather")
-    val weather: List<RawWeather> = ArrayList(),
+    val weather: List<RawWeather>,
 
     @SerializedName("clouds")
-    val clouds: Int? = null,
+    val clouds: Int,
 
     @SerializedName("visibility")
-    val visibility: Int? = null,
+    val visibility: Int,
 
     @SerializedName("uvi")
-    val uvi: Float? = null,
+    val uvi: Float,
 
     @SerializedName("rain")
     val rain: RawRain? = null,
@@ -56,7 +56,7 @@ data class RawCurrent (
 ) {
     fun toCurrentWeatherCondition(): CurrentWeatherCondition {
         return CurrentWeatherCondition(
-            dt!!,
+            dt,
             0,
             sunrise,
             sunset,
@@ -72,8 +72,8 @@ data class RawCurrent (
             weather[0].main,
             weather[0].description,
             weather[0].icon,
-            snow?.last_hour,
-            rain?.last_hour,
+            snow?.last_hour ?: 0F,
+            rain?.last_hour ?: 0F,
             uvi
         )
     }

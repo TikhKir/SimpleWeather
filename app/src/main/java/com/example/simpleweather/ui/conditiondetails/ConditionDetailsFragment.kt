@@ -6,13 +6,11 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.ui.model.*
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,20 +66,19 @@ class ConditionDetailsFragment : Fragment() {
         observeViewModel()
     }
 
-
     private fun observeViewModel() {
-        viewModel.currentLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.currentLiveData.observe(viewLifecycleOwner, {
             initCurrentState(it)
         })
-        viewModel.hourlyLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.hourlyLiveData.observe(viewLifecycleOwner, {
             hourlyAdapter.submitList(it.toList())
             initChart(it)
             calculateViewsSize(it.size)
         })
-        viewModel.dailyLivaData.observe(viewLifecycleOwner, Observer {
+        viewModel.dailyLivaData.observe(viewLifecycleOwner, {
             dailyAdapter.submitList(it.toList())
         })
-        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.stateLiveData.observe(viewLifecycleOwner, {
             setLoadingState(it)
         })
     }
@@ -121,7 +118,7 @@ class ConditionDetailsFragment : Fragment() {
             text_view_volume_prec_count.text = allVolumeLastHour.toString()
     }
 
-    private fun initChart(hourlyList: List<HourlyWeatherCondition>) {
+    private fun initChart(hourlyList: List<HourlyConditionUI>) {
         val pointsList = transformToPointsList(hourlyList)
 
         val line = Line(pointsList)
@@ -140,10 +137,10 @@ class ConditionDetailsFragment : Fragment() {
         hello_chart_view.lineChartData = lineChartData
     }
 
-    private fun transformToPointsList(hourlyList: List<HourlyWeatherCondition>): List<PointValue> {
+    private fun transformToPointsList(hourlyList: List<HourlyConditionUI>): List<PointValue> {
         val pointsList = mutableListOf<PointValue>()
         for ((index, value) in hourlyList.withIndex()) {
-            pointsList.add(PointValue(index.toFloat(), value.temp!!.toFloat()))
+            pointsList.add(PointValue(index.toFloat(), value.temp.toFloat()))
         }
         return pointsList
     }

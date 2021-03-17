@@ -8,14 +8,14 @@ data class RawAddress(
     val city: String = "",
 
     @SerializedName("county")
-    val county: String? = null,
+    val county: String = "",
 
     @SerializedName("state")
-    val state: String? = null,
+    val state: String = "",
 
     @SerializedName("country")
-    val country: String? = null,
+    val country: String = "",
 
     @SerializedName("country_code")
-    val countryCode: String? = null
+    val countryCode: String = ""
 )

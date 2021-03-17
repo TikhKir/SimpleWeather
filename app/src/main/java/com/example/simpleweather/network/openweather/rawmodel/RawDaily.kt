@@ -9,49 +9,49 @@ data class RawDaily (
     val dt: Int,
 
     @SerializedName("sunrise")
-    val sunrise: Int? = null,
+    val sunrise: Int,
 
     @SerializedName("sunset")
-    val sunset: Int? = null,
+    val sunset: Int,
 
     @SerializedName("temp")
-    val temp: RawTemp? = null,
+    val temp: RawTemp,
 
     @SerializedName("feels_like")
-    val feelsLike: RawFeelsLike? = null,
+    val feelsLike: RawFeelsLike,
 
     @SerializedName("pressure")
-    val pressure: Int? = null,
+    val pressure: Int,
 
     @SerializedName("humidity")
-    val humidity: Int? = null,
+    val humidity: Int,
 
     @SerializedName("dew_point")
-    val dewPoint: Float? = null,
+    val dewPoint: Float,
 
     @SerializedName("wind_speed")
-    val windSpeed: Float? = null,
+    val windSpeed: Float,
 
     @SerializedName("wind_deg")
-    val windDeg: Int? = null,
+    val windDeg: Int,
 
     @SerializedName("weather")
-    val weather: List<RawWeather> = ArrayList(),
+    val weather: List<RawWeather>,
 
     @SerializedName("clouds")
-    val clouds: Int? = null,
+    val clouds: Int,
 
     @SerializedName("pop")
-    val pop: Float? = null,
+    val pop: Float,
 
     @SerializedName("rain")
-    val rain: Float? = null,
+    val rain: Float,
 
     @SerializedName("uvi")
-    val uvi: Float? = null,
+    val uvi: Float,
 
     @SerializedName("snow")
-    val snow: Float? = null
+    val snow: Float
 )
 
 {
@@ -62,16 +62,16 @@ data class RawDaily (
             0,
             sunrise,
             sunset,
-            temp?.day,
-            temp?.eve,
-            temp?.night,
-            temp?.morn,
-            temp?.max,
-            temp?.min,
-            feelsLike?.day,
-            feelsLike?.eve,
-            feelsLike?.night,
-            feelsLike?.morn,
+            temp.day,
+            temp.eve,
+            temp.night,
+            temp.morn,
+            temp.max,
+            temp.min,
+            feelsLike.day,
+            feelsLike.eve,
+            feelsLike.night,
+            feelsLike.morn,
             pressure,
             humidity,
             dewPoint,

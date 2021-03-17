@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.example.simpleweather.repository.model.CurrentWeatherCondition
-import com.example.simpleweather.ui.model.CurrentConditionUI
-import com.example.simpleweather.ui.model.DegreeUnits
-import com.example.simpleweather.ui.model.PressureUnits
-import com.example.simpleweather.ui.model.WindSpeedUnits
+import com.example.simpleweather.repository.model.HourlyWeatherCondition
+import com.example.simpleweather.ui.model.*
 import com.example.simpleweather.utils.Constants
 import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
@@ -45,7 +43,7 @@ class AsyncPreferencesUnitChanger(context: Context) {
                         Constants.SHARED_PREF_KEY_UNITS_DEGREE,
                         Constants.SHARED_PREF_KEY_UNITS_WIND_SPEED,
                         Constants.SHARED_PREF_KEY_UNITS_PRESSURE
-                        -> condition = transform(condition!!, prefValue)
+                        -> condition = transformCurrent(condition!!, prefValue)
                     }
                 }
                 Result.success(condition)
@@ -54,7 +52,29 @@ class AsyncPreferencesUnitChanger(context: Context) {
         }
     }
 
-    private fun transform(
+    fun transformHourlyAccordingUnits(
+        result: Result<List<HourlyWeatherCondition>>,
+        sharedPref: MutableMap<String, *>
+    ): Result<List<HourlyConditionUI>> {
+        return when(result.resultType) {
+            ResultType.SUCCESS -> {
+                var conditionList = result.data?.map { it.toHourlyWeatherUI() }
+
+                sharedPref.forEach { prefValue ->
+                    when (prefValue.key) {
+                        Constants.SHARED_PREF_KEY_UNITS_DEGREE,
+                        Constants.SHARED_PREF_KEY_UNITS_WIND_SPEED,
+                        Constants.SHARED_PREF_KEY_UNITS_PRESSURE
+                        -> conditionList = transformHourly(conditionList!!, prefValue)
+                    }
+                }
+                Result.success(conditionList)
+            }
+            ResultType.ERROR -> Result.error(result.error)
+        }
+    }
+
+    private fun transformCurrent(
         condition: CurrentConditionUI,
         preferencesMap: Map.Entry<String, *>
     ): CurrentConditionUI {
@@ -76,4 +96,27 @@ class AsyncPreferencesUnitChanger(context: Context) {
         return condition
     }
 
+    private fun transformHourly(
+        conditionList: List<HourlyConditionUI>,
+        preferencesMap: Map.Entry<String, *>
+    ): List<HourlyConditionUI> {
+        conditionList.forEach { condition ->
+            when (preferencesMap.value) {
+                Constants.UNITS_FAHRENHEIT -> {
+                    condition.temp = (condition.temp * 1.8F + 32).roundToInt()
+                    condition.tempFL = (condition.tempFL * 1.8F + 32).roundToInt()
+                    condition.tempUnits = DegreeUnits.Fahrenheit
+                }
+                Constants.UNITS_WIND_KM_P_H -> {
+                    condition.windSpeed = (condition.windSpeed * 3.6F)
+                    condition.windSpeedUnits = WindSpeedUnits.KilometersPerHour
+                }
+                Constants.UNITS_PRESSURE_MM -> {
+                    condition.pressure = (condition.pressure * 0.75F).roundToInt()
+                    condition.pressureUnits = PressureUnits.MillimetersOfMercury
+                }
+            }
+        }
+        return conditionList
+    }
 }

@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName
 
 data class RawFeelsLike (
     @SerializedName("day")
-    val day: Float? = null,
+    val day: Float,
 
     @SerializedName("night")
-    val night: Float? = null,
+    val night: Float,
 
     @SerializedName("eve")
-    val eve: Float? = null,
+    val eve: Float,
 
     @SerializedName("morn")
-    val morn: Float? = null
+    val morn: Float
 )

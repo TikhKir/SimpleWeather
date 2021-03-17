@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.simpleweather.repository.RepositoryApi
 import com.example.simpleweather.repository.model.DailyWeatherCondition
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.ui.model.CurrentConditionUI
+import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.asyncunits.AsyncPreferencesUnitChanger
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
@@ -27,7 +27,7 @@ class ConditionDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val currentCondition = MutableLiveData<CurrentConditionUI>()
-    private val hourlyCondition = MutableLiveData<List<HourlyWeatherCondition>>()
+    private val hourlyCondition = MutableLiveData<List<HourlyConditionUI>>()
     private val dailyCondition = MutableLiveData<List<DailyWeatherCondition>>()
     private val stateCurrent: MutableLiveData<State> = MutableLiveData(State.Default())
     private val stateHourly: MutableLiveData<State> = MutableLiveData(State.Default())
@@ -35,7 +35,7 @@ class ConditionDetailsViewModel @Inject constructor(
     private val unionStates = MediatorLiveData<State>()
 
     val currentLiveData: LiveData<CurrentConditionUI> get() = currentCondition
-    val hourlyLiveData: LiveData<List<HourlyWeatherCondition>> get() = hourlyCondition
+    val hourlyLiveData: LiveData<List<HourlyConditionUI>> get() = hourlyCondition
     val dailyLivaData: LiveData<List<DailyWeatherCondition>> get() = dailyCondition
     val stateLiveData: LiveData<State> get() = unionStates
 
@@ -47,10 +47,16 @@ class ConditionDetailsViewModel @Inject constructor(
     }
 
 
+    @ExperimentalCoroutinesApi
     fun getHourlyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            stateHourly.postValue(State.Loading())
-            repository.getHourlyCondition(locationId)
+            val hourlyFlow = repository.getHourlyCondition(locationId)
+            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+
+            hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
+                                                 sharedPref ->
+                asyncUnitChanger.transformHourlyAccordingUnits(hourlyResult, sharedPref)
+            }
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
                         hourlyCondition.postValue(response.data!!)
@@ -65,7 +71,7 @@ class ConditionDetailsViewModel @Inject constructor(
 
     @ExperimentalCoroutinesApi
     fun getCurrentWeatherCondition(locationId: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val currentFlow = repository.getCurrentCondition(locationId)
             val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
@@ -89,31 +95,6 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
 
-
-
-
-
-
-
-
-
-//    @ExperimentalCoroutinesApi
-//    fun getCurrentWeatherCondition(locationId: Long) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            stateCurrent.postValue(State.Loading())
-//            repository.getCurrentCondition(locationId)
-//                .collect { response ->
-//                    if (response.resultType == ResultType.SUCCESS) {
-//                        currentCondition.postValue(response.data!!)
-//                        stateCurrent.postValue(State.Success())
-//                    } else {
-//                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
-//                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
-//                    }
-//                }
-//        }
-//    }
-
     fun getDailyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             stateDaily.postValue(State.Loading())
@@ -130,11 +111,16 @@ class ConditionDetailsViewModel @Inject constructor(
         }
     }
 
-
+    @ExperimentalCoroutinesApi
     fun getHourlyWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {
-            stateHourly.postValue(State.Loading())
-            repository.getHourlyCondition(lat, lon)
+            val hourlyFlow = repository.getHourlyCondition(lat, lon)
+            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+
+            hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
+                                                 sharedPref ->
+                asyncUnitChanger.transformHourlyAccordingUnits(hourlyResult, sharedPref)
+            }
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
                         hourlyCondition.postValue(response.data!!)
@@ -147,13 +133,21 @@ class ConditionDetailsViewModel @Inject constructor(
         }
     }
 
+
+    @ExperimentalCoroutinesApi
     fun getCurrentWeatherCondition(lat: Float, lon: Float) {
         viewModelScope.launch(Dispatchers.IO) {
-            stateCurrent.postValue(State.Loading())
-            repository.getCurrentCondition(lat, lon)
-                .collect { response ->
+            val currentFlow = repository.getCurrentCondition(lat, lon)
+            val sharedPrefFlow = asyncUnitChanger.getPreferencesFlow()
+
+            currentFlow.combine(sharedPrefFlow) {
+                    currentResult, sharedPref->
+                asyncUnitChanger.transformCurrentAccordingUnits(currentResult, sharedPref)
+            }
+                .collect {
+                        response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        //currentCondition.postValue(response.data!!)
+                        currentCondition.postValue(response.data!!)
                         stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())

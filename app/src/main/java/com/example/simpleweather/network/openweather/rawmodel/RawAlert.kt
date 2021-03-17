@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName
 
 data class RawAlert (
     @SerializedName("sender_name")
-    val senderName: String? = null,
+    val senderName: String,
 
     @SerializedName("event")
-    val event: String? = null,
+    val event: String,
 
     @SerializedName("start")
-    val start: Int? = null,
+    val start: Int,
 
     @SerializedName("end")
-    val end: Int? = null,
+    val end: Int,
 
     @SerializedName("description")
-    val description: String? = null
+    val description: String
 )

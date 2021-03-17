@@ -25,21 +25,21 @@ data class HourlyWeatherConditionDB(
     val timeStamp: Int,
     val timeZoneOffset: Int,
 
-    val temp: Float?,
-    val tempFeelsLike: Float?,
-    val pressure: Int?,
-    val humidity: Int?,
-    val windSpeed: Float?,
-    val windDeg: Int?,
+    val temp: Float,
+    val tempFeelsLike: Float,
+    val pressure: Int,
+    val humidity: Int,
+    val windSpeed: Float,
+    val windDeg: Int,
 
-    val weatherId: Int?,
-    val weatherName: String?,
-    val weatherDescription: String?,
-    val weatherIcon: String?,
+    val weatherId: Int,
+    val weatherName: String,
+    val weatherDescription: String,
+    val weatherIcon: String,
 
-    val probabilityOfPrecipitation: Float?,
-    val snowVolume: Float?,
-    val rainVolume: Float?
+    val probabilityOfPrecipitation: Float,
+    val snowVolume: Float,
+    val rainVolume: Float
 ) {
     @PrimaryKey(autoGenerate = true)
     var hourlyConditionId: Int? = null
@@ -68,14 +68,14 @@ data class HourlyWeatherConditionDB(
         return CurrentWeatherCondition(
             timeStamp,
             timeZoneOffset,
-            null,
-            null,
+            0,
+            0,
             temp,
             tempFeelsLike,
             pressure,
             humidity,
-            null,
-            null,
+            0F,
+            0,
             windSpeed,
             windDeg,
             weatherId,
@@ -84,7 +84,7 @@ data class HourlyWeatherConditionDB(
             weatherIcon,
             snowVolume,
             rainVolume,
-            null
+            0F
         )
     }
 }

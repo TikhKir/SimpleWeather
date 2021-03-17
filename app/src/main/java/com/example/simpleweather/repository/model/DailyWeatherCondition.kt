@@ -7,37 +7,37 @@ data class DailyWeatherCondition (
     val timeStamp: Int,
     var timeZoneOffset: Int,
 
-    val sunrise: Int?,
-    val sunset: Int?,
+    val sunrise: Int,
+    val sunset: Int,
 
-    val tempDay: Float?,
-    val tempEvening: Float?,
-    val tempNight: Float?,
-    val tempMorning: Float?,
-    val tempMax: Float?,
-    val tempMin: Float?,
+    val tempDay: Float,
+    val tempEvening: Float,
+    val tempNight: Float,
+    val tempMorning: Float,
+    val tempMax: Float,
+    val tempMin: Float,
 
-    val tempDayFL: Float?,
-    val tempEveningFL: Float?,
-    val tempNightFL: Float?,
-    val tempMorningFL: Float?,
+    val tempDayFL: Float,
+    val tempEveningFL: Float,
+    val tempNightFL: Float,
+    val tempMorningFL: Float,
 
-    val pressure: Int?,
-    val humidity: Int?,
-    val dewPoint: Float?,
-    val clouds: Int?,
-    val windSpeed: Float?,
-    val windDeg: Int?,
+    val pressure: Int,
+    val humidity: Int,
+    val dewPoint: Float,
+    val clouds: Int,
+    val windSpeed: Float,
+    val windDeg: Int,
 
-    val weatherId: Int?,
-    val weatherName: String?,
-    val weatherDescription: String?,
-    val weatherIcon: String?,
+    val weatherId: Int,
+    val weatherName: String,
+    val weatherDescription: String,
+    val weatherIcon: String,
 
-    val probabilityOfPrecipitation: Float?,
-    val snowVolume: Float?,
-    val rainVolume: Float?,
-    val uvi: Float?
+    val probabilityOfPrecipitation: Float,
+    val snowVolume: Float,
+    val rainVolume: Float,
+    val uvi: Float
 ) : Identified
 {
     override val identifier: Any = timeStamp

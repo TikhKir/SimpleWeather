@@ -12,9 +12,9 @@ data class LocationWithCoords(
     val longitude: Float,
     val latitude: Float,
     val addressCity: String,
-    val addressCounty: String?,
-    val addressState: String?,
-    val addressCountry: String?,
+    val addressCounty: String,
+    val addressState: String,
+    val addressCountry: String,
     val refreshTimeDaily: Long,
     val refreshTimeHourly: Long,
     val refreshTimeCurrent: Long

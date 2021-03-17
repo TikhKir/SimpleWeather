@@ -8,43 +8,43 @@ import org.threeten.bp.Instant
 
 data class RawLocation(
     @SerializedName("place_id")
-    val locationId: String? = null,
+    val locationId: String = "",
 
     @SerializedName("licence")
-    val licence: String? = null,
+    val licence: String = "",
 
     @SerializedName("osm_type")
-    val osmType: String? = null,
+    val osmType: String = "",
 
     @SerializedName("osm_id")
-    val osmId: String? = null,
+    val osmId: String = "",
 
     @SerializedName("boundingbox")
-    val boundingBox: List<String> = ArrayList(),
+    val boundingBox: List<String>,
 
     @SerializedName("lon")
-    val lon: Float,
+    val lon: Float = 0F,
 
     @SerializedName("lat")
-    val lat: Float,
+    val lat: Float = 0F,
 
     @SerializedName("display_name")
-    val displayName: String,
+    val displayName: String = "",
 
     @SerializedName("class")
-    val _class: String? = null,
+    val _class: String = "",
 
     @SerializedName("type")
-    val type: String? = null,
+    val type: String = "",
 
     @SerializedName("importance")
-    val importance: Float? = null,
+    val importance: Float = 0F,
 
     @SerializedName("icon")
-    val icon: String? = null,
+    val icon: String = "",
 
     @SerializedName("address")
-    val rawAddress: RawAddress = RawAddress()
+    val rawAddress: RawAddress
 )
 {
 
