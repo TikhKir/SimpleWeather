@@ -2,7 +2,6 @@ package com.example.simpleweather.repository.model
 
 import com.example.simpleweather.ui.model.CurrentConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
-import kotlin.math.roundToInt
 
 data class CurrentWeatherCondition (
     val timeStamp: Int,
@@ -37,24 +36,24 @@ data class CurrentWeatherCondition (
         return CurrentConditionUI(
             timeStamp,
             timeZoneOffset,
-            sunrise,
-            sunset,
-            temp = temp?.roundToInt().toString(),
-            tempFL = tempFL?.roundToInt().toString(),
-            pressure = pressure.toString(),
-            humidity = humidity.toString(),
-            dewPoint = dewPoint.toString(),
-            clouds = clouds.toString(),
-            windSpeed = windSpeed.toString(),
-            windDeg = windDeg.toString(),
-            weatherId = weatherId,
+            sunrise ?: 0,
+            sunset ?: 0,
+            temp = temp?.toInt() ?: 0,
+            tempFL = tempFL?.toInt() ?: 0,
+            pressure = pressure ?: 0,
+            humidity = humidity ?: 0,
+            dewPoint = dewPoint ?: 0F,
+            clouds = clouds ?: 0,
+            windSpeed = windSpeed ?: 0F,
+            windDeg = windDeg ?: 0,
+            weatherId = weatherId ?: 0,
             weatherName = weatherName ?: "",
-            weatherDescription = weatherDescription.toString(),
+            weatherDescription = weatherDescription ?: "",
             weatherIcon = weatherIcon ?: "",
-            snowVolumeLastHour = snowVolumeLastHour.toString(),
-            rainVolumeLastHour = rainVolumeLastHour.toString(),
-            allVolumeLastHour = ((snowVolumeLastHour ?: 0F) + (rainVolumeLastHour ?: 0F)).toString(),
-            uvi = uvi.toString()
+            snowVolumeLastHour = snowVolumeLastHour ?: 0F,
+            rainVolumeLastHour = rainVolumeLastHour ?: 0F,
+            allVolumeLastHour = ((snowVolumeLastHour ?: 0F) + (rainVolumeLastHour ?: 0F)),
+            uvi = uvi ?: 0F
         )
     }
 }

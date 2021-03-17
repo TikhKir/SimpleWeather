@@ -2,15 +2,15 @@ package com.example.simpleweather.ui.conditiondetails
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.simpleweather.AsyncPreferencesUnitChanger
 import com.example.simpleweather.repository.RepositoryApi
-import com.example.simpleweather.repository.favswitcher.DeferredFavouriteSwitcher
-import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.ui.model.CurrentConditionUI
+import com.example.simpleweather.utils.asyncunits.AsyncPreferencesUnitChanger
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +26,7 @@ class ConditionDetailsViewModel @Inject constructor(
     private val deferredFavouriteSwitcher: DeferredFavouriteSwitcher
 ) : ViewModel() {
 
-    private val currentCondition = MutableLiveData<CurrentWeatherCondition>()
+    private val currentCondition = MutableLiveData<CurrentConditionUI>()
     private val hourlyCondition = MutableLiveData<List<HourlyWeatherCondition>>()
     private val dailyCondition = MutableLiveData<List<DailyWeatherCondition>>()
     private val stateCurrent: MutableLiveData<State> = MutableLiveData(State.Default())
@@ -34,7 +34,7 @@ class ConditionDetailsViewModel @Inject constructor(
     private val stateDaily: MutableLiveData<State> = MutableLiveData(State.Default())
     private val unionStates = MediatorLiveData<State>()
 
-    val currentLiveData: LiveData<CurrentWeatherCondition> get() = currentCondition
+    val currentLiveData: LiveData<CurrentConditionUI> get() = currentCondition
     val hourlyLiveData: LiveData<List<HourlyWeatherCondition>> get() = hourlyCondition
     val dailyLivaData: LiveData<List<DailyWeatherCondition>> get() = dailyCondition
     val stateLiveData: LiveData<State> get() = unionStates
@@ -64,14 +64,14 @@ class ConditionDetailsViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    fun test(locationId: Long) {
+    fun getCurrentWeatherCondition(locationId: Long) {
         viewModelScope.launch {
             val currentFlow = repository.getCurrentCondition(locationId)
             val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
             currentFlow.combine(sharedPrefFLow) { currentResult,
                                                   sharedPref ->
-                asyncUnitChanger.transformBySharedPrefUnits(currentResult, sharedPref)
+                asyncUnitChanger.transformCurrentAccordingUnits(currentResult, sharedPref)
             }
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
@@ -97,22 +97,22 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
 
-    @ExperimentalCoroutinesApi
-    fun getCurrentWeatherCondition(locationId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            stateCurrent.postValue(State.Loading())
-            repository.getCurrentCondition(locationId)
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        currentCondition.postValue(response.data!!)
-                        stateCurrent.postValue(State.Success())
-                    } else {
-                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
-                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
-                    }
-                }
-        }
-    }
+//    @ExperimentalCoroutinesApi
+//    fun getCurrentWeatherCondition(locationId: Long) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            stateCurrent.postValue(State.Loading())
+//            repository.getCurrentCondition(locationId)
+//                .collect { response ->
+//                    if (response.resultType == ResultType.SUCCESS) {
+//                        currentCondition.postValue(response.data!!)
+//                        stateCurrent.postValue(State.Success())
+//                    } else {
+//                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+//                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
+//                    }
+//                }
+//        }
+//    }
 
     fun getDailyWeatherCondition(locationId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -153,7 +153,7 @@ class ConditionDetailsViewModel @Inject constructor(
             repository.getCurrentCondition(lat, lon)
                 .collect { response ->
                     if (response.resultType == ResultType.SUCCESS) {
-                        currentCondition.postValue(response.data!!)
+                        //currentCondition.postValue(response.data!!)
                         stateCurrent.postValue(State.Success())
                     } else {
                         Log.e("CURRENT_RESPONSE", response.error?.message.toString())

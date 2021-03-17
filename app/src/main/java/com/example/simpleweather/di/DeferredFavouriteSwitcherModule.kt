@@ -1,8 +1,8 @@
 package com.example.simpleweather.di
 
 import com.example.simpleweather.local.DataApi
-import com.example.simpleweather.repository.favswitcher.DeferredFavouriteSwitcher
-import com.example.simpleweather.repository.favswitcher.DeferredFavouriteSwitcherImpl
+import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcher
+import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcherImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

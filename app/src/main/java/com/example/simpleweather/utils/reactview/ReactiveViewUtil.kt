@@ -25,14 +25,6 @@ class ReactiveViewUtil {
             setOnQueryTextListener(listener)
             awaitClose()
         }
-
-
-
-
-
-
-
-
     }
 }
 

@@ -1,7 +1,7 @@
 package com.example.simpleweather.di
 
 import android.content.Context
-import com.example.simpleweather.AsyncPreferencesUnitChanger
+import com.example.simpleweather.utils.asyncunits.AsyncPreferencesUnitChanger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
