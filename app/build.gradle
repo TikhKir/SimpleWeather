@@ -90,7 +90,7 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.5.0"
 
 
-    //useful datetime
+    //datetime backport
     implementation 'com.jakewharton.threetenabp:threetenabp:1.3.0'
 
     //Local unit tests

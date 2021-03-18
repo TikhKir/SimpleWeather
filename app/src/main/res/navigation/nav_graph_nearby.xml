@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/nearbyFragment"
-        android:name="com.example.simpleweather.ui.nearby.NearbyFragment"
+        android:name="com.example.simpleweather.ui.screens.nearby.NearbyFragment"
         android:label="@string/title_search_nearby"
         tools:layout="@layout/nearby_fragment" >
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/conditionDetailsFragment"
-        android:name="com.example.simpleweather.ui.conditiondetails.ConditionDetailsFragment"
+        android:name="com.example.simpleweather.ui.screens.conditiondetails.ConditionDetailsFragment"
         android:label="condition_details_fragment"
         tools:layout="@layout/condition_details_fragment" >
         <argument

@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.conditiondetails
+package com.example.simpleweather.ui.screens.conditiondetails
 
 import android.view.LayoutInflater
 import android.view.View

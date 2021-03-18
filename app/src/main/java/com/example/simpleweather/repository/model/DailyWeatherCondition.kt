@@ -1,7 +1,8 @@
 package com.example.simpleweather.repository.model
 
 import com.example.simpleweather.local.model.DailyWeatherConditionDB
-import com.example.simpleweather.utils.diffutil.Identified
+import com.example.simpleweather.ui.model.DailyConditionUI
+import kotlin.math.roundToInt
 
 data class DailyWeatherCondition (
     val timeStamp: Int,
@@ -10,7 +11,7 @@ data class DailyWeatherCondition (
     val sunrise: Int,
     val sunset: Int,
 
-    val tempDay: Float,
+    var tempDay: Float,
     val tempEvening: Float,
     val tempNight: Float,
     val tempMorning: Float,
@@ -38,9 +39,8 @@ data class DailyWeatherCondition (
     val snowVolume: Float,
     val rainVolume: Float,
     val uvi: Float
-) : Identified
+)
 {
-    override val identifier: Any = timeStamp
 
     fun toDailyWeatherConditionDB(locationId: Long): DailyWeatherConditionDB {
         return DailyWeatherConditionDB(
@@ -73,6 +73,39 @@ data class DailyWeatherCondition (
             snowVolume,
             rainVolume,
             uvi
+        )
+    }
+
+    fun toDailyConditionUI(): DailyConditionUI {
+        return DailyConditionUI(
+            timeStamp = timeStamp,
+            timeZoneOffset = timeZoneOffset,
+            sunrise = sunrise,
+            sunset = sunset,
+            tempDay = tempDay.roundToInt(),
+            tempEvening = tempEvening.roundToInt(),
+            tempNight = tempNight.roundToInt(),
+            tempMorning = tempMorning.roundToInt(),
+            tempMax = tempMax.roundToInt(),
+            tempMin = tempMin.roundToInt(),
+            tempDayFL = tempDayFL.roundToInt(),
+            tempEveningFL = tempEveningFL.roundToInt(),
+            tempNightFL = tempNightFL.roundToInt(),
+            tempMorningFL = tempMorningFL.roundToInt(),
+            pressure = pressure,
+            humidity = humidity,
+            dewPoint = dewPoint,
+            clouds = clouds,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weatherId,
+            weatherName = weatherName,
+            weatherIcon = weatherIcon,
+            snowVolume = snowVolume,
+            rainVolume = rainVolume,
+            probabilityOfPrecipitation = probabilityOfPrecipitation,
+            weatherDescription = weatherDescription,
+            uvi = uvi
         )
     }
 

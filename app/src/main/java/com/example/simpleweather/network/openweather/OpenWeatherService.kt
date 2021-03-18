@@ -23,9 +23,9 @@ interface OpenWeatherService {
         private const val EXCLUDE_DAILY = "daily"
         private const val EXCLUDE_ALERTS = "alerts"
         private const val EXCLUDE_CURRENT = "current"
-        private const val EXCLUDE_MINUTELI = "minutely"
-        private const val UNITS_METRIC = "metric"
-        private const val UNITS_IMPERIAL = "imperial"
+        private const val EXCLUDE_MINUTELY = "minutely"
+        private const val UNITS_METRIC = "metric" //dont change query units!
+        private const val UNITS_IMPERIAL = "imperial" //dont change query units!
 
     }
 
@@ -33,7 +33,7 @@ interface OpenWeatherService {
     suspend fun getAllForecastByCoord(
         @Query(PARAM_LATITUDE) latitude: Float,
         @Query(PARAM_LONGITUDE) longitude: Float,
-        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELI, $EXCLUDE_ALERTS",
+        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELY, $EXCLUDE_ALERTS",
         @Query(PARAM_LANGUAGE) language: String = LANGUAGE_RU,
         @Query(PARAM_UNITS) units: String = UNITS_METRIC,
         @Query(PARAM_API_KEY) apiKey: String = API_KEY
@@ -43,7 +43,7 @@ interface OpenWeatherService {
     suspend fun getDailyForecastByCoord(
         @Query(PARAM_LATITUDE) latitude: Float,
         @Query(PARAM_LONGITUDE) longitude: Float,
-        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELI,$EXCLUDE_HOURLY,$EXCLUDE_CURRENT, $EXCLUDE_ALERTS",
+        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELY,$EXCLUDE_HOURLY,$EXCLUDE_CURRENT, $EXCLUDE_ALERTS",
         @Query(PARAM_LANGUAGE) language: String = LANGUAGE_RU,
         @Query(PARAM_UNITS) units: String = UNITS_METRIC,
         @Query(PARAM_API_KEY) apiKey: String = API_KEY
@@ -53,7 +53,7 @@ interface OpenWeatherService {
     suspend fun getCurrentlyForecastByCoord(
         @Query(PARAM_LATITUDE) latitude: Float,
         @Query(PARAM_LONGITUDE) longitude: Float,
-        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELI,$EXCLUDE_HOURLY,$EXCLUDE_DAILY, $EXCLUDE_ALERTS",
+        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELY,$EXCLUDE_HOURLY,$EXCLUDE_DAILY, $EXCLUDE_ALERTS",
         @Query(PARAM_LANGUAGE) language: String = LANGUAGE_RU,
         @Query(PARAM_UNITS) units: String = UNITS_METRIC,
         @Query(PARAM_API_KEY) apiKey: String = API_KEY
@@ -63,7 +63,7 @@ interface OpenWeatherService {
     suspend fun getHourlyForecastByCoord(
         @Query(PARAM_LATITUDE) latitude: Float,
         @Query(PARAM_LONGITUDE) longitude: Float,
-        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELI,$EXCLUDE_DAILY,$EXCLUDE_DAILY, $EXCLUDE_ALERTS",
+        @Query(PARAM_EXCLUDE) exclude: String = "$EXCLUDE_MINUTELY,$EXCLUDE_DAILY,$EXCLUDE_DAILY, $EXCLUDE_ALERTS",
         @Query(PARAM_LANGUAGE) language: String = LANGUAGE_RU,
         @Query(PARAM_UNITS) units: String = UNITS_METRIC,
         @Query(PARAM_API_KEY) apiKey: String = API_KEY

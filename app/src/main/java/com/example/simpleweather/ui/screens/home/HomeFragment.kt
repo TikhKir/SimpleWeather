@@ -1,9 +1,8 @@
-package com.example.simpleweather.ui.home
+package com.example.simpleweather.ui.screens.home
 
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -40,7 +39,7 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        viewModel.locationLiveData.observe(this.viewLifecycleOwner, Observer {
+        viewModel.locationLiveData.observe(this.viewLifecycleOwner, {
             savedLocationsAdapter.submitList(it.toList())
         })
     }

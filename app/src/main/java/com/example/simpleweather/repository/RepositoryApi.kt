@@ -14,13 +14,13 @@ interface RepositoryApi {
     suspend fun getCityNameByCoords(lat: Float, lon: Float): Result<List<LocationWithCoords>>
 
 
-    suspend fun getDailyCondition(lat: Float, lon: Float): Flow<Result<List<DailyWeatherCondition>>>
+    suspend fun getDailyConditionWithoutCaching(lat: Float, lon: Float): Flow<Result<List<DailyWeatherCondition>>>
     suspend fun getDailyCondition(locationId: Long): Flow<Result<List<DailyWeatherCondition>>>
 
-    suspend fun getHourlyCondition(lat: Float, lon: Float): Flow<Result<List<HourlyWeatherCondition>>>
+    suspend fun getHourlyConditionWithoutCaching(lat: Float, lon: Float): Flow<Result<List<HourlyWeatherCondition>>>
     suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>>
 
-    suspend fun getCurrentCondition(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>>
+    suspend fun getCurrentConditionWithoutCaching(lat: Float, lon: Float): Flow<Result<CurrentWeatherCondition>>
     suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>>
 
 

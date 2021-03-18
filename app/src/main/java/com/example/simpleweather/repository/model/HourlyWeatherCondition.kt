@@ -2,7 +2,6 @@ package com.example.simpleweather.repository.model
 
 import com.example.simpleweather.local.model.HourlyWeatherConditionDB
 import com.example.simpleweather.ui.model.HourlyConditionUI
-import com.example.simpleweather.utils.diffutil.Identified
 import kotlin.math.roundToInt
 
 data class HourlyWeatherCondition(
@@ -24,9 +23,8 @@ data class HourlyWeatherCondition(
     val probabilityOfPrecipitation: Float,
     val snowVolume: Float,
     val rainVolume: Float
-) : Identified
+)
 {
-    override val identifier: Any = timeStamp
 
     fun toHourlyWeatherConditionDB(locationId: Long): HourlyWeatherConditionDB {
         return HourlyWeatherConditionDB(

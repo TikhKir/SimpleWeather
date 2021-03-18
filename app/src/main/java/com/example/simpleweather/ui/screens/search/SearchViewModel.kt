@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.search
+package com.example.simpleweather.ui.screens.search
 
 import android.util.Log
 import androidx.lifecycle.LiveData

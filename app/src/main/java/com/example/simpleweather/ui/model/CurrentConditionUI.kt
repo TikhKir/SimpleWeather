@@ -1,36 +1,40 @@
 package com.example.simpleweather.ui.model
 
+import com.example.simpleweather.utils.asyncunits.DegreeUnits
+import com.example.simpleweather.utils.asyncunits.PressureUnits
+import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.diffutil.Identified
 
+//do not remove or change the default units initialization!
 data class CurrentConditionUI(
     val timeStamp: Int,
     val timeZoneOffset: Int,
 
-    var sunrise: Int = 0,
-    var sunset: Int = 0,
+    var sunrise: Int,
+    var sunset: Int,
 
-    var temp: Int = 0,
-    var tempFL: Int = 0,
+    var temp: Int,
+    var tempFL: Int,
     var tempUnits: DegreeUnits = DegreeUnits.Celsius,
 
-    var pressure: Int = 0,
+    var pressure: Int,
     var pressureUnits: PressureUnits = PressureUnits.HectoPascals,
-    var humidity: Int = 0,
-    var dewPoint: Float = 0F,
-    var clouds: Int = 0,
-    var windSpeed: Float = 0F,
+    var humidity: Int,
+    var dewPoint: Float,
+    var clouds: Int,
+    var windSpeed: Float,
     var windSpeedUnits: WindSpeedUnits = WindSpeedUnits.MetersPerSecond,
-    var windDeg: Int = 0,
+    var windDeg: Int,
 
-    var weatherId: Int = 0,
-    var weatherName: String = "",
-    var weatherDescription: String = "",
-    var weatherIcon: String = "",
+    var weatherId: Int,
+    var weatherName: String,
+    var weatherDescription: String,
+    var weatherIcon: String,
 
-    var snowVolumeLastHour: Float = 0F,
-    var rainVolumeLastHour: Float = 0F,
-    var allVolumeLastHour: Float = 0F,
-    var uvi: Float = 0F
+    var snowVolumeLastHour: Float,
+    var rainVolumeLastHour: Float,
+    var allVolumeLastHour: Float,
+    var uvi: Float
 ) : Identified
 {
     override val identifier: Any = timeStamp

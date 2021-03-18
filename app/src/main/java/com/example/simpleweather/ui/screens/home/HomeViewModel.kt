@@ -1,6 +1,5 @@
-package com.example.simpleweather.ui.home
+package com.example.simpleweather.ui.screens.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,10 +27,7 @@ class HomeViewModel @Inject constructor(
         val livedata = MutableLiveData<List<LocationWithCoords>>()
         viewModelScope.launch(Dispatchers.IO) {
             repository.getSavedLocations()
-                .collect {
-                    livedata.postValue(it)
-                    it.map { Log.e("LOCATION", it.fullAddress) }
-                }
+                .collect { livedata.postValue(it) }
         }
         return livedata
     }

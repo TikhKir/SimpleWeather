@@ -1,7 +1,6 @@
 package com.example.simpleweather.repository.model
 
 import com.example.simpleweather.ui.model.CurrentConditionUI
-import com.example.simpleweather.utils.diffutil.Identified
 import kotlin.math.roundToInt
 
 data class CurrentWeatherCondition (
@@ -29,9 +28,9 @@ data class CurrentWeatherCondition (
     val snowVolumeLastHour: Float,
     val rainVolumeLastHour: Float,
     val uvi: Float
-) : Identified
+)
 {
-    override val identifier: Any = timeStamp
+
 
     fun toCurrentConditionUI(): CurrentConditionUI {
         return CurrentConditionUI(

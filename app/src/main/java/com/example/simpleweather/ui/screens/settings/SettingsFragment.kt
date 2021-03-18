@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.settings
+package com.example.simpleweather.ui.screens.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

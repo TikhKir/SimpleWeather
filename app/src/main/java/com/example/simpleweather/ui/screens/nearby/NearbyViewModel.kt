@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.nearby
+package com.example.simpleweather.ui.screens.nearby
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -34,7 +34,7 @@ class NearbyViewModel @Inject constructor(
                 stateLiveData.postValue(State.Success())
             } else {
                 Log.e("COORDS to LOCATIONS", locations.error?.message.toString() )
-                stateLiveData.postValue(State.Error("Проверьте подключение к интенету"))
+                stateLiveData.postValue(State.Error(locations.error?.message.toString()))
             }
 
         }

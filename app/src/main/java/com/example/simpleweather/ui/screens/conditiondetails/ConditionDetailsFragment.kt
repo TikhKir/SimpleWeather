@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.conditiondetails
+package com.example.simpleweather.ui.screens.conditiondetails
 
 import android.graphics.Color
 import android.os.Bundle
@@ -11,7 +11,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
-import com.example.simpleweather.ui.model.*
+import com.example.simpleweather.ui.model.CurrentConditionUI
+import com.example.simpleweather.ui.model.HourlyConditionUI
+import com.example.simpleweather.utils.asyncunits.DegreeUnits
+import com.example.simpleweather.utils.asyncunits.PressureUnits
+import com.example.simpleweather.utils.asyncunits.Units
+import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
@@ -185,7 +190,7 @@ class ConditionDetailsFragment : Fragment() {
     @ExperimentalCoroutinesApi
     private fun startRequestWithNavGraphArgs() {
         val location = navArgs.location
-        if (location.locationId != -1L) { //location already exist in db
+        if (location.locationId != -1L) { //location already exist in db //todo: это плохо
             viewModel.getCurrentWeatherCondition(location.locationId)
             viewModel.getHourlyWeatherCondition(location.locationId)
             viewModel.getDailyWeatherCondition(location.locationId)
