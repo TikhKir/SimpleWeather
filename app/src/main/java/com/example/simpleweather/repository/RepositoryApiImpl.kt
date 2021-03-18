@@ -23,7 +23,7 @@ class RepositoryApiImpl @Inject constructor(
     private val dataApi: DataApi
 ) : RepositoryApi {
 
-    override suspend fun getDailyCondition(
+    override suspend fun getDailyConditionWithoutCaching(
         lat: Float,
         lon: Float
     ): Flow<Result<List<DailyWeatherCondition>>> {
@@ -54,7 +54,7 @@ class RepositoryApiImpl @Inject constructor(
         }
     }
 
-    override suspend fun getHourlyCondition(
+    override suspend fun getHourlyConditionWithoutCaching(
         lat: Float,
         lon: Float
     ): Flow<Result<List<HourlyWeatherCondition>>> {
@@ -85,7 +85,7 @@ class RepositoryApiImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCurrentCondition(
+    override suspend fun getCurrentConditionWithoutCaching(
         lat: Float,
         lon: Float
     ): Flow<Result<CurrentWeatherCondition>> {

@@ -19,5 +19,12 @@
     <string name="updated">"обновлено: "</string>
     <string name="data_for">"данные на: "</string>
 
+    <string name="units_pressure_mm">мм</string>
+    <string name="units_pressure_hpa">гПа</string>
+    <string name="units_dergee_celsius">C°</string>
+    <string name="units_degree_fahrenheit">F°</string>
+    <string name="units_wind_speed_meters_per_second">м/c</string>
+    <string name="units_wind_speed_kilometers_per_hours">км/ч</string>
+
 
 </resources>

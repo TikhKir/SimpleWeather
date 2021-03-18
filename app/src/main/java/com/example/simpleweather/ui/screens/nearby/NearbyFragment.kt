@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.nearby
+package com.example.simpleweather.ui.screens.nearby
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,13 +63,13 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
 
     private fun observeViewModel() {
         viewModel = ViewModelProvider(this).get(NearbyViewModel::class.java)
-        viewModel.state.observe(viewLifecycleOwner, Observer { state ->
+        viewModel.state.observe(viewLifecycleOwner, { state ->
             setLoadingState(state)
             doIfGpsAvailableOrShowErrorMessage {
                 updateLocationTracking(state is State.Loading || state is State.Default)
             }
         })
-        viewModel.locations.observe(viewLifecycleOwner, Observer {
+        viewModel.locations.observe(viewLifecycleOwner, {
             nearbyLocationsAdapter.submitList(it.toList())
         })
     }

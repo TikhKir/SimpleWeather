@@ -1,33 +1,60 @@
 package com.example.simpleweather.repository.model
 
-import com.example.simpleweather.utils.diffutil.Identified
+import com.example.simpleweather.ui.model.CurrentConditionUI
+import kotlin.math.roundToInt
 
 data class CurrentWeatherCondition (
     val timeStamp: Int,
     var timeZoneOffset: Int,
 
-    val sunrise: Int?,
-    val sunset: Int?,
+    val sunrise: Int,
+    val sunset: Int,
 
-    val temp: Float?,
-    val tempFL: Float?,
+    var temp: Float,
+    val tempFL: Float,
 
-    val pressure: Int?,
-    val humidity: Int?,
-    val dewPoint: Float?,
-    val clouds: Int?,
-    val windSpeed: Float?,
-    val windDeg: Int?,
+    var pressure: Int,
+    val humidity: Int,
+    val dewPoint: Float,
+    val clouds: Int,
+    var windSpeed: Float,
+    val windDeg: Int,
 
-    val weatherId: Int?,
-    val weatherName: String?,
-    val weatherDescription: String?,
-    val weatherIcon: String?,
+    val weatherId: Int,
+    val weatherName: String,
+    val weatherDescription: String,
+    val weatherIcon: String,
 
-    val snowVolumeLastHour: Float?,
-    val rainVolumeLastHour: Float?,
-    val uvi: Float?
-) : Identified
+    val snowVolumeLastHour: Float,
+    val rainVolumeLastHour: Float,
+    val uvi: Float
+)
 {
-    override val identifier: Any = timeStamp
+
+
+    fun toCurrentConditionUI(): CurrentConditionUI {
+        return CurrentConditionUI(
+            timeStamp,
+            timeZoneOffset,
+            sunrise,
+            sunset,
+            temp = temp.roundToInt(),
+            tempFL = tempFL.roundToInt(),
+            pressure = pressure,
+            humidity = humidity,
+            dewPoint = dewPoint,
+            clouds = clouds,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weatherId,
+            weatherName = weatherName,
+            weatherDescription = weatherDescription,
+            weatherIcon = weatherIcon,
+            snowVolumeLastHour = snowVolumeLastHour,
+            rainVolumeLastHour = rainVolumeLastHour,
+            allVolumeLastHour = (snowVolumeLastHour + rainVolumeLastHour),
+            uvi = uvi
+        )
+    }
+
 }

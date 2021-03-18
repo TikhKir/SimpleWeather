@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.conditiondetails
+package com.example.simpleweather.ui.screens.conditiondetails
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simpleweather.R
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
+import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 import com.example.simpleweather.utils.iconconverter.IconConverter
@@ -28,26 +28,30 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val hourlyCondition = getItem(position) as HourlyWeatherCondition
+        val hourlyCondition = getItem(position) as HourlyConditionUI
         (holder as HourlyConditionalViewHolder).bind(hourlyCondition)
     }
 
     inner class HourlyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(hourlyCondition: HourlyWeatherCondition) {
-            val iconId = hourlyCondition.weatherId?.let { IconConverter.idToIcon(it, false) }
-            val allVolume = (hourlyCondition.rainVolume ?: 0F) + (hourlyCondition.snowVolume ?: 0F)
-            val time = LocalDateTime.ofEpochSecond(
+        fun bind(hourlyCondition: HourlyConditionUI) {
+            val allVolume = hourlyCondition.rainVolume + hourlyCondition.snowVolume
+            val localDateTime = LocalDateTime.ofEpochSecond(
                 hourlyCondition.timeStamp.toLong(),
                 0,
                 ZoneOffset.ofTotalSeconds(hourlyCondition.timeZoneOffset)
             )
-                .format(DateTimeFormatter.ofPattern("HH:mm"))
+            val timeStr = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+            val iconId = IconConverter.idToIcon(hourlyCondition.weatherId, isNight(localDateTime))
 
-            itemView.text_view_condition_item_time.text = time
+            itemView.text_view_condition_item_time.text = timeStr
             itemView.text_view_condition_item_wind.text = hourlyCondition.windSpeed.toString()
             itemView.text_view_condition_item_volume.text = allVolume.toString()
-            iconId?.let { itemView.image_view_condition_item.setImageResource(it) }
+            itemView.image_view_condition_item.setImageResource(iconId)
         }
     }
+
+    //very sad that in this object I do not have access to the time of sunset and sunrise
+    private fun isNight(localDateTime: LocalDateTime): Boolean =
+        ((localDateTime.hour < 6) || (localDateTime.hour > 22))
 
 }

@@ -23,7 +23,6 @@ class BackgroundUpdateWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        Log.e("BACKGROUND WORKER", "I DO!")
         val locations = dataApi.getSavedLocationsSync()
 
         for (location in locations) {

@@ -1,4 +1,4 @@
-package com.example.simpleweather.repository.favswitcher
+package com.example.simpleweather.utils.favswitcher
 
 import com.example.simpleweather.repository.model.LocationWithCoords
 

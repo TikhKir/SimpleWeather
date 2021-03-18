@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.conditiondetails.ConditionDetailsFragment">
+    tools:context=".ui.screens.conditiondetails.ConditionDetailsFragment">
 
     <ScrollView
         android:id="@+id/condition_fragment_root"

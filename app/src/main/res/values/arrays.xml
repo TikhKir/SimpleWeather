@@ -24,13 +24,11 @@
     <!-- Atmosphere pressure -->
     <string-array name="units_pressure_entries">
         <item>гПа</item>
-        <item>мБар</item>
         <item>мм</item>
     </string-array>
 
     <string-array name="units_pressure_values">
-        <item>units_gpa</item>
-        <item>units_mbar</item>
+        <item>units_hPa</item>
         <item>units_millimeter</item>
     </string-array>
 

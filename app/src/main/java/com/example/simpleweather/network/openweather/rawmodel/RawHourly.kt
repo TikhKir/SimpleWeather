@@ -9,37 +9,37 @@ data class RawHourly (
     val dt: Int,
 
     @SerializedName("temp")
-    val temp: Float? = null,
+    val temp: Float,
 
     @SerializedName("feels_like")
-    val feelsLike: Float? = null,
+    val feelsLike: Float,
 
     @SerializedName("pressure")
-    val pressure: Int? = null,
+    val pressure: Int,
 
     @SerializedName("humidity")
-    val humidity: Int? = null,
+    val humidity: Int,
 
     @SerializedName("dew_point")
-    val dewPoint: Float? = null,
+    val dewPoint: Float,
 
     @SerializedName("clouds")
-    val clouds: Int? = null,
+    val clouds: Int,
 
     @SerializedName("visibility")
-    val visibility: Int? = null,
+    val visibility: Int,
 
     @SerializedName("wind_speed")
-    val windSpeed: Float? = null,
+    val windSpeed: Float,
 
     @SerializedName("wind_deg")
-    val windDeg: Int? = null,
+    val windDeg: Int,
 
     @SerializedName("weather")
-    val weather: List<RawWeather> = ArrayList(),
+    val weather: List<RawWeather>,
 
     @SerializedName("pop")
-    val pop: Float? = null,
+    val pop: Float,
 
     @SerializedName("snow")
     val snow: RawSnow? = null,
@@ -65,8 +65,8 @@ data class RawHourly (
             weather[0].description,
             weather[0].icon,
             pop,
-            snow?.last_hour,
-            rain?.last_hour
+            snow?.last_hour ?: 0F,
+            rain?.last_hour ?: 0F
         )
     }
 

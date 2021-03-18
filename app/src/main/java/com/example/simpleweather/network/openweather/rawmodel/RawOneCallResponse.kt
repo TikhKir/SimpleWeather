@@ -6,26 +6,26 @@ import com.google.gson.annotations.SerializedName
 
 data class RawOneCallResponse (
     @SerializedName("lat")
-    val lat: Float? = null,
+    val lat: Float,
 
     @SerializedName("lon")
-    val lon: Float? = null,
+    val lon: Float,
 
     @SerializedName("timezone")
-    val timezone: String? = null,
+    val timezone: String,
 
     @SerializedName("timezone_offset")
     var timezoneOffset: Int = 0,
 
     @SerializedName("current")
-    val current: RawCurrent = RawCurrent(),
+    val current: RawCurrent,
 
     @SerializedName("hourly")
-    val hourly: List<RawHourly> = ArrayList(),
+    val hourly: List<RawHourly>,
 
     @SerializedName("daily")
-    val daily: List<RawDaily> = ArrayList(),
+    val daily: List<RawDaily>,
 
     @SerializedName("alerts")
-    val alerts: List<RawAlert> = ArrayList()
+    val alerts: List<RawAlert>
 )

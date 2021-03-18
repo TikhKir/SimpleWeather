@@ -14,9 +14,9 @@ data class LocationDB(
     val latitude: Float,
     val fullAddress: String,
     val city: String,
-    val county: String?,
-    val state: String?,
-    val country: String?,
+    val county: String,
+    val state: String,
+    val country: String,
     val refreshTimeDaily: Long,
     val refreshTimeHourly: Long,
     val refreshTimeCurrent: Long

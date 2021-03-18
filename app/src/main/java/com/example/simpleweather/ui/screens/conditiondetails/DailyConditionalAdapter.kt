@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.conditiondetails
+package com.example.simpleweather.ui.screens.conditiondetails
 
 
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simpleweather.R
-import com.example.simpleweather.repository.model.DailyWeatherCondition
+import com.example.simpleweather.ui.model.DailyConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 import com.example.simpleweather.utils.iconconverter.IconConverter
@@ -26,14 +26,13 @@ class DailyConditionalAdapter:
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val dailyCondition = getItem(position) as DailyWeatherCondition
+        val dailyCondition = getItem(position) as DailyConditionUI
         (holder as DailyConditionalViewHolder).bind(dailyCondition)
     }
 
     inner class DailyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(dailyCondition: DailyWeatherCondition) {
-            val iconId = dailyCondition.weatherId?.let { IconConverter.idToIcon(it, false) }
-
+        fun bind(dailyCondition: DailyConditionUI) {
+            val iconId = IconConverter.idToIcon(dailyCondition.weatherId, false)
             val dayOfWeek = LocalDateTime.ofEpochSecond(
                 dailyCondition.timeStamp.toLong(),
                 0,
@@ -43,9 +42,9 @@ class DailyConditionalAdapter:
 
             itemView.text_view_day_of_week.text = dayOfWeek
             itemView.text_view_weather_name.text = dailyCondition.weatherDescription
-            itemView.text_view_day_max_temp.text = dailyCondition.tempMax?.toInt().toString()
-            itemView.text_view_day_min_temp.text = dailyCondition.tempMin?.toInt().toString()
-            iconId?.let { itemView.image_view_day_icon.setImageResource(it) }
+            itemView.text_view_day_max_temp.text = dailyCondition.tempMax.toString()
+            itemView.text_view_day_min_temp.text = dailyCondition.tempMin.toString()
+            itemView.image_view_day_icon.setImageResource(iconId)
         }
     }
 

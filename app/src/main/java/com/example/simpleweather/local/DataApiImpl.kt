@@ -112,7 +112,7 @@ class DataApiImpl @Inject constructor(
 
 
     override suspend fun removeGarbage() {
-        val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
+        //val currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
         TODO("здесь тоже нужно отправлять таймстамп")
     }
 

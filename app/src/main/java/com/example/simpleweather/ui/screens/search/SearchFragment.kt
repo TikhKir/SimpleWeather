@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.search
+package com.example.simpleweather.ui.screens.search
 
 import android.app.SearchManager
 import android.content.Context
@@ -7,7 +7,6 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -57,10 +56,10 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-        viewModel.locationsLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.locationsLiveData.observe(viewLifecycleOwner, {
             searchAdapter.submitList(it.toList())
         })
-        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.stateLiveData.observe(viewLifecycleOwner, {
             setLoadingState(it)
         })
     }

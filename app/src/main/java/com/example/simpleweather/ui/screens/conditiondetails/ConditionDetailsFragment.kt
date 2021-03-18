@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.conditiondetails
+package com.example.simpleweather.ui.screens.conditiondetails
 
 import android.graphics.Color
 import android.os.Bundle
@@ -6,17 +6,21 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
-import com.example.simpleweather.repository.model.CurrentWeatherCondition
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
+import com.example.simpleweather.ui.model.CurrentConditionUI
+import com.example.simpleweather.ui.model.HourlyConditionUI
+import com.example.simpleweather.utils.asyncunits.DegreeUnits
+import com.example.simpleweather.utils.asyncunits.PressureUnits
+import com.example.simpleweather.utils.asyncunits.Units
+import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
 import lecho.lib.hellocharts.model.PointValue
@@ -49,6 +53,7 @@ class ConditionDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.condition_details_fragment, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
@@ -66,63 +71,59 @@ class ConditionDetailsFragment : Fragment() {
         observeViewModel()
     }
 
-
     private fun observeViewModel() {
-        viewModel.currentLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.currentLiveData.observe(viewLifecycleOwner, {
             initCurrentState(it)
         })
-        viewModel.hourlyLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.hourlyLiveData.observe(viewLifecycleOwner, {
             hourlyAdapter.submitList(it.toList())
             initChart(it)
             calculateViewsSize(it.size)
         })
-        viewModel.dailyLivaData.observe(viewLifecycleOwner, Observer {
+        viewModel.dailyLivaData.observe(viewLifecycleOwner, {
             dailyAdapter.submitList(it.toList())
         })
-        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.stateLiveData.observe(viewLifecycleOwner, {
             setLoadingState(it)
         })
     }
 
-    private fun initCurrentState(currentCondition: CurrentWeatherCondition) {
-        //todo: нужн сделать класс для преобразования единиц измерения,
-        // в который при передаче значения будет возвращаться рассчитанная
-        // строка с приконкатенированными единицами
+    private fun initCurrentState(currentCondition: CurrentConditionUI) = with(currentCondition) {
+            val tempStr = "$temp"
+            val pressureStr = "$pressure ${provideUnitsString(pressureUnits)}"
+            val windSpeedStr = "$windSpeed ${provideUnitsString(windSpeedUnits)}"
 
-        val feelsLikeStr =
-            getString(R.string.feels_like) + currentCondition.tempFL?.toInt().toString()
-        val time = LocalDateTime.ofEpochSecond(
-            currentCondition.timeStamp.toLong(),
-            0,
-            ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
-        ).format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
+            val feelsLikeStr = getString(R.string.feels_like) +
+                    "$tempFL${provideUnitsString(tempUnits)}"
 
-        //todo: подтягивать информацию о локации из репозитория через flow
-        val maxRefresh = maxOf(
-            navArgs.location.refreshTimeCurrent,
-            navArgs.location.refreshTimeHourly
-        )
-        val refreshTime = getString(R.string.updated) + LocalDateTime.ofEpochSecond(
-            maxRefresh,
-            0,
-            ZoneOffset.ofTotalSeconds(currentCondition.timeZoneOffset)
-        ).format(DateTimeFormatter.ofPattern("d MMMM, HH:mm"))
+            val timeStr = LocalDateTime.ofEpochSecond(timeStamp.toLong(), 0,
+            ZoneOffset.ofTotalSeconds(timeZoneOffset))
+                .format(DateTimeFormatter.ofPattern("EEEE, d MMMM, HH:mm"))
 
-        text_view_current_datetime.text = time
-        text_view_refresh_time.text = refreshTime
-        text_view_current_temperature.text = currentCondition.temp?.toInt().toString()
-        text_view_current_conditional.text = currentCondition.weatherDescription
-        text_view_current_feelslike.text = feelsLikeStr
+            //todo: подтягивать информацию о локации из репозитория через flow
+            val maxRefresh = maxOf(
+                navArgs.location.refreshTimeCurrent,
+                navArgs.location.refreshTimeHourly
+            )
 
-        text_view_hudimity_count.text = currentCondition.humidity.toString()
-        text_view_pressure_count.text = currentCondition.pressure.toString()
-        text_view_wind_count.text = currentCondition.windSpeed.toString()
-        val allVolume = (currentCondition.rainVolumeLastHour ?: 0F) +
-                (currentCondition.snowVolumeLastHour ?: 0F)
-        text_view_volume_prec_count.text = allVolume.toString()
+            val refreshTimeStr = getString(R.string.updated) +
+                    LocalDateTime.ofEpochSecond(maxRefresh, 0,
+                ZoneOffset.ofTotalSeconds(timeZoneOffset)
+            ).format(DateTimeFormatter.ofPattern("d MMMM, HH:mm"))
+
+            text_view_current_datetime.text = timeStr
+            text_view_refresh_time.text = refreshTimeStr
+            text_view_current_temperature.text = tempStr
+            text_view_current_conditional.text = weatherDescription
+            text_view_current_feelslike.text = feelsLikeStr
+
+            text_view_hudimity_count.text = humidity.toString()
+            text_view_pressure_count.text = pressureStr
+            text_view_wind_count.text = windSpeedStr
+            text_view_volume_prec_count.text = allVolumeLastHour.toString()
     }
 
-    private fun initChart(hourlyList: List<HourlyWeatherCondition>) {
+    private fun initChart(hourlyList: List<HourlyConditionUI>) {
         val pointsList = transformToPointsList(hourlyList)
 
         val line = Line(pointsList)
@@ -141,10 +142,10 @@ class ConditionDetailsFragment : Fragment() {
         hello_chart_view.lineChartData = lineChartData
     }
 
-    private fun transformToPointsList(hourlyList: List<HourlyWeatherCondition>): List<PointValue> {
+    private fun transformToPointsList(hourlyList: List<HourlyConditionUI>): List<PointValue> {
         val pointsList = mutableListOf<PointValue>()
         for ((index, value) in hourlyList.withIndex()) {
-            pointsList.add(PointValue(index.toFloat(), value.temp!!.toFloat()))
+            pointsList.add(PointValue(index.toFloat(), value.temp.toFloat()))
         }
         return pointsList
     }
@@ -186,9 +187,10 @@ class ConditionDetailsFragment : Fragment() {
         recyclerView_daily_conditions.adapter = dailyAdapter
     }
 
+    @ExperimentalCoroutinesApi
     private fun startRequestWithNavGraphArgs() {
         val location = navArgs.location
-        if (location.locationId != -1L) { //location already exist in db
+        if (location.locationId != -1L) { //location already exist in db //todo: это плохо
             viewModel.getCurrentWeatherCondition(location.locationId)
             viewModel.getHourlyWeatherCondition(location.locationId)
             viewModel.getDailyWeatherCondition(location.locationId)
@@ -276,6 +278,16 @@ class ConditionDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (requireActivity() as MainActivity).setActionBarTitle(navArgs.location.addressCity)
+    }
+
+
+    private fun provideUnitsString(unit: Units): String = when (unit) {
+        is PressureUnits.MillimetersOfMercury -> getString(R.string.units_pressure_mm)
+        is PressureUnits.HectoPascals -> getString(R.string.units_pressure_hpa)
+        is DegreeUnits.Celsius -> getString(R.string.units_dergee_celsius)
+        is DegreeUnits.Fahrenheit -> getString(R.string.units_degree_fahrenheit)
+        is WindSpeedUnits.MetersPerSecond -> getString(R.string.units_wind_speed_meters_per_second)
+        is WindSpeedUnits.KilometersPerHour -> getString(R.string.units_wind_speed_kilometers_per_hours)
     }
 
 

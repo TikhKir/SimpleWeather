@@ -5,6 +5,6 @@
     app:startDestination="@id/settingsFragment">
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.simpleweather.ui.settings.SettingsFragment"
+        android:name="com.example.simpleweather.ui.screens.settings.SettingsFragment"
         android:label="@string/title_settings" />
 </navigation>

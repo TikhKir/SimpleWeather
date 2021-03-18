@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.search
+package com.example.simpleweather.ui.screens.search
 
 import android.view.LayoutInflater
 import android.view.View
