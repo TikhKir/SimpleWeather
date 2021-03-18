@@ -12,6 +12,7 @@ Single-activity android App written in Kotlin with MVVM architecture.
 -   Save locations to favourites (offline caching locations and forecasts)
 -   Updating forecasts in the background on a schedule 
 -   Display weather forecast based on user location
+-   Supports different units of measure 
 
 ## Libraries & Dependencies
 -   Retrofit
