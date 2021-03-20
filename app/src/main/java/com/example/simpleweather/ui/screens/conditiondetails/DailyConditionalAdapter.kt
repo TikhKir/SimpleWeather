@@ -33,17 +33,19 @@ class DailyConditionalAdapter:
     inner class DailyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(dailyCondition: DailyConditionUI) {
             val iconId = IconConverter.idToIcon(dailyCondition.weatherId, false)
-            val dayOfWeek = LocalDateTime.ofEpochSecond(
+            val tempMaxStr = "${dailyCondition.tempMax}°"
+            val tempMinStr = "${dailyCondition.tempMin}°"
+            val dayOfWeekStr = LocalDateTime.ofEpochSecond(
                 dailyCondition.timeStamp.toLong(),
                 0,
                 ZoneOffset.ofTotalSeconds(dailyCondition.timeZoneOffset)
             )
                 .format(DateTimeFormatter.ofPattern("EE"))
 
-            itemView.text_view_day_of_week.text = dayOfWeek
+            itemView.text_view_day_of_week.text = dayOfWeekStr
             itemView.text_view_weather_name.text = dailyCondition.weatherDescription
-            itemView.text_view_day_max_temp.text = dailyCondition.tempMax.toString()
-            itemView.text_view_day_min_temp.text = dailyCondition.tempMin.toString()
+            itemView.text_view_day_max_temp.text = tempMaxStr
+            itemView.text_view_day_min_temp.text = tempMinStr
             itemView.image_view_day_icon.setImageResource(iconId)
         }
     }

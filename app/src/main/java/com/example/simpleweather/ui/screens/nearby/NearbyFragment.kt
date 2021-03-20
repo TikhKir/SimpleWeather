@@ -127,9 +127,9 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
     }
 
     private fun showErrorMessage(message: String) {
-        progress_bar_nearby.isVisible = false
-        text_view_nearby_message.text = message
-        text_view_nearby_message.isVisible = true
+        progress_bar_nearby?.isVisible = false
+        text_view_nearby_message?.text = message
+        text_view_nearby_message?.isVisible = true
     }
 
     private fun doIfGpsAvailableOrShowErrorMessage(doWork: () -> Unit) {
@@ -149,7 +149,6 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
                 this,
                 getString(R.string.need_location_permissions_message),
                 REQUEST_CODE_LOCATION_PERMISSIONS,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
         } else {
@@ -157,9 +156,7 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
                 this,
                 getString(R.string.need_location_permissions_message),
                 REQUEST_CODE_LOCATION_PERMISSIONS,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
         }
     }

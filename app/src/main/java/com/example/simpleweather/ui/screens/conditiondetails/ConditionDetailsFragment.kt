@@ -76,12 +76,12 @@ class ConditionDetailsFragment : Fragment() {
             initCurrentState(it)
         })
         viewModel.hourlyLiveData.observe(viewLifecycleOwner, {
-            hourlyAdapter.submitList(it.toList())
+            hourlyAdapter.submitList(it)
             initChart(it)
             calculateViewsSize(it.size)
         })
         viewModel.dailyLivaData.observe(viewLifecycleOwner, {
-            dailyAdapter.submitList(it.toList())
+            dailyAdapter.submitList(it)
         })
         viewModel.stateLiveData.observe(viewLifecycleOwner, {
             setLoadingState(it)
@@ -89,9 +89,11 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun initCurrentState(currentCondition: CurrentConditionUI) = with(currentCondition) {
-            val tempStr = "$temp"
+            val tempStr = "$temp" + getString(R.string.sign_degree)
+            val humidityStr = "$humidity" + getString(R.string.sign_percent)
             val pressureStr = "$pressure ${provideUnitsString(pressureUnits)}"
             val windSpeedStr = "$windSpeed ${provideUnitsString(windSpeedUnits)}"
+            val allVolumeStr = "$allVolumeLastHour " + getString(R.string.units_pressure_mm)
 
             val feelsLikeStr = getString(R.string.feels_like) +
                     "$tempFL${provideUnitsString(tempUnits)}"
@@ -117,10 +119,10 @@ class ConditionDetailsFragment : Fragment() {
             text_view_current_conditional.text = weatherDescription
             text_view_current_feelslike.text = feelsLikeStr
 
-            text_view_hudimity_count.text = humidity.toString()
+            text_view_hudimity_count.text = humidityStr
             text_view_pressure_count.text = pressureStr
             text_view_wind_count.text = windSpeedStr
-            text_view_volume_prec_count.text = allVolumeLastHour.toString()
+            text_view_volume_prec_count.text = allVolumeStr
     }
 
     private fun initChart(hourlyList: List<HourlyConditionUI>) {

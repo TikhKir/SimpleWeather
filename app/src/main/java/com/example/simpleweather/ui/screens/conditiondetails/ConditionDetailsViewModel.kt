@@ -34,6 +34,8 @@ class ConditionDetailsViewModel @Inject constructor(
     private val stateDaily: MutableLiveData<State> = MutableLiveData(State.Default())
     private val unionStates = MediatorLiveData<State>()
 
+    //todo: нужно вынести isFavourite сюда полностью!
+
     val currentLiveData: LiveData<CurrentConditionUI> get() = currentCondition
     val hourlyLiveData: LiveData<List<HourlyConditionUI>> get() = hourlyCondition
     val dailyLivaData: LiveData<List<DailyConditionUI>> get() = dailyCondition
