@@ -10,6 +10,7 @@ import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 import com.example.simpleweather.utils.iconconverter.IconConverter
+import com.example.simpleweather.utils.toUIFormat
 import kotlinx.android.synthetic.main.item_hourly_condition.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
@@ -33,19 +34,20 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
     }
 
     inner class HourlyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(hourlyCondition: HourlyConditionUI) {
-            val allVolume = hourlyCondition.rainVolume + hourlyCondition.snowVolume
+        fun bind(hourlyCondition: HourlyConditionUI) = with(hourlyCondition) {
+            val allVolumeStr = (rainVolume + snowVolume).toUIFormat()
+            val windSpeedStr = windSpeed.toUIFormat()
             val localDateTime = LocalDateTime.ofEpochSecond(
-                hourlyCondition.timeStamp.toLong(),
+                timeStamp.toLong(),
                 0,
-                ZoneOffset.ofTotalSeconds(hourlyCondition.timeZoneOffset)
+                ZoneOffset.ofTotalSeconds(timeZoneOffset)
             )
             val timeStr = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-            val iconId = IconConverter.idToIcon(hourlyCondition.weatherId, isNight(localDateTime))
+            val iconId = IconConverter.idToIcon(weatherId, isNight(localDateTime))
 
             itemView.text_view_condition_item_time.text = timeStr
-            itemView.text_view_condition_item_wind.text = hourlyCondition.windSpeed.toString()
-            itemView.text_view_condition_item_volume.text = allVolume.toString()
+            itemView.text_view_condition_item_wind.text = windSpeedStr
+            itemView.text_view_condition_item_volume.text = allVolumeStr
             itemView.image_view_condition_item.setImageResource(iconId)
         }
     }

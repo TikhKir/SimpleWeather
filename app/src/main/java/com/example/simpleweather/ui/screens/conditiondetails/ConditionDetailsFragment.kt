@@ -18,6 +18,7 @@ import com.example.simpleweather.utils.asyncunits.PressureUnits
 import com.example.simpleweather.utils.asyncunits.Units
 import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.utils.toUIFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.condition_details_fragment.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -89,11 +90,12 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun initCurrentState(currentCondition: CurrentConditionUI) = with(currentCondition) {
+
             val tempStr = "$temp" + getString(R.string.sign_degree)
             val humidityStr = "$humidity" + getString(R.string.sign_percent)
             val pressureStr = "$pressure ${provideUnitsString(pressureUnits)}"
-            val windSpeedStr = "$windSpeed ${provideUnitsString(windSpeedUnits)}"
-            val allVolumeStr = "$allVolumeLastHour " + getString(R.string.units_pressure_mm)
+            val windSpeedStr = "${windSpeed.toUIFormat()} ${provideUnitsString(windSpeedUnits)}"
+            val allVolumeStr = "${allVolumeLastHour.toUIFormat()} " + getString(R.string.units_pressure_mm)
 
             val feelsLikeStr = getString(R.string.feels_like) +
                     "$tempFL${provideUnitsString(tempUnits)}"

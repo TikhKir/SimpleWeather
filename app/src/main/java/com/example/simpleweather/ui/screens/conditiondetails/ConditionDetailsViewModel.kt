@@ -50,140 +50,132 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
     @ExperimentalCoroutinesApi
-    fun getHourlyWeatherCondition(locationId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val hourlyFlow = repository.getHourlyCondition(locationId)
-            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+    fun getHourlyWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        val hourlyFlow = repository.getHourlyCondition(locationId)
+        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-            hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
-                                                 sharedPref ->
-                asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
-            }
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        hourlyCondition.postValue(response.data!!)
-                        stateHourly.postValue(State.Success())
-                    } else {
-                        Log.e("HOURLY_RESPONSE", response.error?.message.toString())
-                        stateHourly.postValue(State.Error(response.error?.message.toString()))
-                    }
-                }
+        hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
+                                             sharedPref ->
+            asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
         }
-    }
-
-    @ExperimentalCoroutinesApi
-    fun getCurrentWeatherCondition(locationId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentFlow = repository.getCurrentCondition(locationId)
-            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-            currentFlow.combine(sharedPrefFLow) { currentResult,
-                                                  sharedPref ->
-                asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
-            }
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        currentCondition.postValue(response.data!!)
-                        stateCurrent.postValue(State.Success())
-                    } else {
-                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
-                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
-                    }
+            .collect { response ->
+                if (response.resultType == ResultType.SUCCESS) {
+                    hourlyCondition.postValue(response.data!!)
+                    stateHourly.postValue(State.Success())
+                } else {
+                    Log.e("HOURLY_RESPONSE", response.error?.message.toString())
+                    stateHourly.postValue(State.Error(response.error?.message.toString()))
                 }
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    fun getDailyWeatherCondition(locationId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val dailyFlow = repository.getDailyCondition(locationId)
-            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-            dailyFlow.combine(sharedPrefFLow) { dailyResult,
-                                                sharedPref ->
-                asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
             }
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        dailyCondition.postValue(response.data!!)
-                        stateDaily.postValue(State.Success())
-                    } else {
-                        Log.e("DAILY_RESPONSE", response.error?.message.toString())
-                        stateDaily.postValue(State.Error(response.error?.message.toString()))
-                    }
-                }
-        }
     }
 
 
     @ExperimentalCoroutinesApi
-    fun getHourlyWeatherCondition(lat: Float, lon: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val hourlyFlow = repository.getHourlyConditionWithoutCaching(lat, lon)
-            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+    fun getCurrentWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        val currentFlow = repository.getCurrentCondition(locationId)
+        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-            hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
-                                                 sharedPref ->
-                asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
-            }
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        hourlyCondition.postValue(response.data!!)
-                        stateHourly.postValue(State.Success())
-                    } else {
-                        Log.e("HOURLY_RESPONSE", response.error?.message.toString())
-                        stateHourly.postValue(State.Error(response.error?.message.toString()))
-                    }
-                }
+        currentFlow.combine(sharedPrefFLow) { currentResult,
+                                              sharedPref ->
+            asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
         }
+            .collect { response ->
+                if (response.resultType == ResultType.SUCCESS) {
+                    currentCondition.postValue(response.data!!)
+                    stateCurrent.postValue(State.Success())
+                } else {
+                    Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+                    stateCurrent.postValue(State.Error(response.error?.message.toString()))
+                }
+            }
     }
+
 
     @ExperimentalCoroutinesApi
-    fun getCurrentWeatherCondition(lat: Float, lon: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentFlow = repository.getCurrentConditionWithoutCaching(lat, lon)
-            val sharedPrefFlow = asyncUnitChanger.getPreferencesFlow()
+    fun getDailyWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        val dailyFlow = repository.getDailyCondition(locationId)
+        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-            currentFlow.combine(sharedPrefFlow) { currentResult, sharedPref ->
-                asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
-            }
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        currentCondition.postValue(response.data!!)
-                        stateCurrent.postValue(State.Success())
-                    } else {
-                        Log.e("CURRENT_RESPONSE", response.error?.message.toString())
-                        stateCurrent.postValue(State.Error(response.error?.message.toString()))
-                    }
-                }
+        dailyFlow.combine(sharedPrefFLow) { dailyResult,
+                                            sharedPref ->
+            asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
         }
+            .collect { response ->
+                if (response.resultType == ResultType.SUCCESS) {
+                    dailyCondition.postValue(response.data!!)
+                    stateDaily.postValue(State.Success())
+                } else {
+                    Log.e("DAILY_RESPONSE", response.error?.message.toString())
+                    stateDaily.postValue(State.Error(response.error?.message.toString()))
+                }
+            }
     }
+
 
     @ExperimentalCoroutinesApi
-    fun getDailyWeatherCondition(lat: Float, lon: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val dailyFlow = repository.getDailyConditionWithoutCaching(lat, lon)
-            val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+    fun getHourlyWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch(Dispatchers.IO) {
+        val hourlyFlow = repository.getHourlyConditionWithoutCaching(lat, lon)
+        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-            dailyFlow.combine(sharedPrefFLow) { dailyResult,
-                                                sharedPref ->
-                asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
-            }
-                .collect { response ->
-                    if (response.resultType == ResultType.SUCCESS) {
-                        dailyCondition.postValue(response.data!!)
-                        stateDaily.postValue(State.Success())
-                    } else {
-                        Log.e("DAILY_RESPONSE", response.error?.message.toString())
-                        stateDaily.postValue(State.Error(response.error?.message.toString()))
-
-                    }
-                }
+        hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
+                                             sharedPref ->
+            asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
         }
+            .collect { response ->
+                if (response.resultType == ResultType.SUCCESS) {
+                    hourlyCondition.postValue(response.data!!)
+                    stateHourly.postValue(State.Success())
+                } else {
+                    Log.e("HOURLY_RESPONSE", response.error?.message.toString())
+                    stateHourly.postValue(State.Error(response.error?.message.toString()))
+                }
+            }
     }
 
 
-    private fun mergeStates() {
+    @ExperimentalCoroutinesApi
+    fun getCurrentWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch(Dispatchers.IO) {
+        val currentFlow = repository.getCurrentConditionWithoutCaching(lat, lon)
+        val sharedPrefFlow = asyncUnitChanger.getPreferencesFlow()
+
+        currentFlow.combine(sharedPrefFlow) { currentResult, sharedPref ->
+            asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
+        }
+            .collect { response ->
+                if (response.resultType == ResultType.SUCCESS) {
+                    currentCondition.postValue(response.data!!)
+                    stateCurrent.postValue(State.Success())
+                } else {
+                    Log.e("CURRENT_RESPONSE", response.error?.message.toString())
+                    stateCurrent.postValue(State.Error(response.error?.message.toString()))
+                }
+            }
+    }
+
+
+    @ExperimentalCoroutinesApi
+    fun getDailyWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch(Dispatchers.IO) {
+        val dailyFlow = repository.getDailyConditionWithoutCaching(lat, lon)
+        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
+
+        dailyFlow.combine(sharedPrefFLow) { dailyResult,
+                                            sharedPref ->
+            asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
+        }
+            .collect { response ->
+                if (response.resultType == ResultType.SUCCESS) {
+                    dailyCondition.postValue(response.data!!)
+                    stateDaily.postValue(State.Success())
+                } else {
+                    Log.e("DAILY_RESPONSE", response.error?.message.toString())
+                    stateDaily.postValue(State.Error(response.error?.message.toString()))
+
+                }
+            }
+    }
+
+
+    private fun mergeStates() = viewModelScope.launch {
         unionStates.addSource(stateCurrent) { unionStates.value = handleStates() }
         unionStates.addSource(stateHourly) { unionStates.value = handleStates() }
         unionStates.addSource(stateDaily) { unionStates.value = handleStates() }
