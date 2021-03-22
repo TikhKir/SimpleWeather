@@ -11,25 +11,37 @@ import com.example.simpleweather.ui.model.DailyConditionUI
 import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlin.math.roundToInt
 
 class AsyncPreferencesUnitChanger(context: Context) {
     private val preferencesManager = PreferenceManager.getDefaultSharedPreferences(context)
+    private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
     @ExperimentalCoroutinesApi
-    suspend fun getPreferencesFlow(): Flow<MutableMap<String, *>> = callbackFlow {
-        offer(preferencesManager.all) // first emit
+    private val preferencesFlow = callbackFlow {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, _ ->
             val newEmit = sharedPreferences.all
             offer(newEmit)
         }
         preferencesManager.registerOnSharedPreferenceChangeListener(listener)
         awaitClose { preferencesManager.unregisterOnSharedPreferenceChangeListener(listener) }
-    }
+    }.stateIn(
+        scope,
+        SharingStarted.Lazily,
+        preferencesManager.all //first emit
+    )
+
+    @ExperimentalCoroutinesApi
+    fun getPreferencesFlow(): StateFlow<MutableMap<String, *>> = preferencesFlow
 
     fun transformToCurrentUIAccordingUnits(
         result: Result<CurrentWeatherCondition>,
