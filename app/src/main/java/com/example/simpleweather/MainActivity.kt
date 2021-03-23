@@ -3,13 +3,15 @@ package com.example.simpleweather
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.preference.PreferenceManager
 import androidx.work.*
-import com.example.simpleweather.utils.Constants
 import com.example.simpleweather.utils.setupWithNavController
+import com.example.simpleweather.utils.worker.BACKGROUND_REFRESH_WORK
 import com.example.simpleweather.utils.worker.BackgroundUpdateWorker
+import com.example.simpleweather.utils.worker.INTERVAL_PREFERENCE_KEY
+import com.example.simpleweather.utils.worker.RefreshPrefValues
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
@@ -29,16 +31,12 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
             bottomNavigationView.selectedItemId = R.id.nav_graph_home //set default fragment at start
-            startBackgroundRefreshWorker()
+            setupBackgroundRefreshWorker()
         }
-        // Else, need to wait for onRestoreInstanceState
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        // Now that BottomNavigationBar has restored its instance state
-        // and its selectedItemId, we can proceed with setting up the
-        // BottomNavigationBar with Navigation
         setupBottomNavigationBar()
     }
 
@@ -57,11 +55,10 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Whenever the selected controller changes, setup the action bar.
-        controller.observe(this, Observer {
+        controller.observe(this, {
             setupActionBarWithNavController(it)
         })
         currentNavController = controller
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -72,7 +69,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = title
     }
 
-    private fun startBackgroundRefreshWorker() {
+
+    private fun setupBackgroundRefreshWorker() {
         workManager = WorkManager.getInstance(applicationContext)
 
         val constraints = Constraints.Builder()
@@ -81,15 +79,29 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val periodicRequest = PeriodicWorkRequest
-            .Builder(BackgroundUpdateWorker::class.java, 1, TimeUnit.DAYS)
+            .Builder(BackgroundUpdateWorker::class.java, getIntervalFromPreferences(), TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 
         workManager.enqueueUniquePeriodicWork(
-            Constants.REFRESH_CONDITIONS_WORK,
-            ExistingPeriodicWorkPolicy.KEEP,
+            BACKGROUND_REFRESH_WORK,
+            ExistingPeriodicWorkPolicy.REPLACE,
             periodicRequest
         )
+    }
+
+    private fun getIntervalFromPreferences(): Long {
+        val refreshValue = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            .getString(INTERVAL_PREFERENCE_KEY, RefreshPrefValues.INTERVAL_24_HOURS.key)
+
+        return when (refreshValue) {
+            RefreshPrefValues.INTERVAL_12_HOURS.key -> RefreshPrefValues.INTERVAL_12_HOURS.value
+            RefreshPrefValues.INTERVAL_6_HOURS.key -> RefreshPrefValues.INTERVAL_6_HOURS.value
+            RefreshPrefValues.INTERVAL_3_HOURS.key -> RefreshPrefValues.INTERVAL_3_HOURS.value
+            else -> RefreshPrefValues.INTERVAL_24_HOURS.value
+        }
+
+
     }
 
 }

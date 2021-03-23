@@ -8,8 +8,8 @@ import com.example.simpleweather.repository.model.CurrentWeatherCondition
 import com.example.simpleweather.repository.model.DailyWeatherCondition
 import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.repository.model.LocationWithCoords
-import com.example.simpleweather.utils.Constants.REFRESH_INTERVAL
-import com.example.simpleweather.utils.Constants.REFRESH_INTERVAL_CURRENT
+import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL
+import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL_CURRENT
 import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,7 @@ class RepositoryApiImpl @Inject constructor(
         val currentTime = Instant.now().epochSecond
         val timeDifference = currentTime - location.refreshTimeDaily
 
-        return if (timeDifference > REFRESH_INTERVAL) {
+        return if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
                 openWeatherApi.getDailyCondition(location.latitude, location.longitude)
             if (netResponse.resultType == ResultType.SUCCESS) {
@@ -66,7 +66,7 @@ class RepositoryApiImpl @Inject constructor(
         val currentTime = Instant.now().epochSecond
         val timeDifference = currentTime - location.refreshTimeHourly
 
-        return if (timeDifference > REFRESH_INTERVAL) {
+        return if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
                 openWeatherApi.getHourlyCondition(location.latitude, location.longitude)
             if (netResponse.resultType == ResultType.SUCCESS) {
@@ -97,7 +97,7 @@ class RepositoryApiImpl @Inject constructor(
         val currentTime = Instant.now().epochSecond
         val timeDifference = currentTime - location.refreshTimeHourly
 
-        return if (timeDifference > REFRESH_INTERVAL_CURRENT) {
+        return if (timeDifference > MINIMAL_REFRESH_INTERVAL_CURRENT) {
             val netResponse = openWeatherApi.getCurrentCondition(location.latitude, location.longitude)
             if (netResponse.resultType == ResultType.SUCCESS) {
                 dataApi.updateCurrentRefreshTime(currentTime, locationId)
