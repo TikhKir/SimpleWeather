@@ -2,7 +2,6 @@ package com.example.simpleweather.di
 
 import com.example.simpleweather.local.DataApi
 import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcher
-import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcherImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +15,7 @@ object DeferredFavouriteSwitcherModule {
     @Singleton
     @Provides
     fun provideDeferredFavouriteSwitcher(dataApi: DataApi): DeferredFavouriteSwitcher {
-        return DeferredFavouriteSwitcherImpl(dataApi)
+        return DeferredFavouriteSwitcher(dataApi)
     }
 
 }

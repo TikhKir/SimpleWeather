@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.repository.model.LocationWithCoords
-import com.example.simpleweather.utils.Constants.REQUEST_CODE_LOCATION_PERMISSIONS
+import com.example.simpleweather.utils.REQUEST_CODE_LOCATION_PERMISSIONS
 import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.easypermissions.LocationUtility
 import com.google.android.gms.location.FusedLocationProviderClient
