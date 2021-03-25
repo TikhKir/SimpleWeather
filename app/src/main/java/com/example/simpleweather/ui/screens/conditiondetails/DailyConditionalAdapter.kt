@@ -1,28 +1,25 @@
 package com.example.simpleweather.ui.screens.conditiondetails
 
-
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simpleweather.R
+import com.example.simpleweather.databinding.ItemDailyConditionBinding
 import com.example.simpleweather.ui.model.DailyConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 import com.example.simpleweather.utils.iconconverter.IconConverter
-import kotlinx.android.synthetic.main.item_daily_condition.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 
-class DailyConditionalAdapter:
+class DailyConditionalAdapter :
     ListAdapter<Identified, RecyclerView.ViewHolder>(IdentityDiffUtilCallback<Identified>()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_daily_condition, parent, false)
-        return DailyConditionalViewHolder(view)
+        val boundedView = ItemDailyConditionBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return DailyConditionalViewHolder(boundedView)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -30,7 +27,8 @@ class DailyConditionalAdapter:
         (holder as DailyConditionalViewHolder).bind(dailyCondition)
     }
 
-    inner class DailyConditionalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class DailyConditionalViewHolder(private val binding: ItemDailyConditionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(dailyCondition: DailyConditionUI) {
             val iconId = IconConverter.idToIcon(dailyCondition.weatherId, false)
             val tempMaxStr = "${dailyCondition.tempMax}°"
@@ -42,11 +40,11 @@ class DailyConditionalAdapter:
             )
                 .format(DateTimeFormatter.ofPattern("EE"))
 
-            itemView.text_view_day_of_week.text = dayOfWeekStr
-            itemView.text_view_weather_name.text = dailyCondition.weatherDescription
-            itemView.text_view_day_max_temp.text = tempMaxStr
-            itemView.text_view_day_min_temp.text = tempMinStr
-            itemView.image_view_day_icon.setImageResource(iconId)
+            binding.textViewDayOfWeek.text = dayOfWeekStr
+            binding.textViewWeatherName.text = dailyCondition.weatherDescription
+            binding.textViewDayMaxTemp.text = tempMaxStr
+            binding.textViewDayMinTemp.text = tempMinStr
+            binding.imageViewDayIcon.setImageResource(iconId)
         }
     }
 
