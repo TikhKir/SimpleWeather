@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.PreferenceManager
 import androidx.work.*
+import com.example.simpleweather.databinding.ActivityMainBinding
 import com.example.simpleweather.utils.setupWithNavController
 import com.example.simpleweather.utils.worker.BACKGROUND_REFRESH_WORK
 import com.example.simpleweather.utils.worker.BackgroundUpdateWorker
@@ -20,13 +21,15 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private var currentNavController: LiveData<NavController>? = null
+    lateinit var binding: ActivityMainBinding
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var workManager : WorkManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        bottomNavigationView = binding.bottomNavigationView
 
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
@@ -103,5 +106,6 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
 
 }

@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
+import com.example.simpleweather.databinding.HomeFragmentBinding
 import com.example.simpleweather.repository.model.LocationWithCoords
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.home_fragment.*
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
@@ -20,14 +18,19 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
         fun newInstance() = HomeFragment()
     }
 
+    private var _binding: HomeFragmentBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var viewModel: HomeViewModel
     private val savedLocationsAdapter = SavedLocationsAdapter(this)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.home_fragment, container, false)
+    ): View {
+        _binding = HomeFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -45,9 +48,9 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
     }
 
     private fun initRecycler() {
-        recycleView_home.layoutManager =
+        binding.recycleViewHome.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recycleView_home.adapter = savedLocationsAdapter
+        binding.recycleViewHome.adapter = savedLocationsAdapter
     }
 
 
@@ -59,8 +62,8 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.menu_item_home_add_location -> {
-            requireActivity().fragment_container.findNavController()
-                .navigate(R.id.action_homeFragment_to_searchFragment)
+                val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
+                findNavController().navigate(action)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -70,6 +73,11 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
         val action = HomeFragmentDirections
             .actionHomeFragmentToConditionDetailsFragment(location)
         findNavController().navigate(action) //if use R.id.* for navigate it will not runtime safety
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }
