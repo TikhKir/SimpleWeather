@@ -12,11 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
+import com.example.simpleweather.databinding.SearchFragmentBinding
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.reactview.ReactiveViewUtil.Companion.searchWatcherFlow
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -35,16 +35,20 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         fun newInstance() = SearchFragment()
     }
 
+    private var _binding: SearchFragmentBinding? = null
+    private val binding get() = _binding!!
     private var searchAdapter = SearchLocationsAdapter(this)
     private lateinit var searchView: SearchView
     private lateinit var viewModel: SearchViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.search_fragment, container, false)
+        _binding = SearchFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -65,9 +69,9 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
     }
 
     private fun initRecycler() {
-        recyclerView_search.layoutManager =
+        binding.recyclerViewSearch.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView_search.adapter = searchAdapter
+        binding.recyclerViewSearch.adapter = searchAdapter
     }
 
     private fun initReactiveViews() {
@@ -92,14 +96,14 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
     }
 
     private fun setLoading(isLoading: Boolean) {
-        search_progress_bar.isVisible = isLoading
-        text_view_search_error.isVisible = false
+        binding.searchProgressBar.isVisible = isLoading
+        binding.textViewSearchError.isVisible = false
     }
 
     private fun showErrorMessage(message: String) {
-        search_progress_bar.isVisible = false
-        text_view_search_error.text = message
-        text_view_search_error.isVisible = true
+        binding.searchProgressBar.isVisible = false
+        binding.textViewSearchError.text = message
+        binding.textViewSearchError.isVisible = true
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,5 +126,8 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         findNavController().navigate(action)
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }

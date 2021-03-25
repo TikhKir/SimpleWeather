@@ -1,9 +1,11 @@
 package com.example.simpleweather.repository.model
 
+
 import android.os.Parcelable
 import com.example.simpleweather.local.model.LocationDB
 import com.example.simpleweather.utils.diffutil.Identified
 import kotlinx.android.parcel.Parcelize
+
 
 @Parcelize
 data class LocationWithCoords(

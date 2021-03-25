@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
+import com.example.simpleweather.databinding.ConditionDetailsFragmentBinding
 import com.example.simpleweather.ui.model.CurrentConditionUI
 import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.asyncunits.DegreeUnits
@@ -20,7 +21,6 @@ import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.toUIFormat
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.condition_details_fragment.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
@@ -38,6 +38,8 @@ class ConditionDetailsFragment : Fragment() {
         private const val numberOfColumns = 5
     }
 
+    private var _binding: ConditionDetailsFragmentBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: ConditionDetailsViewModel
     private lateinit var hourlyAdapter: HourlyConditionalAdapter
     private lateinit var dailyAdapter: DailyConditionalAdapter
@@ -47,11 +49,13 @@ class ConditionDetailsFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         widthOfItem = resources.displayMetrics.widthPixels / numberOfColumns
-        return inflater.inflate(R.layout.condition_details_fragment, container, false)
+        _binding = ConditionDetailsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     @ExperimentalCoroutinesApi
@@ -90,7 +94,6 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun initCurrentState(currentCondition: CurrentConditionUI) = with(currentCondition) {
-
             val tempStr = "$temp" + getString(R.string.sign_degree)
             val humidityStr = "$humidity" + getString(R.string.sign_percent)
             val pressureStr = "$pressure ${provideUnitsString(pressureUnits)}"
@@ -115,16 +118,16 @@ class ConditionDetailsFragment : Fragment() {
                 ZoneOffset.ofTotalSeconds(timeZoneOffset)
             ).format(DateTimeFormatter.ofPattern("d MMMM, HH:mm"))
 
-            text_view_current_datetime.text = timeStr
-            text_view_refresh_time.text = refreshTimeStr
-            text_view_current_temperature.text = tempStr
-            text_view_current_conditional.text = weatherDescription
-            text_view_current_feelslike.text = feelsLikeStr
+            binding.textViewCurrentDatetime.text = timeStr
+            binding.textViewRefreshTime.text = refreshTimeStr
+            binding.textViewCurrentTemperature.text = tempStr
+            binding.textViewCurrentConditional.text = weatherDescription
+            binding.textViewCurrentFeelslike.text = feelsLikeStr
 
-            text_view_hudimity_count.text = humidityStr
-            text_view_pressure_count.text = pressureStr
-            text_view_wind_count.text = windSpeedStr
-            text_view_volume_prec_count.text = allVolumeStr
+            binding.textViewHudimityCount.text = humidityStr
+            binding.textViewPressureCount.text = pressureStr
+            binding.textViewWindCount.text = windSpeedStr
+            binding.textViewVolumePrecCount.text = allVolumeStr
     }
 
     private fun initChart(hourlyList: List<HourlyConditionUI>) {
@@ -141,9 +144,9 @@ class ConditionDetailsFragment : Fragment() {
         val lineList = arrayListOf<Line>(line)
         val lineChartData = LineChartData(lineList)
 
-        hello_chart_view.isZoomEnabled = false
-        hello_chart_view.isViewportCalculationEnabled = true
-        hello_chart_view.lineChartData = lineChartData
+        binding.helloChartView.isZoomEnabled = false
+        binding.helloChartView.isViewportCalculationEnabled = true
+        binding.helloChartView.lineChartData = lineChartData
     }
 
     private fun transformToPointsList(hourlyList: List<HourlyConditionUI>): List<PointValue> {
@@ -156,13 +159,13 @@ class ConditionDetailsFragment : Fragment() {
 
     private fun calculateViewsSize(arraySize: Int) {
         //matching the size of graph to the size of recycler to fit in one scrollview
-        val params = hello_chart_view.layoutParams
+        val params = binding.helloChartView.layoutParams
 
         if (params.width != widthOfItem * arraySize) {
             params.width = widthOfItem * arraySize
-            hello_chart_view.layoutParams = params
+            binding.helloChartView.layoutParams = params
 
-            val vp = Viewport(hello_chart_view.maximumViewport)
+            val vp = Viewport(binding.helloChartView.maximumViewport)
             val newVp = Viewport()
             val vDeltaOffset = (vp.top - vp.bottom) * 0.1F
             val hDeltaOffset = 0.38F
@@ -172,23 +175,23 @@ class ConditionDetailsFragment : Fragment() {
             newVp.right = vp.right + hDeltaOffset
             newVp.left = vp.left - hDeltaOffset
 
-            hello_chart_view.maximumViewport = newVp
-            hello_chart_view.currentViewport = newVp
+            binding.helloChartView.maximumViewport = newVp
+            binding.helloChartView.currentViewport = newVp
         }
-        hello_chart_view.invalidate()
+        binding.helloChartView.invalidate()
     }
 
 
     private fun initRecyclers() {
         hourlyAdapter = HourlyConditionalAdapter(widthOfItem)
-        recyclerView_hourly_condition.layoutManager =
+        binding.recyclerViewHourlyCondition.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        recyclerView_hourly_condition.adapter = hourlyAdapter
+        binding.recyclerViewHourlyCondition.adapter = hourlyAdapter
 
         dailyAdapter = DailyConditionalAdapter()
-        recyclerView_daily_conditions.layoutManager =
+        binding.recyclerViewDailyConditions.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerView_daily_conditions.adapter = dailyAdapter
+        binding.recyclerViewDailyConditions.adapter = dailyAdapter
     }
 
     @ExperimentalCoroutinesApi
@@ -235,16 +238,16 @@ class ConditionDetailsFragment : Fragment() {
     }
 
     private fun setLoading(isLoading: Boolean) {
-        condition_progress_bar.isVisible = isLoading
-        condition_fragment_root.isVisible = !isLoading
-        condition_error_message.isVisible = false
+        binding.conditionProgressBar.isVisible = isLoading
+        binding.conditionFragmentRoot.isVisible = !isLoading
+        binding.conditionErrorMessage.isVisible = false
     }
 
     private fun showErrorMessage(message: String) {
-        condition_progress_bar.isVisible = false
-        condition_fragment_root.isVisible = false
-        condition_error_message.text = message
-        condition_error_message.isVisible = true
+        binding.conditionProgressBar.isVisible = false
+        binding.conditionFragmentRoot.isVisible = false
+        binding.conditionErrorMessage.text = message
+        binding.conditionErrorMessage.isVisible = true
     }
 
     private fun initFavouriteState() {
@@ -284,7 +287,6 @@ class ConditionDetailsFragment : Fragment() {
         (requireActivity() as MainActivity).setActionBarTitle(navArgs.location.addressCity)
     }
 
-
     private fun provideUnitsString(unit: Units): String = when (unit) {
         is PressureUnits.MillimetersOfMercury -> getString(R.string.units_pressure_mm)
         is PressureUnits.HectoPascals -> getString(R.string.units_pressure_hpa)
@@ -294,5 +296,9 @@ class ConditionDetailsFragment : Fragment() {
         is WindSpeedUnits.KilometersPerHour -> getString(R.string.units_wind_speed_kilometers_per_hours)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
 }

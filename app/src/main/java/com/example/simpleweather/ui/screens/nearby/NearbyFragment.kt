@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
+import com.example.simpleweather.databinding.NearbyFragmentBinding
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.REQUEST_CODE_LOCATION_PERMISSIONS
 import com.example.simpleweather.utils.datawrappers.State
@@ -26,7 +27,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationResult
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.nearby_fragment.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -37,16 +37,20 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
         fun newInstance() = NearbyFragment()
     }
 
+    private var _binding: NearbyFragmentBinding? = null
+    private val binding get() = _binding!!
     private var isTracking = MutableLiveData<Boolean>()
     private val nearbyLocationsAdapter = NearbyLocationsAdapter(this)
     private lateinit var viewModel: NearbyViewModel
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.nearby_fragment, container, false)
+    ): View {
+        _binding = NearbyFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,14 +126,14 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
     }
 
     private fun setLoading(isLoading: Boolean) {
-        progress_bar_nearby.isVisible = isLoading
-        text_view_nearby_message.isVisible = false
+        binding.progressBarNearby.isVisible = isLoading
+        binding.textViewNearbyMessage.isVisible = false
     }
 
     private fun showErrorMessage(message: String) {
-        progress_bar_nearby?.isVisible = false
-        text_view_nearby_message?.text = message
-        text_view_nearby_message?.isVisible = true
+        binding.progressBarNearby.isVisible = false
+        binding.textViewNearbyMessage.text = message
+        binding.textViewNearbyMessage.isVisible = true
     }
 
     private fun doIfGpsAvailableOrShowErrorMessage(doWork: () -> Unit) {
@@ -180,14 +184,19 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
 
 
     private fun initRecycler() {
-        recycleView_nearby.layoutManager =
+        binding.recycleViewNearby.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recycleView_nearby.adapter = nearbyLocationsAdapter
+        binding.recycleViewNearby.adapter = nearbyLocationsAdapter
     }
 
     override fun onItemClick(location: LocationWithCoords) {
         val action = NearbyFragmentDirections
             .actionNearbyFragmentToConditionDetailsFragment(location)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
