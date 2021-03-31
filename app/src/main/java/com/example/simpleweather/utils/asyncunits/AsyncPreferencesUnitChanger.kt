@@ -3,9 +3,6 @@ package com.example.simpleweather.utils.asyncunits
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.example.simpleweather.repository.model.CurrentWeatherCondition
-import com.example.simpleweather.repository.model.DailyWeatherCondition
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
 import com.example.simpleweather.ui.model.CurrentConditionUI
 import com.example.simpleweather.ui.model.DailyConditionUI
 import com.example.simpleweather.ui.model.HourlyConditionUI
@@ -44,12 +41,12 @@ class AsyncPreferencesUnitChanger(context: Context) {
     fun getPreferencesFlow(): StateFlow<MutableMap<String, *>> = preferencesFlow
 
     fun transformToCurrentUIAccordingUnits(
-        result: Result<CurrentWeatherCondition>,
+        result: Result<CurrentConditionUI>,
         sharedPref: MutableMap<String, *>
     ): Result<CurrentConditionUI> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
-                var condition = result.data?.toCurrentConditionUI()
+                var condition = result.data
 
                 sharedPref.forEach { prefValue ->
                     when (prefValue.key) {
@@ -66,12 +63,12 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     fun transformToHourlyUIAccordingUnits(
-        result: Result<List<HourlyWeatherCondition>>,
+        result: Result<List<HourlyConditionUI>>,
         sharedPref: MutableMap<String, *>
     ): Result<List<HourlyConditionUI>> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
-                var conditionList = result.data?.map { it.toHourlyWeatherUI() }
+                var conditionList = result.data
 
                 sharedPref.forEach { prefValue ->
                     when (prefValue.key) {
@@ -88,12 +85,12 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     fun transformToDailyUIAccordingUnits(
-        result: Result<List<DailyWeatherCondition>>,
+        result: Result<List<DailyConditionUI>>,
         sharedPref: MutableMap<String, *>
     ): Result<List<DailyConditionUI>> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
-                var conditionList = result.data?.map { it.toDailyConditionUI() }
+                var conditionList = result.data
 
                 sharedPref.forEach { prefValue ->
                     when (prefValue.key) {

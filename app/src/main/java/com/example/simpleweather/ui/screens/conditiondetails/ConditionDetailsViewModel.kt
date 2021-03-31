@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -52,10 +53,16 @@ class ConditionDetailsViewModel @Inject constructor(
         val hourlyFlow = repository.getHourlyCondition(locationId)
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-        hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
-                                             sharedPref ->
-            asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
-        }
+        hourlyFlow
+            .map { result ->
+                result.transformResult { list ->
+                    list?.map { it.toHourlyWeatherUI() }
+                }
+            }
+            .combine(sharedPrefFLow) { hourlyResult,
+                                       sharedPref ->
+                asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
+            }
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     hourlyCondition.postValue(response.data!!)
@@ -73,10 +80,14 @@ class ConditionDetailsViewModel @Inject constructor(
         val currentFlow = repository.getCurrentCondition(locationId)
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-        currentFlow.combine(sharedPrefFLow) { currentResult,
-                                              sharedPref ->
-            asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
-        }
+        currentFlow
+            .map { result ->
+                result.transformResult { it?.toCurrentConditionUI() }
+            }
+            .combine(sharedPrefFLow) { currentResult,
+                                       sharedPref ->
+                asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
+            }
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     currentCondition.postValue(response.data!!)
@@ -94,10 +105,16 @@ class ConditionDetailsViewModel @Inject constructor(
         val dailyFlow = repository.getDailyCondition(locationId)
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-        dailyFlow.combine(sharedPrefFLow) { dailyResult,
-                                            sharedPref ->
-            asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
-        }
+        dailyFlow
+            .map { result ->
+                result.transformResult { list ->
+                    list?.map { it.toDailyConditionUI() }
+                }
+            }
+            .combine(sharedPrefFLow) { dailyResult,
+                                       sharedPref ->
+                asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
+            }
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     dailyCondition.postValue(response.data!!)
@@ -115,10 +132,16 @@ class ConditionDetailsViewModel @Inject constructor(
         val hourlyFlow = repository.getHourlyConditionWithoutCaching(lat, lon)
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-        hourlyFlow.combine(sharedPrefFLow) { hourlyResult,
-                                             sharedPref ->
-            asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
-        }
+        hourlyFlow
+            .map { result ->
+                result.transformResult { list ->
+                    list?.map { it.toHourlyWeatherUI() }
+                }
+            }
+            .combine(sharedPrefFLow) { hourlyResult,
+                                       sharedPref ->
+                asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
+            }
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     hourlyCondition.postValue(response.data!!)
@@ -136,9 +159,13 @@ class ConditionDetailsViewModel @Inject constructor(
         val currentFlow = repository.getCurrentConditionWithoutCaching(lat, lon)
         val sharedPrefFlow = asyncUnitChanger.getPreferencesFlow()
 
-        currentFlow.combine(sharedPrefFlow) { currentResult, sharedPref ->
-            asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
-        }
+        currentFlow
+            .map { result ->
+                result.transformResult { it?.toCurrentConditionUI() }
+            }
+            .combine(sharedPrefFlow) { currentResult, sharedPref ->
+                asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
+            }
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     currentCondition.postValue(response.data!!)
@@ -156,10 +183,16 @@ class ConditionDetailsViewModel @Inject constructor(
         val dailyFlow = repository.getDailyConditionWithoutCaching(lat, lon)
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
-        dailyFlow.combine(sharedPrefFLow) { dailyResult,
-                                            sharedPref ->
-            asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
-        }
+        dailyFlow
+            .map { result ->
+                result.transformResult { list ->
+                    list?.map { it.toDailyConditionUI() }
+                }
+            }
+            .combine(sharedPrefFLow) { dailyResult,
+                                       sharedPref ->
+                asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
+            }
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     dailyCondition.postValue(response.data!!)

@@ -15,7 +15,7 @@ import com.example.simpleweather.R
 import com.example.simpleweather.databinding.SearchFragmentBinding
 import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.State
-import com.example.simpleweather.utils.reactview.ReactiveViewUtil.Companion.searchWatcherFlow
+import com.example.simpleweather.utils.searchWatcherFlow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
