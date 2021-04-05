@@ -28,3 +28,5 @@ fun Float.toUIFormat(): String {
     val decimalFormat = DecimalFormat("#.#")
     return decimalFormat.format(this)
 }
+
+

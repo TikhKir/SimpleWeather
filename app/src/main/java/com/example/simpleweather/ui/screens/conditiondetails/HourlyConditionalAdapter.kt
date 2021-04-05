@@ -8,7 +8,7 @@ import com.example.simpleweather.databinding.ItemHourlyConditionBinding
 import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
-import com.example.simpleweather.utils.iconconverter.IconConverter
+import com.example.simpleweather.utils.idToIcon
 import com.example.simpleweather.utils.toUIFormat
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
@@ -46,7 +46,7 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
                 ZoneOffset.ofTotalSeconds(timeZoneOffset)
             )
             val timeStr = localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-            val iconId = IconConverter.idToIcon(weatherId, isNight(localDateTime))
+            val iconId = idToIcon(weatherId, isNight(localDateTime))
 
             binding.textViewConditionItemTime.text = timeStr
             binding.textViewConditionItemWind.text = windSpeedStr

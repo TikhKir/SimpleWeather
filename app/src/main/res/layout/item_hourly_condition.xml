@@ -12,10 +12,12 @@
 
         <TextView
             android:id="@+id/text_view_condition_item_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center"
             tools:text="12:00"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:maxLines="1"
             app:layout_constraintBottom_toTopOf="@+id/image_view_condition_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,12 +25,13 @@
 
         <ImageView
             android:id="@+id/image_view_condition_item"
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_view_condition_item_time"
-            tools:src="@drawable/ic_settings" />
+            tools:src="@drawable/ic_settings"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/image_view_condition_item_wind_icon"
@@ -37,16 +40,19 @@
             android:src="@drawable/ic_wind"
             app:layout_constraintBottom_toTopOf="@+id/image_view_condition_item_volume_icon"
             app:layout_constraintEnd_toStartOf="@id/text_view_condition_item_wind"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/wind" />
 
         <TextView
             android:id="@+id/text_view_condition_item_wind"
             android:layout_width="wrap_content"
-            android:layout_height="19dp"
+            android:layout_height="wrap_content"
+            app:layout_constrainedWidth="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toTopOf="@+id/text_view_condition_item_volume"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_view_condition_item_wind_icon"
+            android:maxLines="1"
             tools:text="18 СВ" />
 
         <ImageView
@@ -56,13 +62,16 @@
             android:src="@drawable/ic_volume_prec"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/text_view_condition_item_volume"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/precipitation" />
 
         <TextView
             android:id="@+id/text_view_condition_item_volume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constrainedWidth="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_view_condition_item_volume_icon"

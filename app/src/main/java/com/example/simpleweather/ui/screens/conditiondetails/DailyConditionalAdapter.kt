@@ -8,7 +8,7 @@ import com.example.simpleweather.databinding.ItemDailyConditionBinding
 import com.example.simpleweather.ui.model.DailyConditionUI
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
-import com.example.simpleweather.utils.iconconverter.IconConverter
+import com.example.simpleweather.utils.idToIcon
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
@@ -30,7 +30,7 @@ class DailyConditionalAdapter :
     inner class DailyConditionalViewHolder(private val binding: ItemDailyConditionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(dailyCondition: DailyConditionUI) {
-            val iconId = IconConverter.idToIcon(dailyCondition.weatherId, false)
+            val iconId = idToIcon(dailyCondition.weatherId, false)
             val tempMaxStr = "${dailyCondition.tempMax}°"
             val tempMinStr = "${dailyCondition.tempMin}°"
             val dayOfWeekStr = LocalDateTime.ofEpochSecond(

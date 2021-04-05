@@ -7,12 +7,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AsyncPreferencesUnitChangerModule {
 
+    @ExperimentalCoroutinesApi
     @Singleton
     @Provides
     fun provideAsyncPreferencesUnitChanger(@ApplicationContext context: Context): AsyncPreferencesUnitChanger {

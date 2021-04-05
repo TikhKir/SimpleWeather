@@ -5,7 +5,7 @@ import com.example.simpleweather.utils.asyncunits.PressureUnits
 import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.diffutil.Identified
 
-//do not remove or change the default units initialization !!!!!
+//do not remove or change the default units initialization!
 data class HourlyConditionUI(
     val timeStamp: Int,
     var timeZoneOffset: Int,

@@ -239,13 +239,13 @@ class ConditionDetailsFragment : Fragment() {
 
     private fun setLoading(isLoading: Boolean) {
         binding.conditionProgressBar.isVisible = isLoading
-        binding.conditionFragmentRoot.isVisible = !isLoading
+        binding.conditionFragmentScrollRoot.isVisible = !isLoading
         binding.conditionErrorMessage.isVisible = false
     }
 
     private fun showErrorMessage(message: String) {
         binding.conditionProgressBar.isVisible = false
-        binding.conditionFragmentRoot.isVisible = false
+        binding.conditionFragmentScrollRoot.isVisible = false
         binding.conditionErrorMessage.text = message
         binding.conditionErrorMessage.isVisible = true
     }

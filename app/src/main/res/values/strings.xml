@@ -18,6 +18,10 @@
     <string name="turn_on_geolocation">Включите геолокацию</string>
     <string name="updated">"обновлено: "</string>
     <string name="data_for">"данные на: "</string>
+    <string name="humidity">Влажность</string>
+    <string name="pressure">Давление</string>
+    <string name="wind">Ветер</string>
+    <string name="precipitation">Осадки</string>
 
     <string name="units_pressure_mm">мм</string>
     <string name="units_pressure_hpa">гПа</string>
@@ -28,6 +32,7 @@
 
     <string name="sign_degree" translatable="false">°</string>
     <string name="sign_percent" translatable="false">%</string>
+
 
 
 </resources>

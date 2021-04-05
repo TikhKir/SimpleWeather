@@ -19,11 +19,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlin.math.roundToInt
 
+@ExperimentalCoroutinesApi
 class AsyncPreferencesUnitChanger(context: Context) {
     private val preferencesManager = PreferenceManager.getDefaultSharedPreferences(context)
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
-    @ExperimentalCoroutinesApi
     private val preferencesFlow = callbackFlow {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, _ ->
             val newEmit = sharedPreferences.all
@@ -37,7 +37,6 @@ class AsyncPreferencesUnitChanger(context: Context) {
         preferencesManager.all //first emit
     )
 
-    @ExperimentalCoroutinesApi
     fun getPreferencesFlow(): StateFlow<MutableMap<String, *>> = preferencesFlow
 
     fun transformToCurrentUIAccordingUnits(
@@ -46,7 +45,8 @@ class AsyncPreferencesUnitChanger(context: Context) {
     ): Result<CurrentConditionUI> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
-                var condition = result.data
+                var condition = result.data?.copy()
+                //todo: разобраться что тут происходит вообще
 
                 sharedPref.forEach { prefValue ->
                     when (prefValue.key) {
@@ -68,7 +68,7 @@ class AsyncPreferencesUnitChanger(context: Context) {
     ): Result<List<HourlyConditionUI>> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
-                var conditionList = result.data
+                var conditionList = result.data?.map { it.copy() }
 
                 sharedPref.forEach { prefValue ->
                     when (prefValue.key) {
@@ -90,7 +90,7 @@ class AsyncPreferencesUnitChanger(context: Context) {
     ): Result<List<DailyConditionUI>> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
-                var conditionList = result.data
+                var conditionList = result.data?.map { it.copy() }
 
                 sharedPref.forEach { prefValue ->
                     when (prefValue.key) {
