@@ -51,8 +51,8 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initRecycler()
         initViewModel()
@@ -126,8 +126,8 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         findNavController().navigate(action)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

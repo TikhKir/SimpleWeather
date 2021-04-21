@@ -47,7 +47,6 @@ class ConditionDetailsViewModel @Inject constructor(
         mergeStates()
     }
 
-
     @ExperimentalCoroutinesApi
     fun getHourlyWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
         val hourlyFlow = repository.getHourlyCondition(locationId)

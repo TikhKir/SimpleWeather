@@ -29,13 +29,14 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = HomeFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         initViewModel()
         initRecycler()
     }
@@ -75,8 +76,8 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
         findNavController().navigate(action) //if use R.id.* for navigate it will not runtime safety
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 

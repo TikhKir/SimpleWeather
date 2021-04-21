@@ -53,8 +53,9 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         doIfGpsAvailableOrShowErrorMessage {
             fusedLocationProviderClient = FusedLocationProviderClient(requireContext())
@@ -195,8 +196,8 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
         findNavController().navigate(action)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

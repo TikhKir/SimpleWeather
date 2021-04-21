@@ -61,6 +61,7 @@ class ConditionDetailsFragment : Fragment() {
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         viewModel = ViewModelProvider(this).get(ConditionDetailsViewModel::class.java)
 
         if (savedInstanceState == null) {
@@ -69,9 +70,10 @@ class ConditionDetailsFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setHasOptionsMenu(true)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         initRecyclers()
         observeViewModel()
     }
@@ -296,8 +298,8 @@ class ConditionDetailsFragment : Fragment() {
         is WindSpeedUnits.KilometersPerHour -> getString(R.string.units_wind_speed_kilometers_per_hours)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
