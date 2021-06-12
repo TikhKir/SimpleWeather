@@ -5,7 +5,8 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.simpleweather.repository.model.DailyWeatherCondition
+import com.example.simpleweather.domain.model.DailyCondition
+import kotlin.math.roundToInt
 
 @Entity(
     tableName = "daily_weather_conditions",
@@ -19,7 +20,7 @@ import com.example.simpleweather.repository.model.DailyWeatherCondition
         )
     ]
 )
-data class DailyWeatherConditionDB(
+data class DailyConditionDB(
 
     val locationParentId: Long,
     val timeStamp: Int,
@@ -60,36 +61,36 @@ data class DailyWeatherConditionDB(
     @PrimaryKey(autoGenerate = true)
     var dailyConditionId: Int? = null
 
-    fun toDailyWeatherCondition(): DailyWeatherCondition {
-        return DailyWeatherCondition(
-            timeStamp,
-            timeZoneOffset,
-            sunrise,
-            sunset,
-            tempDay,
-            tempEvening,
-            tempNight,
-            tempMorning,
-            tempMax,
-            tempMin,
-            tempDayFL,
-            tempEveningFL,
-            tempNightFL,
-            tempMorningFL,
-            pressure,
-            humidity,
-            dewPoint,
-            clouds,
-            windSpeed,
-            windDeg,
-            weatherId,
-            weatherName,
-            weatherDescription,
-            weatherIcon,
-            probabilityOfPrecipitation,
-            snowVolume,
-            rainVolume,
-            uvi
+    fun toDailyCondition(): DailyCondition {
+        return DailyCondition(
+            timeStamp = timeStamp,
+            timeZoneOffset = timeZoneOffset,
+            sunrise = sunrise,
+            sunset = sunset,
+            tempDay = tempDay.roundToInt(),
+            tempEvening = tempEvening.roundToInt(),
+            tempNight = tempNight.roundToInt(),
+            tempMorning = tempMorning.roundToInt(),
+            tempMax = tempMax.roundToInt(),
+            tempMin = tempMin.roundToInt(),
+            tempDayFL = tempDayFL.roundToInt(),
+            tempEveningFL = tempEveningFL.roundToInt(),
+            tempNightFL = tempNightFL.roundToInt(),
+            tempMorningFL = tempMorningFL.roundToInt(),
+            pressure = pressure,
+            humidity = humidity,
+            dewPoint = dewPoint,
+            clouds = clouds,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weatherId,
+            weatherName = weatherName,
+            weatherIcon = weatherIcon,
+            snowVolume = snowVolume,
+            rainVolume = rainVolume,
+            probabilityOfPrecipitation = probabilityOfPrecipitation,
+            weatherDescription = weatherDescription,
+            uvi = uvi
         )
     }
 }

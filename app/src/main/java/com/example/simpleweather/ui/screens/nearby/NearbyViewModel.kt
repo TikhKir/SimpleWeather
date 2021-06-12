@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.repository.RepositoryApi
-import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,10 +19,10 @@ class NearbyViewModel @Inject constructor(
     private val repository: RepositoryApi
 ) : ViewModel() {
 
-    val locations : LiveData<List<LocationWithCoords>> get() = locationsLiveData
+    val locations : LiveData<List<Location>> get() = locationsLiveData
     val state : LiveData<State> get() =  stateLiveData
 
-    private val locationsLiveData = MutableLiveData<List<LocationWithCoords>>()
+    private val locationsLiveData = MutableLiveData<List<Location>>()
     private val stateLiveData = MutableLiveData<State>(State.Default())
 
     fun loadLocationsByCoords(lat: Float, lon: Float) {

@@ -2,11 +2,11 @@ package com.example.simpleweather.ui.screens.conditiondetails
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.simpleweather.domain.model.CurrentCondition
+import com.example.simpleweather.domain.model.DailyCondition
+import com.example.simpleweather.domain.model.HourlyCondition
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.repository.RepositoryApi
-import com.example.simpleweather.repository.model.LocationWithCoords
-import com.example.simpleweather.ui.model.CurrentConditionUI
-import com.example.simpleweather.ui.model.DailyConditionUI
-import com.example.simpleweather.ui.model.HourlyConditionUI
 import com.example.simpleweather.utils.asyncunits.AsyncPreferencesUnitChanger
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,20 +26,20 @@ class ConditionDetailsViewModel @Inject constructor(
     private val deferredFavouriteSwitcher: DeferredFavouriteSwitcher
 ) : ViewModel() {
 
-    private val currentCondition = MutableLiveData<CurrentConditionUI>()
-    private val hourlyCondition = MutableLiveData<List<HourlyConditionUI>>()
-    private val dailyCondition = MutableLiveData<List<DailyConditionUI>>()
+    private val currentCondition = MutableLiveData<CurrentCondition>()
+    private val hourlyCondition = MutableLiveData<List<HourlyCondition>>()
+    private val dailyCondition = MutableLiveData<List<DailyCondition>>()
     private val stateCurrent: MutableLiveData<State> = MutableLiveData(State.Default())
     private val stateHourly: MutableLiveData<State> = MutableLiveData(State.Default())
     private val stateDaily: MutableLiveData<State> = MutableLiveData(State.Default())
     private val unionStates = MediatorLiveData<State>()
 
-    val currentLiveData: LiveData<CurrentConditionUI> get() = currentCondition
-    val hourlyLiveData: LiveData<List<HourlyConditionUI>> get() = hourlyCondition
-    val dailyLivaData: LiveData<List<DailyConditionUI>> get() = dailyCondition
+    val currentLiveData: LiveData<CurrentCondition> get() = currentCondition
+    val hourlyLiveData: LiveData<List<HourlyCondition>> get() = hourlyCondition
+    val dailyLivaData: LiveData<List<DailyCondition>> get() = dailyCondition
     val stateLiveData: LiveData<State> get() = unionStates
 
-    var favouriteLocation: LocationWithCoords? = null
+    var favouriteLocation: Location? = null
     var isFavourite: Boolean = false
 
     init {
@@ -53,11 +52,6 @@ class ConditionDetailsViewModel @Inject constructor(
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
         hourlyFlow
-            .map { result ->
-                result.transformResult { list ->
-                    list?.map { it.toHourlyWeatherUI() }
-                }
-            }
             .combine(sharedPrefFLow) { hourlyResult,
                                        sharedPref ->
                 asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
@@ -80,9 +74,6 @@ class ConditionDetailsViewModel @Inject constructor(
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
         currentFlow
-            .map { result ->
-                result.transformResult { it?.toCurrentConditionUI() }
-            }
             .combine(sharedPrefFLow) { currentResult,
                                        sharedPref ->
                 asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
@@ -105,11 +96,6 @@ class ConditionDetailsViewModel @Inject constructor(
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
         dailyFlow
-            .map { result ->
-                result.transformResult { list ->
-                    list?.map { it.toDailyConditionUI() }
-                }
-            }
             .combine(sharedPrefFLow) { dailyResult,
                                        sharedPref ->
                 asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
@@ -132,11 +118,6 @@ class ConditionDetailsViewModel @Inject constructor(
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
         hourlyFlow
-            .map { result ->
-                result.transformResult { list ->
-                    list?.map { it.toHourlyWeatherUI() }
-                }
-            }
             .combine(sharedPrefFLow) { hourlyResult,
                                        sharedPref ->
                 asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
@@ -159,9 +140,6 @@ class ConditionDetailsViewModel @Inject constructor(
         val sharedPrefFlow = asyncUnitChanger.getPreferencesFlow()
 
         currentFlow
-            .map { result ->
-                result.transformResult { it?.toCurrentConditionUI() }
-            }
             .combine(sharedPrefFlow) { currentResult, sharedPref ->
                 asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
             }
@@ -183,11 +161,6 @@ class ConditionDetailsViewModel @Inject constructor(
         val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
 
         dailyFlow
-            .map { result ->
-                result.transformResult { list ->
-                    list?.map { it.toDailyConditionUI() }
-                }
-            }
             .combine(sharedPrefFLow) { dailyResult,
                                        sharedPref ->
                 asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
@@ -224,7 +197,7 @@ class ConditionDetailsViewModel @Inject constructor(
         else State.Loading()
     }
 
-    private fun saveLocation(location: LocationWithCoords) {
+    private fun saveLocation(location: Location) {
         deferredFavouriteSwitcher.addToFavourite(location)
     }
 

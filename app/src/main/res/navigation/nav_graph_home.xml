@@ -40,6 +40,6 @@
         tools:layout="@layout/condition_details_fragment" >
         <argument
             android:name="location"
-            app:argType="com.example.simpleweather.repository.model.LocationWithCoords" />
+            app:argType="com.example.simpleweather.domain.model.Location" />
     </fragment>
 </navigation>

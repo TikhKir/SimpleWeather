@@ -1,4 +1,4 @@
-package com.example.simpleweather.ui.model
+package com.example.simpleweather.domain.model
 
 import com.example.simpleweather.utils.asyncunits.DegreeUnits
 import com.example.simpleweather.utils.asyncunits.PressureUnits
@@ -6,25 +6,15 @@ import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.diffutil.Identified
 
 //do not remove or change the default units initialization!
-data class DailyConditionUI(
-
+data class CurrentCondition(
     val timeStamp: Int,
     var timeZoneOffset: Int,
 
     var sunrise: Int,
     var sunset: Int,
 
-    var tempDay: Int,
-    var tempEvening: Int,
-    var tempNight: Int,
-    var tempMorning: Int,
-    var tempMax: Int,
-    var tempMin: Int,
-
-    var tempDayFL: Int,
-    var tempEveningFL: Int,
-    var tempNightFL: Int,
-    var tempMorningFL: Int,
+    var temp: Int,
+    var tempFL: Int,
     var tempUnits: DegreeUnits = DegreeUnits.Celsius,
 
     var pressure: Int,
@@ -41,10 +31,11 @@ data class DailyConditionUI(
     var weatherDescription: String,
     var weatherIcon: String,
 
-    var probabilityOfPrecipitation: Float,
-    var snowVolume: Float,
-    var rainVolume: Float,
-    var uvi: Float,
-) : Identified {
-    override val identifier = timeStamp
+    var snowVolumeLastHour: Float,
+    var rainVolumeLastHour: Float,
+    var allVolumeLastHour: Float,
+    var uvi: Float
+) : Identified
+{
+    override val identifier: Any = timeStamp
 }

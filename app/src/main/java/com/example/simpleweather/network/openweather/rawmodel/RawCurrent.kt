@@ -1,8 +1,8 @@
 package com.example.simpleweather.network.openweather.rawmodel
 
-import com.example.simpleweather.repository.model.CurrentWeatherCondition
+import com.example.simpleweather.domain.model.CurrentCondition
 import com.google.gson.annotations.SerializedName
-
+import kotlin.math.roundToInt
 
 
 data class RawCurrent (
@@ -54,27 +54,29 @@ data class RawCurrent (
     @SerializedName("snow")
     val snow: RawSnow? = null
 ) {
-    fun toCurrentWeatherCondition(): CurrentWeatherCondition {
-        return CurrentWeatherCondition(
-            dt,
-            0,
-            sunrise,
-            sunset,
-            temp,
-            feelsLike,
-            pressure,
-            humidity,
-            dewPoint,
-            clouds,
-            windSpeed,
-            windDeg,
-            weather[0].id,
-            weather[0].main,
-            weather[0].description,
-            weather[0].icon,
-            snow?.last_hour ?: 0F,
-            rain?.last_hour ?: 0F,
-            uvi
+
+    fun toCurrentCondition(): CurrentCondition {
+        return CurrentCondition(
+            timeStamp = dt,
+            timeZoneOffset = 0,
+            sunrise = sunrise,
+            sunset = sunset,
+            temp = temp.roundToInt(),
+            tempFL = feelsLike.roundToInt(),
+            pressure = pressure,
+            humidity = humidity,
+            dewPoint = dewPoint,
+            clouds = clouds,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weather[0].id,
+            weatherName = weather[0].main,
+            weatherDescription = weather[0].description,
+            weatherIcon = weather[0].icon,
+            snowVolumeLastHour = snow?.last_hour ?: 0F,
+            rainVolumeLastHour = rain?.last_hour ?: 0F,
+            allVolumeLastHour = (snow?.last_hour ?: 0F) + (rain?.last_hour ?: 0F),
+            uvi = uvi
         )
     }
 }

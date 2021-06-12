@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.simpleweather.local.model.DailyWeatherConditionDB
-import com.example.simpleweather.local.model.HourlyWeatherConditionDB
+import com.example.simpleweather.local.model.DailyConditionDB
+import com.example.simpleweather.local.model.HourlyConditionDB
 import com.example.simpleweather.local.model.LocationDB
 import kotlinx.coroutines.flow.Flow
 
@@ -38,24 +38,24 @@ interface WeatherDao {
 
 
 
-    @Insert(entity = DailyWeatherConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveDailyForecast(dailyForecastList: List<DailyWeatherConditionDB>)
+    @Insert(entity = DailyConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveDailyForecast(dailyForecastList: List<DailyConditionDB>)
 
     @Query("SELECT * FROM daily_weather_conditions WHERE locationParentId = :locationId AND timeStamp >= :currentTimeStamp")
-    fun getDailyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<DailyWeatherConditionDB>>
+    fun getDailyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<DailyConditionDB>>
 
 
 
-    @Insert(entity = HourlyWeatherConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveHourlyForecast(hourlyForecast: List<HourlyWeatherConditionDB>)
+    @Insert(entity = HourlyConditionDB::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveHourlyForecast(hourlyForecast: List<HourlyConditionDB>)
 
     @Query("SELECT * FROM hourly_weather_conditions WHERE locationParentId = :locationId AND timeStamp >= :currentTimeStamp")
-    fun getHourlyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<HourlyWeatherConditionDB>>
+    fun getHourlyForecast(locationId: Long, currentTimeStamp: Long): Flow<List<HourlyConditionDB>>
 
 
 
     @Query("SELECT * FROM hourly_weather_conditions WHERE locationParentId = :locationId AND timeStamp = :currentTimeStamp")
-    fun getCurrentForecast(locationId: Long, currentTimeStamp: Long) : Flow<HourlyWeatherConditionDB>
+    fun getCurrentForecast(locationId: Long, currentTimeStamp: Long) : Flow<HourlyConditionDB>
 
 
 }

@@ -3,7 +3,7 @@ package com.example.simpleweather.local.model
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.domain.model.Location
 
 @Entity(
     tableName = "locations",
@@ -24,8 +24,8 @@ data class LocationDB(
     @PrimaryKey(autoGenerate = true)
     var locationId: Long? = null
 
-    fun toLocationWithCoords(): LocationWithCoords {
-        return LocationWithCoords(
+    fun toLocationWithCoords(): Location {
+        return Location(
             locationId!!,
             fullAddress,
             longitude,

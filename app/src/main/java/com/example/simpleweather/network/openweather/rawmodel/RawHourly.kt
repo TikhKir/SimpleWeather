@@ -1,7 +1,8 @@
 package com.example.simpleweather.network.openweather.rawmodel
 
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
+import com.example.simpleweather.domain.model.HourlyCondition
 import com.google.gson.annotations.SerializedName
+import kotlin.math.roundToInt
 
 
 data class RawHourly (
@@ -50,23 +51,23 @@ data class RawHourly (
 
 {
 
-    fun toHourlyWeatherCondition(): HourlyWeatherCondition {
-        return HourlyWeatherCondition(
-            dt,
-            0,
-            temp,
-            feelsLike,
-            pressure,
-            humidity,
-            windSpeed,
-            windDeg,
-            weather[0].id,
-            weather[0].main,
-            weather[0].description,
-            weather[0].icon,
-            pop,
-            snow?.last_hour ?: 0F,
-            rain?.last_hour ?: 0F
+    fun toHourlyCondition(): HourlyCondition {
+        return HourlyCondition(
+            timeStamp = dt,
+            timeZoneOffset = 0,
+            temp = temp.roundToInt(),
+            tempFL = feelsLike.roundToInt(),
+            pressure = pressure,
+            humidity = humidity,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weather[0].id,
+            weatherDescription = weather[0].description,
+            weatherName = weather[0].main,
+            weatherIcon = weather[0].icon,
+            probabilityOfPrecipitation = pop,
+            snowVolume = snow?.last_hour ?: 0F,
+            rainVolume = rain?.last_hour ?: 0F
         )
     }
 

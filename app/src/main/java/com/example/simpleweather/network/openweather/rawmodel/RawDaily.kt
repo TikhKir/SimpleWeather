@@ -1,7 +1,8 @@
 package com.example.simpleweather.network.openweather.rawmodel
 
-import com.example.simpleweather.repository.model.DailyWeatherCondition
+import com.example.simpleweather.domain.model.DailyCondition
 import com.google.gson.annotations.SerializedName
+import kotlin.math.roundToInt
 
 
 data class RawDaily (
@@ -56,36 +57,36 @@ data class RawDaily (
 
 {
 
-    fun toDailyWeatherCondition(): DailyWeatherCondition {
-        return DailyWeatherCondition(
-            dt,
-            0,
-            sunrise,
-            sunset,
-            temp.day,
-            temp.eve,
-            temp.night,
-            temp.morn,
-            temp.max,
-            temp.min,
-            feelsLike.day,
-            feelsLike.eve,
-            feelsLike.night,
-            feelsLike.morn,
-            pressure,
-            humidity,
-            dewPoint,
-            clouds,
-            windSpeed,
-            windDeg,
-            weather[0].id,
-            weather[0].main,
-            weather[0].description,
-            weather[0].icon,
-            pop,
-            snow,
-            rain,
-            uvi
+    fun toDailyCondition(): DailyCondition {
+        return DailyCondition(
+            timeStamp = dt,
+            timeZoneOffset = 0,
+            sunrise = sunrise,
+            sunset = sunset,
+            tempDay = temp.day.roundToInt(),
+            tempEvening = temp.eve.roundToInt(),
+            tempNight = temp.night.roundToInt(),
+            tempMorning = temp.morn.roundToInt(),
+            tempMax = temp.max.roundToInt(),
+            tempMin = temp.min.roundToInt(),
+            tempDayFL = feelsLike.day.roundToInt(),
+            tempEveningFL = feelsLike.eve.roundToInt(),
+            tempNightFL = feelsLike.night.roundToInt(),
+            tempMorningFL = feelsLike.morn.roundToInt(),
+            pressure = pressure,
+            humidity = humidity,
+            dewPoint = dewPoint,
+            clouds = clouds,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weather[0].id,
+            weatherName = weather[0].main,
+            weatherDescription = weather[0].description,
+            weatherIcon = weather[0].icon,
+            probabilityOfPrecipitation = pop,
+            snowVolume = snow,
+            rainVolume = rain,
+            uvi = uvi,
         )
     }
 

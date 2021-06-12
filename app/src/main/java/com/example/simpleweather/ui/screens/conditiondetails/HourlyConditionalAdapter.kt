@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simpleweather.databinding.ItemHourlyConditionBinding
-import com.example.simpleweather.ui.model.HourlyConditionUI
+import com.example.simpleweather.domain.model.HourlyCondition
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 import com.example.simpleweather.utils.idToIcon
@@ -30,14 +30,14 @@ class HourlyConditionalAdapter(private val itemWidth: Int) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val hourlyCondition = getItem(position) as HourlyConditionUI
+        val hourlyCondition = getItem(position) as HourlyCondition
         (holder as HourlyConditionalViewHolder).bind(hourlyCondition)
     }
 
     inner class HourlyConditionalViewHolder(private val binding: ItemHourlyConditionBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(hourlyCondition: HourlyConditionUI) = with(hourlyCondition) {
+        fun bind(hourlyCondition: HourlyCondition) = with(hourlyCondition) {
             val allVolumeStr = (rainVolume + snowVolume).toUIFormat()
             val windSpeedStr = windSpeed.toUIFormat()
             val localDateTime = LocalDateTime.ofEpochSecond(

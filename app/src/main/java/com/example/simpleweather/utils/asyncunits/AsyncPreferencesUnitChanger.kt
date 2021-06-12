@@ -3,9 +3,9 @@ package com.example.simpleweather.utils.asyncunits
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.example.simpleweather.ui.model.CurrentConditionUI
-import com.example.simpleweather.ui.model.DailyConditionUI
-import com.example.simpleweather.ui.model.HourlyConditionUI
+import com.example.simpleweather.domain.model.CurrentCondition
+import com.example.simpleweather.domain.model.DailyCondition
+import com.example.simpleweather.domain.model.HourlyCondition
 import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
 import kotlinx.coroutines.CoroutineScope
@@ -40,9 +40,9 @@ class AsyncPreferencesUnitChanger(context: Context) {
     fun getPreferencesFlow(): StateFlow<MutableMap<String, *>> = preferencesFlow
 
     fun transformToCurrentUIAccordingUnits(
-        result: Result<CurrentConditionUI>,
+        result: Result<CurrentCondition>,
         sharedPref: MutableMap<String, *>
-    ): Result<CurrentConditionUI> {
+    ): Result<CurrentCondition> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
                 var condition = result.data?.copy()
@@ -63,9 +63,9 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     fun transformToHourlyUIAccordingUnits(
-        result: Result<List<HourlyConditionUI>>,
+        result: Result<List<HourlyCondition>>,
         sharedPref: MutableMap<String, *>
-    ): Result<List<HourlyConditionUI>> {
+    ): Result<List<HourlyCondition>> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
                 var conditionList = result.data?.map { it.copy() }
@@ -85,9 +85,9 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     fun transformToDailyUIAccordingUnits(
-        result: Result<List<DailyConditionUI>>,
+        result: Result<List<DailyCondition>>,
         sharedPref: MutableMap<String, *>
-    ): Result<List<DailyConditionUI>> {
+    ): Result<List<DailyCondition>> {
         return when (result.resultType) {
             ResultType.SUCCESS -> {
                 var conditionList = result.data?.map { it.copy() }
@@ -105,9 +105,9 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     private fun transformCurrent(
-        condition: CurrentConditionUI,
+        condition: CurrentCondition,
         preferencesMap: Map.Entry<String, *>
-    ): CurrentConditionUI {
+    ): CurrentCondition {
         when (preferencesMap.value) {
             DegreeUnits.Fahrenheit.key -> condition.apply {
                 temp = temp.celsiusToFahrenheit()
@@ -127,9 +127,9 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     private fun transformHourly(
-        conditionList: List<HourlyConditionUI>,
+        conditionList: List<HourlyCondition>,
         preferencesMap: Map.Entry<String, *>
-    ): List<HourlyConditionUI> {
+    ): List<HourlyCondition> {
         conditionList.forEach { condition ->
             when (preferencesMap.value) {
                 DegreeUnits.Fahrenheit.key -> condition.apply {
@@ -151,9 +151,9 @@ class AsyncPreferencesUnitChanger(context: Context) {
     }
 
     private fun transformDaily(
-        conditionList: List<DailyConditionUI>,
+        conditionList: List<DailyCondition>,
         preferencesMap: Map.Entry<String, *>
-    ): List<DailyConditionUI> {
+    ): List<DailyCondition> {
         conditionList.forEach { condition ->
             when (preferencesMap.value) {
                 DegreeUnits.Fahrenheit.key -> condition.apply {

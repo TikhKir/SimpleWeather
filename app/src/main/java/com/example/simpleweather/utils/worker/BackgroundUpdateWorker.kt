@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.local.DataApi
 import com.example.simpleweather.network.openweather.OpenWeatherApi
-import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL
 import com.example.simpleweather.utils.datawrappers.ResultType
 import dagger.assisted.Assisted
@@ -34,7 +34,7 @@ class BackgroundUpdateWorker @AssistedInject constructor(
     }
 
 
-    private suspend fun refreshHourlyConditions(location: LocationWithCoords) {
+    private suspend fun refreshHourlyConditions(location: Location) {
         val currentTime = Instant.now().epochSecond
         val timeDifference = currentTime - location.refreshTimeHourly
 
@@ -53,7 +53,7 @@ class BackgroundUpdateWorker @AssistedInject constructor(
         }
     }
 
-    private suspend fun refreshDailyConditions(location: LocationWithCoords) {
+    private suspend fun refreshDailyConditions(location: Location) {
         val currentTime = Instant.now().epochSecond
         val timeDifference = currentTime - location.refreshTimeDaily
 

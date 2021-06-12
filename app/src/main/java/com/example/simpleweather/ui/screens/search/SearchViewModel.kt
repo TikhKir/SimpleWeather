@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.repository.RepositoryApi
-import com.example.simpleweather.repository.model.LocationWithCoords
 import com.example.simpleweather.utils.datawrappers.ResultType
 import com.example.simpleweather.utils.datawrappers.State
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,10 +19,10 @@ class SearchViewModel @Inject constructor(
     private val repository: RepositoryApi
 ) : ViewModel() {
 
-    private val locations = MutableLiveData<List<LocationWithCoords>>()
+    private val locations = MutableLiveData<List<Location>>()
     private val state = MutableLiveData<State>(State.Default())
 
-    val locationsLiveData: LiveData<List<LocationWithCoords>> get() = locations
+    val locationsLiveData: LiveData<List<Location>> get() = locations
     val stateLiveData: LiveData<State> get() = state
 
 

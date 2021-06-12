@@ -1,6 +1,6 @@
 package com.example.simpleweather.network.locationiq.rawmodel
 
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL
 import com.google.gson.annotations.SerializedName
 import org.threeten.bp.Instant
@@ -48,9 +48,9 @@ data class RawLocation(
 )
 {
 
-    fun toLocationWithCoords(): LocationWithCoords {
+    fun toLocation(): Location {
         val initialTime = Instant.now().minusSeconds(MINIMAL_REFRESH_INTERVAL.toLong()).epochSecond
-        return LocationWithCoords(
+        return Location(
             -1,
             displayName,
             lon,

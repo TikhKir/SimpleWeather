@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.repository.RepositoryApi
-import com.example.simpleweather.repository.model.LocationWithCoords
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -21,10 +21,10 @@ class HomeViewModel @Inject constructor(
         getSavedLocations()
     }
 
-    val locationLiveData: LiveData<List<LocationWithCoords>> by lazy { getSavedLocations() }
+    val locationLiveData: LiveData<List<Location>> by lazy { getSavedLocations() }
 
-    private fun getSavedLocations(): LiveData<List<LocationWithCoords>> {
-        val livedata = MutableLiveData<List<LocationWithCoords>>()
+    private fun getSavedLocations(): LiveData<List<Location>> {
+        val livedata = MutableLiveData<List<Location>>()
         viewModelScope.launch(Dispatchers.IO) {
             repository.getSavedLocations()
                 .collect { livedata.postValue(it) }

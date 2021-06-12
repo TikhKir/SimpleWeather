@@ -1,12 +1,13 @@
-package com.example.simpleweather.ui.model
+package com.example.simpleweather.domain.model
 
+import com.example.simpleweather.local.model.HourlyConditionDB
 import com.example.simpleweather.utils.asyncunits.DegreeUnits
 import com.example.simpleweather.utils.asyncunits.PressureUnits
 import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.diffutil.Identified
 
 //do not remove or change the default units initialization!
-data class HourlyConditionUI(
+data class HourlyCondition(
     val timeStamp: Int,
     var timeZoneOffset: Int,
 
@@ -28,7 +29,27 @@ data class HourlyConditionUI(
     var probabilityOfPrecipitation: Float,
     var snowVolume: Float,
     var rainVolume: Float
-) : Identified
-{
+) : Identified {
     override val identifier: Any = timeStamp
+
+    fun toHourlyConditionDB(locationId: Long): HourlyConditionDB {
+        return HourlyConditionDB(
+            locationParentId = locationId.toInt(),
+            timeStamp = timeStamp,
+            timeZoneOffset = timeZoneOffset,
+            temp = temp.toFloat(),
+            tempFeelsLike = tempFL.toFloat(),
+            pressure = pressure,
+            humidity = humidity,
+            windSpeed = windSpeed,
+            windDeg = windDeg,
+            weatherId = weatherId,
+            weatherName = weatherName,
+            weatherDescription = weatherDescription,
+            weatherIcon = weatherIcon,
+            probabilityOfPrecipitation = probabilityOfPrecipitation,
+            snowVolume = snowVolume,
+            rainVolume = rainVolume
+        )
+    }
 }

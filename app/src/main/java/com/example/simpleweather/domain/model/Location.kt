@@ -1,4 +1,4 @@
-package com.example.simpleweather.repository.model
+package com.example.simpleweather.domain.model
 
 
 import android.os.Parcelable
@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class LocationWithCoords(
+data class Location(
     val locationId: Long = -1,
     val fullAddress: String,
     val longitude: Float,
