@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simpleweather.databinding.ItemSavedLocationBinding
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.utils.diffutil.Identified
 import com.example.simpleweather.utils.diffutil.IdentityDiffUtilCallback
 
@@ -21,14 +21,14 @@ class NearbyLocationsAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val location = getItem(position) as LocationWithCoords
+        val location = getItem(position) as Location
         (holder as NearbyLocationViewHolder).bind(location)
     }
 
     inner class NearbyLocationViewHolder(private val binding: ItemSavedLocationBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(location: LocationWithCoords) {
+        fun bind(location: Location) {
             binding.textViewLocationBig.text = location.addressCity
             binding.textViewLocationSmall.text = location.addressCounty
             binding.root.setOnClickListener { itemClickListener.onItemClick(location) }
@@ -36,6 +36,6 @@ class NearbyLocationsAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(location: LocationWithCoords)
+        fun onItemClick(location: Location)
     }
 }

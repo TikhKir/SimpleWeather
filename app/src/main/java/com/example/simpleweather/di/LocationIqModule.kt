@@ -1,8 +1,8 @@
 package com.example.simpleweather.di
 
-import com.example.simpleweather.network.locationiq.LocationIqApi
-import com.example.simpleweather.network.locationiq.LocationIqApiImpl
-import com.example.simpleweather.network.locationiq.LocationIqService
+import com.example.simpleweather.data.network.locationiq.LocationIqApi
+import com.example.simpleweather.data.network.locationiq.LocationIqApiImpl
+import com.example.simpleweather.data.network.locationiq.LocationIqService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

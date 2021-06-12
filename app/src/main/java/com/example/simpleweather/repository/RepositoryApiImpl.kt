@@ -1,16 +1,16 @@
 package com.example.simpleweather.repository
 
 import android.util.Log
-import com.example.simpleweather.local.DataApi
-import com.example.simpleweather.network.locationiq.LocationIqApi
-import com.example.simpleweather.network.openweather.OpenWeatherApi
-import com.example.simpleweather.repository.model.CurrentWeatherCondition
-import com.example.simpleweather.repository.model.DailyWeatherCondition
-import com.example.simpleweather.repository.model.HourlyWeatherCondition
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.data.local.DataApi
+import com.example.simpleweather.data.network.locationiq.LocationIqApi
+import com.example.simpleweather.data.network.openweather.OpenWeatherApi
+import com.example.simpleweather.domain.datawrappers.Result
+import com.example.simpleweather.domain.model.CurrentCondition
+import com.example.simpleweather.domain.model.DailyCondition
+import com.example.simpleweather.domain.model.HourlyCondition
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL_CURRENT
-import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -23,17 +23,14 @@ class RepositoryApiImpl @Inject constructor(
     private val dataApi: DataApi
 ) : RepositoryApi {
 
-    override suspend fun getDailyConditionWithoutCaching(
-        lat: Float,
-        lon: Float
-    ): Flow<Result<List<DailyWeatherCondition>>> {
+    override suspend fun getDailyConditionWithoutCaching(lat: Float, lon: Float
+    ): Flow<Result<List<DailyCondition>>> {
         return flowOf(openWeatherApi.getDailyCondition(lat, lon))
     }
 
-    override suspend fun getDailyCondition(locationId: Long): Flow<Result<List<DailyWeatherCondition>>> {
+    override suspend fun getDailyCondition(locationId: Long): Flow<Result<List<DailyCondition>>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeDaily
+        val timeDifference = currentTime() - location.refreshTimeDaily
 
         return if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
@@ -41,7 +38,7 @@ class RepositoryApiImpl @Inject constructor(
             if (netResponse.resultType == ResultType.SUCCESS) {
                 netResponse.data?.let {
                     saveDailyForecast(locationId, it)
-                    dataApi.updateDailyRefreshTime(currentTime, locationId)
+                    dataApi.updateDailyRefreshTime(locationId)
                 }
                 flowOf(netResponse)
             } else {
@@ -57,14 +54,13 @@ class RepositoryApiImpl @Inject constructor(
     override suspend fun getHourlyConditionWithoutCaching(
         lat: Float,
         lon: Float
-    ): Flow<Result<List<HourlyWeatherCondition>>> {
+    ): Flow<Result<List<HourlyCondition>>> {
         return flowOf(openWeatherApi.getHourlyCondition(lat, lon))
     }
 
-    override suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyWeatherCondition>>> {
+    override suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyCondition>>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeHourly
+        val timeDifference = currentTime() - location.refreshTimeHourly
 
         return if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
@@ -72,7 +68,7 @@ class RepositoryApiImpl @Inject constructor(
             if (netResponse.resultType == ResultType.SUCCESS) {
                 netResponse.data?.let {
                     saveHourlyForecast(locationId, it)
-                    dataApi.updateHourlyRefreshTime(currentTime, locationId)
+                    dataApi.updateHourlyRefreshTime(locationId)
                 }
                 flowOf(netResponse)
             } else {
@@ -88,19 +84,18 @@ class RepositoryApiImpl @Inject constructor(
     override suspend fun getCurrentConditionWithoutCaching(
         lat: Float,
         lon: Float
-    ): Flow<Result<CurrentWeatherCondition>> {
+    ): Flow<Result<CurrentCondition>> {
         return flowOf(openWeatherApi.getCurrentCondition(lat, lon))
     }
 
-    override suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentWeatherCondition>> {
+    override suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentCondition>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeHourly
+        val timeDifference = currentTime() - location.refreshTimeHourly
 
         return if (timeDifference > MINIMAL_REFRESH_INTERVAL_CURRENT) {
             val netResponse = openWeatherApi.getCurrentCondition(location.latitude, location.longitude)
             if (netResponse.resultType == ResultType.SUCCESS) {
-                dataApi.updateCurrentRefreshTime(currentTime, locationId)
+                dataApi.updateCurrentRefreshTime(locationId)
                 flowOf(netResponse)
             } else {
                 Log.e("NET_CURRENT_UPDATE_FAIL", netResponse.error?.message.toString())
@@ -113,11 +108,11 @@ class RepositoryApiImpl @Inject constructor(
     }
 
 
-    override suspend fun getSavedLocations(): Flow<List<LocationWithCoords>> {
+    override suspend fun getSavedLocations(): Flow<List<Location>> {
         return dataApi.getSavedLocations()
     }
 
-    override suspend fun saveNewLocation(location: LocationWithCoords): Long {
+    override suspend fun saveNewLocation(location: Location): Long {
         return dataApi.saveNewLocation(location)
     }
 
@@ -128,28 +123,29 @@ class RepositoryApiImpl @Inject constructor(
 
     override suspend fun saveDailyForecast(
         locationId: Long,
-        listDaily: List<DailyWeatherCondition>
+        listDaily: List<DailyCondition>
     ) {
         dataApi.saveDailyForecast(locationId, listDaily)
     }
 
     override suspend fun saveHourlyForecast(
         locationId: Long,
-        listHourly: List<HourlyWeatherCondition>
+        listHourly: List<HourlyCondition>
     ) {
         dataApi.saveHourlyForecast(locationId, listHourly)
     }
 
-    override suspend fun getCoordByCityName(cityName: String): Result<List<LocationWithCoords>> {
+    override suspend fun getCoordByCityName(cityName: String): Result<List<Location>> {
         return locationIqApi.getCoordsByCityName(cityName)
     }
 
     override suspend fun getCityNameByCoords(
         lat: Float,
         lon: Float
-    ): Result<List<LocationWithCoords>> {
+    ): Result<List<Location>> {
         return locationIqApi.getCityNameByCoords(lat, lon)
     }
 
 
+    private fun currentTime() = Instant.now().epochSecond
 }

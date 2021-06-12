@@ -1,6 +1,6 @@
 package com.example.simpleweather.di
 
-import com.example.simpleweather.local.DataApi
+import com.example.simpleweather.data.local.DataApi
 import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcher
 import dagger.Module
 import dagger.Provides

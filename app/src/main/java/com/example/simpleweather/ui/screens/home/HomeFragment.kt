@@ -8,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.databinding.HomeFragmentBinding
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.domain.model.Location
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -70,7 +70,7 @@ class HomeFragment : Fragment(), SavedLocationsAdapter.OnItemClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onItemClicked(location: LocationWithCoords) {
+    override fun onItemClicked(location: Location) {
         val action = HomeFragmentDirections
             .actionHomeFragmentToConditionDetailsFragment(location)
         findNavController().navigate(action) //if use R.id.* for navigate it will not runtime safety

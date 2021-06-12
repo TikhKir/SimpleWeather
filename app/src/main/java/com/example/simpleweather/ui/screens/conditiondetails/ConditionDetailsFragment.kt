@@ -12,13 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
 import com.example.simpleweather.databinding.ConditionDetailsFragmentBinding
-import com.example.simpleweather.ui.model.CurrentConditionUI
-import com.example.simpleweather.ui.model.HourlyConditionUI
-import com.example.simpleweather.utils.asyncunits.DegreeUnits
-import com.example.simpleweather.utils.asyncunits.PressureUnits
-import com.example.simpleweather.utils.asyncunits.Units
-import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
-import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.domain.model.*
+import com.example.simpleweather.utils.State
 import com.example.simpleweather.utils.toUIFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -95,7 +90,7 @@ class ConditionDetailsFragment : Fragment() {
         })
     }
 
-    private fun initCurrentState(currentCondition: CurrentConditionUI) = with(currentCondition) {
+    private fun initCurrentState(currentCondition: CurrentCondition) = with(currentCondition) {
             val tempStr = "$temp" + getString(R.string.sign_degree)
             val humidityStr = "$humidity" + getString(R.string.sign_percent)
             val pressureStr = "$pressure ${provideUnitsString(pressureUnits)}"
@@ -132,7 +127,7 @@ class ConditionDetailsFragment : Fragment() {
             binding.textViewVolumePrecCount.text = allVolumeStr
     }
 
-    private fun initChart(hourlyList: List<HourlyConditionUI>) {
+    private fun initChart(hourlyList: List<HourlyCondition>) {
         val pointsList = transformToPointsList(hourlyList)
 
         val line = Line(pointsList)
@@ -151,7 +146,7 @@ class ConditionDetailsFragment : Fragment() {
         binding.helloChartView.lineChartData = lineChartData
     }
 
-    private fun transformToPointsList(hourlyList: List<HourlyConditionUI>): List<PointValue> {
+    private fun transformToPointsList(hourlyList: List<HourlyCondition>): List<PointValue> {
         val pointsList = mutableListOf<PointValue>()
         for ((index, value) in hourlyList.withIndex()) {
             pointsList.add(PointValue(index.toFloat(), value.temp.toFloat()))

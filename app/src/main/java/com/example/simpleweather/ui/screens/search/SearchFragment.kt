@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.databinding.SearchFragmentBinding
-import com.example.simpleweather.repository.model.LocationWithCoords
-import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.domain.model.Location
+import com.example.simpleweather.utils.State
 import com.example.simpleweather.utils.searchWatcherFlow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -120,7 +120,7 @@ class SearchFragment : Fragment(), SearchLocationsAdapter.OnItemClickListener {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onItemClick(location: LocationWithCoords) {
+    override fun onItemClick(location: Location) {
         val action = SearchFragmentDirections
             .actionSearchFragmentToConditionDetailsFragment(location)
         findNavController().navigate(action)

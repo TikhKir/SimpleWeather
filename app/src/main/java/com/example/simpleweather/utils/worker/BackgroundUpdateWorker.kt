@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.simpleweather.local.DataApi
-import com.example.simpleweather.network.openweather.OpenWeatherApi
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.data.local.DataApi
+import com.example.simpleweather.data.network.openweather.OpenWeatherApi
+import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL
 import com.example.simpleweather.utils.datawrappers.ResultType
 import dagger.assisted.Assisted
@@ -34,9 +34,8 @@ class BackgroundUpdateWorker @AssistedInject constructor(
     }
 
 
-    private suspend fun refreshHourlyConditions(location: LocationWithCoords) {
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeHourly
+    private suspend fun refreshHourlyConditions(location: Location) {
+        val timeDifference = currentTime() - location.refreshTimeHourly
 
         if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
@@ -44,7 +43,7 @@ class BackgroundUpdateWorker @AssistedInject constructor(
             if (netResponse.resultType == ResultType.SUCCESS) {
                 netResponse.data?.let {
                     dataApi.saveHourlyForecast(location.locationId, it)
-                    dataApi.updateHourlyRefreshTime(currentTime, location.locationId)
+                    dataApi.updateHourlyRefreshTime(location.locationId)
                     Log.e("BACKGROUND_UPDATE", "Refresh hourly done")
                 }
             }
@@ -53,16 +52,15 @@ class BackgroundUpdateWorker @AssistedInject constructor(
         }
     }
 
-    private suspend fun refreshDailyConditions(location: LocationWithCoords) {
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeDaily
+    private suspend fun refreshDailyConditions(location: Location) {
+        val timeDifference = currentTime() - location.refreshTimeDaily
 
         if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
                 openWeatherApi.getDailyCondition(location.latitude, location.longitude)
             if (netResponse.resultType == ResultType.SUCCESS) {
                 netResponse.data?.let {
-                    dataApi.updateDailyRefreshTime(currentTime, location.locationId)
+                    dataApi.updateDailyRefreshTime(location.locationId)
                     dataApi.saveDailyForecast(location.locationId, it)
                     Log.e("BACKGROUND_UPDATE", "Refresh daily done")
                 }
@@ -71,5 +69,7 @@ class BackgroundUpdateWorker @AssistedInject constructor(
             Log.e("BACKGROUND_UPDATE_FAIL", "Refresh interval is not over")
         }
     }
+
+    private fun currentTime() = Instant.now().epochSecond
 
 }

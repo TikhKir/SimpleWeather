@@ -1,7 +1,7 @@
 package com.example.simpleweather.utils.favswitcher
 
-import com.example.simpleweather.local.DataApi
-import com.example.simpleweather.repository.model.LocationWithCoords
+import com.example.simpleweather.data.local.DataApi
+import com.example.simpleweather.domain.model.Location
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -11,7 +11,7 @@ class DeferredFavouriteSwitcher @Inject constructor(
 
     private val scope = CoroutineScope(Job() + Dispatchers.Default)
 
-    fun addToFavourite(location: LocationWithCoords) {
+    fun addToFavourite(location: Location) {
         scope.launch {
             dataApi.saveNewLocation(location)
             cancel()
