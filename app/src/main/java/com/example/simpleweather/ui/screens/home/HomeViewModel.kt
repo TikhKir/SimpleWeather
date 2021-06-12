@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.repository.RepositoryApi
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +24,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getSavedLocations(): LiveData<List<Location>> {
         val livedata = MutableLiveData<List<Location>>()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             repository.getSavedLocations()
                 .collect { livedata.postValue(it) }
         }

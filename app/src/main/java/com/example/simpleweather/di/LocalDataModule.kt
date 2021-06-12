@@ -2,10 +2,10 @@ package com.example.simpleweather.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.simpleweather.local.DataApi
-import com.example.simpleweather.local.DataApiImpl
-import com.example.simpleweather.local.WeatherDao
-import com.example.simpleweather.local.WeatherDataBase
+import com.example.simpleweather.data.local.DataApi
+import com.example.simpleweather.data.local.DataApiImpl
+import com.example.simpleweather.data.local.WeatherDao
+import com.example.simpleweather.data.local.WeatherDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

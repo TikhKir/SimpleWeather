@@ -12,13 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.MainActivity
 import com.example.simpleweather.R
 import com.example.simpleweather.databinding.ConditionDetailsFragmentBinding
-import com.example.simpleweather.domain.model.CurrentCondition
-import com.example.simpleweather.domain.model.HourlyCondition
-import com.example.simpleweather.utils.asyncunits.DegreeUnits
-import com.example.simpleweather.utils.asyncunits.PressureUnits
-import com.example.simpleweather.utils.asyncunits.Units
-import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
-import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.domain.model.*
+import com.example.simpleweather.utils.State
 import com.example.simpleweather.utils.toUIFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi

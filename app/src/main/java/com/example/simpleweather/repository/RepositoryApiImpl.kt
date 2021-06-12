@@ -1,16 +1,16 @@
 package com.example.simpleweather.repository
 
 import android.util.Log
+import com.example.simpleweather.data.local.DataApi
+import com.example.simpleweather.data.network.locationiq.LocationIqApi
+import com.example.simpleweather.data.network.openweather.OpenWeatherApi
+import com.example.simpleweather.domain.datawrappers.Result
 import com.example.simpleweather.domain.model.CurrentCondition
 import com.example.simpleweather.domain.model.DailyCondition
 import com.example.simpleweather.domain.model.HourlyCondition
 import com.example.simpleweather.domain.model.Location
-import com.example.simpleweather.local.DataApi
-import com.example.simpleweather.network.locationiq.LocationIqApi
-import com.example.simpleweather.network.openweather.OpenWeatherApi
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL
 import com.example.simpleweather.utils.MINIMAL_REFRESH_INTERVAL_CURRENT
-import com.example.simpleweather.utils.datawrappers.Result
 import com.example.simpleweather.utils.datawrappers.ResultType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -30,8 +30,7 @@ class RepositoryApiImpl @Inject constructor(
 
     override suspend fun getDailyCondition(locationId: Long): Flow<Result<List<DailyCondition>>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeDaily
+        val timeDifference = currentTime() - location.refreshTimeDaily
 
         return if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
@@ -39,7 +38,7 @@ class RepositoryApiImpl @Inject constructor(
             if (netResponse.resultType == ResultType.SUCCESS) {
                 netResponse.data?.let {
                     saveDailyForecast(locationId, it)
-                    dataApi.updateDailyRefreshTime(currentTime, locationId)
+                    dataApi.updateDailyRefreshTime(locationId)
                 }
                 flowOf(netResponse)
             } else {
@@ -61,8 +60,7 @@ class RepositoryApiImpl @Inject constructor(
 
     override suspend fun getHourlyCondition(locationId: Long): Flow<Result<List<HourlyCondition>>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeHourly
+        val timeDifference = currentTime() - location.refreshTimeHourly
 
         return if (timeDifference > MINIMAL_REFRESH_INTERVAL) {
             val netResponse =
@@ -70,7 +68,7 @@ class RepositoryApiImpl @Inject constructor(
             if (netResponse.resultType == ResultType.SUCCESS) {
                 netResponse.data?.let {
                     saveHourlyForecast(locationId, it)
-                    dataApi.updateHourlyRefreshTime(currentTime, locationId)
+                    dataApi.updateHourlyRefreshTime(locationId)
                 }
                 flowOf(netResponse)
             } else {
@@ -92,13 +90,12 @@ class RepositoryApiImpl @Inject constructor(
 
     override suspend fun getCurrentCondition(locationId: Long): Flow<Result<CurrentCondition>> {
         val location = dataApi.getSavedLocationById(locationId)
-        val currentTime = Instant.now().epochSecond
-        val timeDifference = currentTime - location.refreshTimeHourly
+        val timeDifference = currentTime() - location.refreshTimeHourly
 
         return if (timeDifference > MINIMAL_REFRESH_INTERVAL_CURRENT) {
             val netResponse = openWeatherApi.getCurrentCondition(location.latitude, location.longitude)
             if (netResponse.resultType == ResultType.SUCCESS) {
-                dataApi.updateCurrentRefreshTime(currentTime, locationId)
+                dataApi.updateCurrentRefreshTime(locationId)
                 flowOf(netResponse)
             } else {
                 Log.e("NET_CURRENT_UPDATE_FAIL", netResponse.error?.message.toString())
@@ -150,4 +147,5 @@ class RepositoryApiImpl @Inject constructor(
     }
 
 
+    private fun currentTime() = Instant.now().epochSecond
 }

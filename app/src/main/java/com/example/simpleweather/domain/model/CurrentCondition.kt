@@ -1,8 +1,5 @@
 package com.example.simpleweather.domain.model
 
-import com.example.simpleweather.utils.asyncunits.DegreeUnits
-import com.example.simpleweather.utils.asyncunits.PressureUnits
-import com.example.simpleweather.utils.asyncunits.WindSpeedUnits
 import com.example.simpleweather.utils.diffutil.Identified
 
 //do not remove or change the default units initialization!

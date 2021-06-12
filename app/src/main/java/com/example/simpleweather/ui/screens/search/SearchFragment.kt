@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simpleweather.R
 import com.example.simpleweather.databinding.SearchFragmentBinding
 import com.example.simpleweather.domain.model.Location
-import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.utils.State
 import com.example.simpleweather.utils.searchWatcherFlow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi

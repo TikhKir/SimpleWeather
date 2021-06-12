@@ -1,10 +1,10 @@
 package com.example.simpleweather.repository
 
+import com.example.simpleweather.domain.datawrappers.Result
 import com.example.simpleweather.domain.model.CurrentCondition
 import com.example.simpleweather.domain.model.DailyCondition
 import com.example.simpleweather.domain.model.HourlyCondition
 import com.example.simpleweather.domain.model.Location
-import com.example.simpleweather.utils.datawrappers.Result
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryApi {

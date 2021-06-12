@@ -2,27 +2,23 @@ package com.example.simpleweather.ui.screens.conditiondetails
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.simpleweather.domain.MeasureUnitsTransformUseCase
 import com.example.simpleweather.domain.model.CurrentCondition
 import com.example.simpleweather.domain.model.DailyCondition
 import com.example.simpleweather.domain.model.HourlyCondition
 import com.example.simpleweather.domain.model.Location
-import com.example.simpleweather.repository.RepositoryApi
-import com.example.simpleweather.utils.asyncunits.AsyncPreferencesUnitChanger
+import com.example.simpleweather.utils.State
 import com.example.simpleweather.utils.datawrappers.ResultType
-import com.example.simpleweather.utils.datawrappers.State
 import com.example.simpleweather.utils.favswitcher.DeferredFavouriteSwitcher
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ConditionDetailsViewModel @Inject constructor(
-    private val repository: RepositoryApi,
-    private val asyncUnitChanger: AsyncPreferencesUnitChanger,
+    private val transformUseCase: MeasureUnitsTransformUseCase,
     private val deferredFavouriteSwitcher: DeferredFavouriteSwitcher
 ) : ViewModel() {
 
@@ -47,15 +43,8 @@ class ConditionDetailsViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    fun getHourlyWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        val hourlyFlow = repository.getHourlyCondition(locationId)
-        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-        hourlyFlow
-            .combine(sharedPrefFLow) { hourlyResult,
-                                       sharedPref ->
-                asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
-            }
+    fun getHourlyWeatherCondition(locationId: Long) = viewModelScope.launch {
+        transformUseCase.getHourly(locationId)
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     hourlyCondition.postValue(response.data!!)
@@ -69,15 +58,8 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
     @ExperimentalCoroutinesApi
-    fun getCurrentWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        val currentFlow = repository.getCurrentCondition(locationId)
-        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-        currentFlow
-            .combine(sharedPrefFLow) { currentResult,
-                                       sharedPref ->
-                asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
-            }
+    fun getCurrentWeatherCondition(locationId: Long) = viewModelScope.launch {
+        transformUseCase.getCurrent(locationId)
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     currentCondition.postValue(response.data!!)
@@ -91,15 +73,8 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
     @ExperimentalCoroutinesApi
-    fun getDailyWeatherCondition(locationId: Long) = viewModelScope.launch(Dispatchers.IO) {
-        val dailyFlow = repository.getDailyCondition(locationId)
-        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-        dailyFlow
-            .combine(sharedPrefFLow) { dailyResult,
-                                       sharedPref ->
-                asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
-            }
+    fun getDailyWeatherCondition(locationId: Long) = viewModelScope.launch {
+        transformUseCase.getDaily(locationId)
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     dailyCondition.postValue(response.data!!)
@@ -113,15 +88,8 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
     @ExperimentalCoroutinesApi
-    fun getHourlyWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch(Dispatchers.IO) {
-        val hourlyFlow = repository.getHourlyConditionWithoutCaching(lat, lon)
-        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-        hourlyFlow
-            .combine(sharedPrefFLow) { hourlyResult,
-                                       sharedPref ->
-                asyncUnitChanger.transformToHourlyUIAccordingUnits(hourlyResult, sharedPref)
-            }
+    fun getHourlyWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch {
+        transformUseCase.getHourly(lat, lon)
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     hourlyCondition.postValue(response.data!!)
@@ -135,14 +103,8 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
     @ExperimentalCoroutinesApi
-    fun getCurrentWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch(Dispatchers.IO) {
-        val currentFlow = repository.getCurrentConditionWithoutCaching(lat, lon)
-        val sharedPrefFlow = asyncUnitChanger.getPreferencesFlow()
-
-        currentFlow
-            .combine(sharedPrefFlow) { currentResult, sharedPref ->
-                asyncUnitChanger.transformToCurrentUIAccordingUnits(currentResult, sharedPref)
-            }
+    fun getCurrentWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch {
+        transformUseCase.getCurrent(lat, lon)
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     currentCondition.postValue(response.data!!)
@@ -156,15 +118,8 @@ class ConditionDetailsViewModel @Inject constructor(
 
 
     @ExperimentalCoroutinesApi
-    fun getDailyWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch(Dispatchers.IO) {
-        val dailyFlow = repository.getDailyConditionWithoutCaching(lat, lon)
-        val sharedPrefFLow = asyncUnitChanger.getPreferencesFlow()
-
-        dailyFlow
-            .combine(sharedPrefFLow) { dailyResult,
-                                       sharedPref ->
-                asyncUnitChanger.transformToDailyUIAccordingUnits(dailyResult, sharedPref)
-            }
+    fun getDailyWeatherCondition(lat: Float, lon: Float) = viewModelScope.launch {
+        transformUseCase.getDaily(lat, lon)
             .collect { response ->
                 if (response.resultType == ResultType.SUCCESS) {
                     dailyCondition.postValue(response.data!!)
@@ -172,7 +127,6 @@ class ConditionDetailsViewModel @Inject constructor(
                 } else {
                     Log.e("DAILY_RESPONSE", response.error?.message.toString())
                     stateDaily.postValue(State.Error(response.error?.message.toString()))
-
                 }
             }
     }

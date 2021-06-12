@@ -1,7 +1,7 @@
 package com.example.simpleweather.utils.favswitcher
 
+import com.example.simpleweather.data.local.DataApi
 import com.example.simpleweather.domain.model.Location
-import com.example.simpleweather.local.DataApi
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

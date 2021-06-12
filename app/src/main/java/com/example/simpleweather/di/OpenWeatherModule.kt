@@ -1,8 +1,8 @@
 package com.example.simpleweather.di
 
-import com.example.simpleweather.network.openweather.OpenWeatherApi
-import com.example.simpleweather.network.openweather.OpenWeatherApiImpl
-import com.example.simpleweather.network.openweather.OpenWeatherService
+import com.example.simpleweather.data.network.openweather.OpenWeatherApi
+import com.example.simpleweather.data.network.openweather.OpenWeatherApiImpl
+import com.example.simpleweather.data.network.openweather.OpenWeatherService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -19,7 +19,7 @@ import com.example.simpleweather.R
 import com.example.simpleweather.databinding.NearbyFragmentBinding
 import com.example.simpleweather.domain.model.Location
 import com.example.simpleweather.utils.REQUEST_CODE_LOCATION_PERMISSIONS
-import com.example.simpleweather.utils.datawrappers.State
+import com.example.simpleweather.utils.State
 import com.example.simpleweather.utils.easypermissions.LocationUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
