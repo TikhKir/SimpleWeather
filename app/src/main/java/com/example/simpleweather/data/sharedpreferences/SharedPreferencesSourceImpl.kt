@@ -23,7 +23,7 @@ class SharedPreferencesSourceImpl @Inject constructor(context: Context): SharedP
     private val preferencesFlow = callbackFlow {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, _ ->
             val newEmit = sharedPreferences.all
-            offer(newEmit)
+            this.trySend(newEmit).isSuccess
         }
         preferencesManager.registerOnSharedPreferenceChangeListener(listener)
         awaitClose { preferencesManager.unregisterOnSharedPreferenceChangeListener(listener) }

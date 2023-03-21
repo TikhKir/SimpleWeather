@@ -20,7 +20,7 @@ interface LocationIqService {
         private const val PARAMS_NORMALIZED_CITY = "normalizecity"
         private const val PARAMS_ADDRESS_DETAILS = "addressdetails"
 
-        private const val API_KEY = BuildConfig.API_KEY_LOCATIONIQ
+        private val API_KEY = BuildConfig.API_KEY_LOCATIONIQ
         private const val LANGUAGE_RU = "ru"
         private const val TRUE = 1
         private const val DEF_LIMIT_RESPONSES = 20

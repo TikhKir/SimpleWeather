@@ -68,15 +68,15 @@ class NearbyFragment : Fragment(), EasyPermissions.PermissionCallbacks, NearbyLo
 
     private fun observeViewModel() {
         viewModel = ViewModelProvider(this).get(NearbyViewModel::class.java)
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             setLoadingState(state)
             doIfGpsAvailableOrShowErrorMessage {
                 updateLocationTracking(state is State.Loading || state is State.Default)
             }
-        })
-        viewModel.locations.observe(viewLifecycleOwner, {
+        }
+        viewModel.locations.observe(viewLifecycleOwner) {
             nearbyLocationsAdapter.submitList(it.toList())
-        })
+        }
     }
 
     @SuppressLint("MissingPermission")

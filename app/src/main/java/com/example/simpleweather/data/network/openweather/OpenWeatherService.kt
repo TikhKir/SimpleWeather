@@ -18,7 +18,7 @@ interface OpenWeatherService {
         private const val PARAM_UNITS = "units"
 
         private const val LANGUAGE_RU = "ru"
-        private const val API_KEY = BuildConfig.API_KEY_OPENWEATHER
+        private val API_KEY = BuildConfig.API_KEY_OPENWEATHER
         private const val EXCLUDE_HOURLY = "hourly"
         private const val EXCLUDE_DAILY = "daily"
         private const val EXCLUDE_ALERTS = "alerts"
